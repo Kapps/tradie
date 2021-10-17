@@ -1,11 +1,13 @@
 {
-    "language": "csharp",
-    "app": "dotnet run -p Tradie.Infrastructure.csproj",
-    "projectId": "053022fb-11e2-4d49-a96e-b9a54b421f84",
-    "terraformProviders": [],
-    "terraformModules": [],
-    "context": {
-        "excludeStackIdFromLogicalIds": "true",
-        "allowSepCharsInLogicalIds": "true"
-    }
+  "language": "csharp",
+  "app": "dotnet run -p Tradie.Infrastructure.csproj",
+  "projectId": "053022fb-11e2-4d49-a96e-b9a54b421f84",
+  "terraformProviders": [
+    "aws@~> 3.45"
+  ],
+  "terraformModules": [],
+  "context": {
+    "excludeStackIdFromLogicalIds": "true",
+    "allowSepCharsInLogicalIds": "true"
+  }
 }

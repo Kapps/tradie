@@ -47,10 +47,11 @@ namespace Tradie.Common {
 		public async Task SetParameter<TValue>(string key, TValue value) {
 			string? valString = Convert.ToString(value);
 			var req = new PutParameterRequest() {
-				DataType = "String",
+				Type = "String",
 				Name = key,
 				Tier = ParameterTier.Standard,
 				Value = valString,
+				Overwrite = true,
 			};
 
 			var resp = await ssmClient.PutParameterAsync(req);

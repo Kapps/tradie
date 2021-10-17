@@ -1,11 +1,11 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/runtime:5.0 AS base
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Tradie.Scanner/Tradie.Scanner.csproj", "Tradie.Scanner/"]
+COPY ["Tradie.Scanner.csproj", "Tradie.Scanner/"]
 RUN dotnet restore "Tradie.Scanner/Tradie.Scanner.csproj"
 COPY . .
 WORKDIR "/src/Tradie.Scanner"

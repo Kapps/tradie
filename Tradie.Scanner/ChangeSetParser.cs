@@ -3,6 +3,8 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using System.Linq;
 
 /// <summary>
 /// An interface to allow for reading stash tab changesets from a stream.
@@ -11,11 +13,16 @@ public interface IChangeSetParser {
 	/// <summary>
 	/// Efficiently reads characters from the stream until the next changeset ID can be parsed, without parsing the entirety of the changeset.
 	/// </summary>
-	ChangeSetDetails ReadHeader(Stream stream);
+	Task<ChangeSetDetails> ReadHeader(Stream stream);
+	/// <summary>
+	/// Copies the stash tabs from a changeset stream that has had the header read via ReadHeader.
+	/// The changeset stream is read from fully at the end of this method.
+	/// </summary>
+	Task ReadChanges(Stream changeSetStream, Stream outputStream);
 }
 
 public class ChangeSetParser : IChangeSetParser {
-	public ChangeSetDetails ReadHeader(Stream stream) {
+	public Task<ChangeSetDetails> ReadHeader(Stream stream) {
 		int curr;
 		string? nextChangeSet = null;
 		ChangeSetReadState state = ChangeSetReadState.Initial;
@@ -65,7 +72,34 @@ public class ChangeSetParser : IChangeSetParser {
 			}
 		} while(nextChangeSet == null);
 
-		return new ChangeSetDetails(nextChangeSet);
+		return Task.FromResult(new ChangeSetDetails(nextChangeSet));
+	}
+
+	public async Task ReadChanges(Stream changeSetStream, Stream outputStream) {
+		byte[] buff = new byte[81920];
+
+		int bytesRead = await changeSetStream.ReadAsync(buff, 0, buff.Length);
+
+		int arrayStart = Array.IndexOf(buff, (byte)'[');
+		if(arrayStart == -1) {
+			throw new InvalidDataException($"Unable to find stash tab opener in first {bytesRead} bytes.");
+		}
+
+		int copyStart = arrayStart;
+		int leftover = 0;
+
+		// At this point we're inside a {, and starting to copy at a [.
+		// So we want to read until the second last character (]) in the stream, to prevent an extra trailing } in the tab array.
+
+		while(bytesRead > 0) {
+			// Leave one character left for the next read, as we don't want to write the last character.
+			// So when we get to a 0 byte read, discard the remaining character.
+			await outputStream.WriteAsync(buff, copyStart, bytesRead - copyStart);
+			buff[0] = buff[bytesRead - (1 - leftover)];
+			copyStart = 0;
+			leftover = 1;
+			bytesRead = await changeSetStream.ReadAsync(buff, 1, buff.Length - 1);
+		}		
 	}
 }
 

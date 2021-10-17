@@ -22,7 +22,7 @@ namespace Tradie.Common {
 
 			foreach(var chunk in chunks) {
 				var req = new GetParametersRequest() {
-					Names = chunk.Select(c => c.Name).ToList(),
+					Names = chunk.Select(c => $"Config.{c.Name}").ToList(),
 					WithDecryption = true,
 				};
 
@@ -55,13 +55,24 @@ namespace Tradie.Common {
 		/// The user agent to include for all PoE API calls.
 		/// </summary>
 		[DefaultValue("User-Agent: OAuth tradie/1.0.0 (contact: tradie@ogi.bio) StrictMode")]
-		public string UserAgent { get; }
+		public string UserAgent { get; set; }
 
 		/// <summary>
 		/// Timeout of any HTTP calls, in seconds.
 		/// </summary>
 		[DefaultValue(30)]
-		public int HttpTimeout { get; }
+		public int HttpTimeout { get; set; }
+
+		/// <summary>
+		/// The S3 bucket to store raw changesets in.
+		/// </summary>
+		public string ChangeSetBucket { get; set; }
+
+		/// <summary>
+		/// Prefix, including trailing slash, for the folder to write raw changesets to.
+		/// </summary>
+		[DefaultValue("raw/")]
+		public string RawChangeSetPrefix { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 	}
