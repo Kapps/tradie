@@ -15,5 +15,9 @@
   <ItemGroup>
     <None Remove="HashiCorp.Cdktf.Providers.Aws" />
     <None Remove="HashiCorp.Cdktf.Providers.Local" />
+    <None Remove="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>

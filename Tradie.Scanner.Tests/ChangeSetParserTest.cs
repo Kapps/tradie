@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 namespace Tradie.Scanner.Tests {
 	[TestClass]
 	public class ChangeSetParserTest {
-		const string sampleTabPath = "sample-stashtab.json";
-		const string expectedNextChangeId = "1295845615-1301399396-1257065509-1404516195-1351110417";
-
 		[TestMethod]
 		public async Task TestReadHeader() {
 			var parser = new ChangeSetParser();
-			using(var inputStream = File.OpenRead(sampleTabPath)) {
+			using(var inputStream = File.OpenRead("sample-stashtab.json")) {
 				var sw = Stopwatch.StartNew();
 				var header = await parser.ReadHeader(inputStream);
-				Assert.AreEqual(expectedNextChangeId, header.NextChangeSetId);
+				Assert.AreEqual("1295845615-1301399396-1257065509-1404516195-1351110417", header.NextChangeSetId);
 				System.Console.WriteLine($"Reading header took {sw.ElapsedMilliseconds}ms.");
 			}
 		}
@@ -27,7 +24,7 @@ namespace Tradie.Scanner.Tests {
 			var parser = new ChangeSetParser();
 
 			using var ms = new MemoryStream();
-			using(var inputStream = File.OpenRead(sampleTabPath)) {
+			using(var inputStream = File.OpenRead("sample-stashtab.json")) {
 				var sw = Stopwatch.StartNew();
 
 				await parser.ReadChanges(inputStream, ms);
@@ -43,11 +40,11 @@ namespace Tradie.Scanner.Tests {
 			var parser = new ChangeSetParser();
 
 			using var ms = new MemoryStream();
-			using(var inputStream = File.OpenRead(sampleTabPath)) {
+			using(var inputStream = File.OpenRead("sample-stashtab2.json")) {
 				var sw = Stopwatch.StartNew();
 
 				var header = await parser.ReadHeader(inputStream);
-				Assert.AreEqual(expectedNextChangeId, header.NextChangeSetId);
+				Assert.AreEqual("1295772059-1301316531-1256989813-1404414243-1351025004", header.NextChangeSetId);
 				System.Console.WriteLine($"Reading header took {sw.ElapsedMilliseconds}ms.");
 
 				await parser.ReadChanges(inputStream, ms);

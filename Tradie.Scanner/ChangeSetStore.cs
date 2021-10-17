@@ -38,7 +38,7 @@ namespace Tradie.Scanner {
 				DisablePayloadSigning = true,
 				ContentType = "application/json",
 				BucketName = _config.ChangeSetBucket,
-				Key = $"{_config.RawChangeSetPrefix}{changeSetId}.json",
+				Key = $"{_config.RawChangeSetPrefix}{changeSetId}.json.br",
 			};
 
 			// S3 requires content length to be known, and we have to write to an intermediate memory stream anyways.

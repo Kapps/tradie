@@ -2,6 +2,7 @@ using System;
 using Constructs;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws;
+using Tradie.Infrastructure.Resources;
 
 namespace MyCompany.MyApp {
     class MyApp : TerraformStack {
@@ -23,8 +24,9 @@ namespace MyCompany.MyApp {
                 CidrBlock = "10.200.0.0/16",
             });
 
-            var ecr = new EcrRepository(this, "scanner", new EcrRepositoryConfig() {
-                Name = $"{prefix}-scanner"
+            var logs = new CloudwatchLogGroup(this, "log-group", new CloudwatchLogGroupConfig() {
+                Name = "tradie-logs",
+                RetentionInDays = 14,
             });
 
             var ecs = new EcsCluster(this, "ecs", new EcsClusterConfig() {
@@ -32,28 +34,14 @@ namespace MyCompany.MyApp {
                 //CapacityProviders = new string[] { "FARGATE", "EC2" },
             });
 
+            var scanner = new Scanner(this, scope, "scanner");
+
 			/*var task = new EcsTaskDefinition(this, "scanner-task", new EcsTaskDefinitionConfig() {
 				Cpu = "1024",
 				Memory = "512",
 				NetworkMode = "VPC",
 				ExecutionRoleArn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
 			});*/
-
-			var changeBucket = new S3Bucket(this, "raw-changesets-bucket", new S3BucketConfig() {
-				Bucket = "tradie-raw-changesets",
-				ForceDestroy = false,
-				Versioning = new[] {
-					new S3BucketVersioning() {
-						Enabled = false,
-					}
-				},
-			});
-
-			var ssm = new SsmParameter(this, "raw-changesets-ssm", new SsmParameterConfig() {
-				Name = "Config.ChangeSetBucket",
-				Value = changeBucket.Bucket,
-				Type = "String",
-			});
         }
 
         public static void Main(string[] args) {

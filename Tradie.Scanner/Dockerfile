@@ -5,7 +5,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Tradie.Scanner.csproj", "Tradie.Scanner/"]
+COPY ["Tradie.Scanner/Tradie.Scanner.csproj", "Tradie.Scanner/"]
 RUN dotnet restore "Tradie.Scanner/Tradie.Scanner.csproj"
 COPY . .
 WORKDIR "/src/Tradie.Scanner"

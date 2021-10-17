@@ -21,5 +21,7 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/Backup
+**/TestResults
 LICENSE
 README.md
