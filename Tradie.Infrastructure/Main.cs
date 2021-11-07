@@ -17,20 +17,14 @@ namespace Tradie.Infrastructure {
         public MyApp(Construct scope, string id) : base(scope, id) {
 	        HashiCorp.Cdktf.Aspects.Of(this).Add(new EnvironmentPrefixerAspect("tradie-ca-dev"));
 
-	        new S3Backend(this, new S3BackendProps() {
-				Bucket = "tradie-terraform-remote-backend",
-		        Region = "us-east-1",
-		        Key = "cdktf-remote",
-	        });
-
-			new AwsProvider(this, "AWS", new AwsProviderConfig {
+	        new AwsProvider(this, "AWS", new AwsProviderConfig {
 				Region = region,
 				DefaultTags = new AwsProviderDefaultTags() {
 					Tags = tradieTag,
 				}
 			});
 
-            var vpc = new Vpc(this, "tradie", new VpcConfig() {
+            var vpc = new Vpc(this, "vpc", new VpcConfig() {
                 CidrBlock = "10.200.0.0/16",
             });
 
@@ -54,7 +48,12 @@ namespace Tradie.Infrastructure {
 
         public static void Main(string[] args) {
             App app = new App();
-            new MyApp(app, "Tradie.Infrastructure");
+            var stack = new MyApp(app, "tradie-dev");
+            new S3Backend(stack, new S3BackendProps() {
+	            Bucket = "tradie-terraform-remote-backend",
+	            Region = "us-east-1",
+	            Key = "cdktf-remote",
+            });
             app.Synth();
             Console.WriteLine("App synth complete");
         }

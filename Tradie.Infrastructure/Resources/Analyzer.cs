@@ -16,6 +16,18 @@ namespace Tradie.Infrastructure.Resources {
 				Versioning = new S3BucketVersioning() {
 					Enabled = false,
 				},
+				LifecycleRule = new [] {
+					new S3BucketLifecycleRule() {
+						Enabled = true,
+						Expiration = new S3BucketLifecycleRuleExpiration() {
+							Days = 7,
+						},
+						AbortIncompleteMultipartUploadDays = 7,
+						NoncurrentVersionExpiration = new S3BucketLifecycleRuleNoncurrentVersionExpiration() {
+							Days = 7,
+						},
+					},
+				},
 			});
 
 			var ssm = new SsmParameter(stack, "analyzed-changesets-ssm", new SsmParameterConfig() {

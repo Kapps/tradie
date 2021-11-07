@@ -34,7 +34,9 @@ namespace Tradie.Infrastructure.Resources {
 				Name = "scanner-logs",
 				RetentionInDays = 14,
 			});
-		}
+
+			Console.WriteLine("Building Scanner image");
+        }
     }
 }
 
