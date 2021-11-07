@@ -9,7 +9,7 @@ namespace Tradie.Infrastructure.Resources {
 		public readonly S3Bucket analyzedItemBucket;
 		public readonly EcrRepository ecrRepo;
 
-		public Analyzer(TerraformStack stack, Construct scope, string id) {
+		public Analyzer(TerraformStack stack) {
 			this.analyzedItemBucket = new S3Bucket(stack, "analyzed-changesets-bucket", new S3BucketConfig() {
 				Bucket = "analyzed-changesets",
 				ForceDestroy = true,

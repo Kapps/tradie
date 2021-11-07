@@ -5,50 +5,47 @@ using HashiCorp.Cdktf.Providers.Aws;
 using HashiCorp.Cdktf.Providers.Aws.CloudWatch;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
+using HashiCorp.Cdktf.Providers.Docker;
+using System.IO;
 using Tradie.Infrastructure.Aspects;
 using Tradie.Infrastructure.Resources;
 
 namespace Tradie.Infrastructure {
     public class MyApp : TerraformStack {
-        const string region = "ca-central-1";
-        const string tradieTag = "tradie-ca";
-        const string prefix = "tradie-ca";
-
-        public MyApp(Construct scope, string id) : base(scope, id) {
+	    public MyApp(Construct scope, string id, ResourceConfig config) : base(scope, id) {
 	        HashiCorp.Cdktf.Aspects.Of(this).Add(new EnvironmentPrefixerAspect("tradie-ca-dev"));
 
 	        new AwsProvider(this, "AWS", new AwsProviderConfig {
-				Region = region,
+				Region = config.Region,
 				DefaultTags = new AwsProviderDefaultTags() {
-					Tags = tradieTag,
+					Tags = config.Environment,
 				}
 			});
 
-            var vpc = new Vpc(this, "vpc", new VpcConfig() {
-                CidrBlock = "10.200.0.0/16",
-            });
+	        new DockerProvider(this, "docker", new DockerProviderConfig() {
+				
+	        });
+
+	        var permissions = new Permissions(this);
+	        var network = new Tradie.Infrastructure.Resources.Network(this);
 
             var ecs = new EcsCluster(this, "ecs", new EcsClusterConfig() {
                 Name  = $"primary-cluster",
                 //CapacityProviders = new string[] { "FARGATE", "EC2" },
             });
 
-            var scanner = new Scanner(this, scope, id);
-            var analyzer = new Analyzer(this, scope, id);
-
-            /*var task = new EcsTaskDefinition(this, "scanner-task", new EcsTaskDefinitionConfig() {
-	            Cpu = "1024",
-	            Memory = "512",
-	            NetworkMode = "VPC",
-	            ExecutionRoleArn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-            });*/
-
-
-        }
+            var scanner = new Scanner(this, ecs, config, permissions);
+            var analyzer = new Analyzer(this);
+	    }
 
         public static void Main(string[] args) {
             App app = new App();
-            var stack = new MyApp(app, "tradie-dev");
+            var stack = new MyApp(app, "tradie-dev", new ResourceConfig() {
+	            Environment = "tradie-dev-ca",
+	            Region = "ca-central-1",
+	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../"),
+            });
+            
             new S3Backend(stack, new S3BackendProps() {
 	            Bucket = "tradie-terraform-remote-backend",
 	            Region = "us-east-1",

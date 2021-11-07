@@ -9,7 +9,10 @@ namespace Tradie.Infrastructure.Tests {
 		[TestMethod]
 		public void TestSynthesize() {
 			var app = Testing.App();
-			var stack = new MyApp(app, "Tradie.Infrastructure");
+			var stack = new MyApp(app, "Tradie.Infrastructure", new ResourceConfig() {
+				Environment = "test",
+				Region = "ca-central-1",
+			});
 			var res = Testing.FullSynth(stack);
 			Console.WriteLine(res);
 		}
