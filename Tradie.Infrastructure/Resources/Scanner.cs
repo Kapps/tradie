@@ -5,6 +5,7 @@ using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using HashiCorp.Cdktf.Providers.Null;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,11 +51,13 @@ namespace Tradie.Infrastructure.Resources {
 
 			string tag = $"{this.ecrRepo.RepositoryUrl}:{resourceConfig.Version}-{asset.AssetHash}";
 
-			var image = new TerraformElement(stack, $"scanner-image-{tag}");
+			var image = new HashiCorp.Cdktf.Providers.Null.Resource(stack, $"scanner-image-{tag}", new HashiCorp.Cdktf.Providers.Null.ResourceConfig() {
+				DependsOn = new[] { auth },
+			});
 			image.AddOverride("provisioner.local-exec.command",
-				$"docker login -u {auth.UserName} -p ${auth.Password} ${auth.ProxyEndpoint} && "
-				+ $"docker build -f Tradie.Scanner/Dockerfile -t ${tag} ${asset.Path} && " 
-				+ $"docker push ${tag}");
+				$"echo $(pwd) && docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
+				+ $"docker build -f \"{resourceConfig.BaseDirectory}/Tradie.Scanner/Dockerfile\" -t \"{tag}\" \"{asset.Path}\" && " 
+				+ $"docker push \"{tag}\"");
 
 			var logs = new CloudwatchLogGroup(stack, "scanner-log-group", new CloudwatchLogGroupConfig() {
 				Name = "scanner-logs",
@@ -96,15 +99,20 @@ namespace Tradie.Infrastructure.Resources {
 			});
 			
 			new EcsTaskDefinition(stack, "scanner-taskdef", new EcsTaskDefinitionConfig() {
-				Cpu = "1024",
+				Cpu = "256",
 				Memory = "512",
 				NetworkMode = "awsvpc",
-				Family = "service",
+				Family = "scanner",
+				TaskRoleArn = taskRole.Arn,
+				RequiresCompatibilities = new [] { "EC2", "FARGATE" },
+				ExecutionRoleArn = permissions.ExecutionRole.Arn,
+				DependsOn = new[] { image },
 				ContainerDefinitions = JsonSerializer.Serialize(new[] {
 					new {
 						name = "tradie-scanner",
 						tag,
-						cpu = 1024,
+						image = tag,
+						cpu = 256,
 						memory = 512,
 						executionRoleArn = permissions.ExecutionRole.Arn,
 						taskRole = taskRole.Arn,

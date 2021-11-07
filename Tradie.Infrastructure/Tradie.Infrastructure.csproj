@@ -11,6 +11,7 @@
     <PackageReference Include="HashiCorp.Cdktf.Providers.Aws" Version="2.0.13" />
     <PackageReference Include="HashiCorp.Cdktf.Providers.Docker" Version="0.3.94" />
     <PackageReference Include="HashiCorp.Cdktf.Providers.Local" Version="0.0.89" />
+    <PackageReference Include="HashiCorp.Cdktf.Providers.Null" Version="0.2.97" />
   </ItemGroup>
 
   <ItemGroup>

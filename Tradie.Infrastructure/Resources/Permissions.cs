@@ -87,10 +87,10 @@ namespace Tradie.Infrastructure.Resources {
 										"ecr:BatchGetImage",
 										"logs:CreateLogStream",
 										"logs:PutLogEvents",
-									}
+									},
+									Resource = new[] { "*" },
 								}
 							},
-							Resource = new[] { "*" },
 						}),
 					}	
 				},

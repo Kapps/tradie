@@ -6,6 +6,7 @@ using HashiCorp.Cdktf.Providers.Aws.CloudWatch;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
 using HashiCorp.Cdktf.Providers.Docker;
+using HashiCorp.Cdktf.Providers.Null;
 using System.IO;
 using Tradie.Infrastructure.Aspects;
 using Tradie.Infrastructure.Resources;
@@ -22,6 +23,8 @@ namespace Tradie.Infrastructure {
 				}
 			});
 
+	        new NullProvider(this, id);
+
 	        new DockerProvider(this, "docker", new DockerProviderConfig() {
 				
 	        });
@@ -31,7 +34,7 @@ namespace Tradie.Infrastructure {
 
             var ecs = new EcsCluster(this, "ecs", new EcsClusterConfig() {
                 Name  = $"primary-cluster",
-                //CapacityProviders = new string[] { "FARGATE", "EC2" },
+                CapacityProviders = new string[] { "FARGATE" },
             });
 
             var scanner = new Scanner(this, ecs, config, permissions);
@@ -44,6 +47,7 @@ namespace Tradie.Infrastructure {
 	            Environment = "tradie-dev-ca",
 	            Region = "ca-central-1",
 	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../src/"),
+	            Version = "0.1.0",
             });
             
             new S3Backend(stack, new S3BackendProps() {

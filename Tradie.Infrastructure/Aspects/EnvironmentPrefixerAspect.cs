@@ -19,6 +19,7 @@ namespace Tradie.Infrastructure.Aspects {
 			bool updated = false;
 			updated |= TryPrefix(node, "Name");
 			updated |= TryPrefix(node, "Bucket");
+			updated |= TryPrefix(node, "Family");
 
 			if(!updated) {
 				Console.WriteLine($"No prefix rewrites were performed on {node}.");
