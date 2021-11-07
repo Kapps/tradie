@@ -17,5 +17,9 @@
 
   <ItemGroup>
     <None Remove="RestSharp" />
+    <None Remove="RawModels\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RawModels\" />
   </ItemGroup>
 </Project>

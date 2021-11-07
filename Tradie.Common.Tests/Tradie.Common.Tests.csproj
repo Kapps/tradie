@@ -21,4 +21,22 @@
     <ProjectReference Include="..\Tradie.Common\Tradie.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="RawModel\" />
+    <None Remove="RawModel\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="RawModel\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="RawModel\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="RawModels\json\amulet.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RawModels\json\boots.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ namespace Tradie.Common {
 		public byte[] Compress(byte[] source) {
 			using var src = new MemoryStream(source);
 			using var dest = new MemoryStream();
-			using var compressor = new BrotliStream(dest, (CompressionLevel)8);
+			using var compressor = new BrotliStream(dest, (CompressionLevel)7);
 			src.CopyTo(compressor);
 			compressor.Flush();
 			return dest.ToArray();

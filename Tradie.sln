@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Infrastructure", "Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Analyzer", "Tradie.Analyzer\Tradie.Analyzer.csproj", "{80C320B8-19F9-481E-A83E-F1C69BCAE10F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Anyalzer.Tests", "Tradie.Anyalzer.Tests\Tradie.Anyalzer.Tests.csproj", "{E2F3D5E7-234E-43F4-B4DE-22D6AEC0CA3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Analyzer.Tests", "Tradie.Anyalzer.Tests\Tradie.Analyzer.Tests.csproj", "{E2F3D5E7-234E-43F4-B4DE-22D6AEC0CA3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Infrastructure.Tests", "Tradie.Infrastructure.Tests\Tradie.Infrastructure.Tests.csproj", "{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,14 @@ Global
 		{E2F3D5E7-234E-43F4-B4DE-22D6AEC0CA3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E2F3D5E7-234E-43F4-B4DE-22D6AEC0CA3B}.Release|x64.ActiveCfg = Release|Any CPU
 		{E2F3D5E7-234E-43F4-B4DE-22D6AEC0CA3B}.Release|x64.Build.0 = Release|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC161E70-6EB7-49D7-B545-BC2D8B2B89AB}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

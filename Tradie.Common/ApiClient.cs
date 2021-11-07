@@ -26,6 +26,7 @@ namespace Tradie.Common {
 				BaseAddress = new Uri("https://www.pathofexile.com/api/"),
 				Timeout = TimeSpan.FromSeconds(config.HttpTimeout),
 			};
+			_httpClient.DefaultRequestHeaders.Add("User-Agent", "tradie/0.1.0 (contact: tradie@ogi.bio) StrictMode");
 			_timeLimiter = TimeLimiter.GetFromMaxCountByInterval(2, TimeSpan.FromSeconds(1));
 		}
 
@@ -41,7 +42,7 @@ namespace Tradie.Common {
 			}
 
 			var req = new HttpRequestMessage(HttpMethod.Get, urlBuilder.ToString()) {
-				Content = new FormUrlEncodedContent(form.Select((pair) => new KeyValuePair<string, string>(pair.key, pair.val)))
+				Content = new FormUrlEncodedContent(form.Select((pair) => new KeyValuePair<string, string>(pair.key, pair.val))),
 			};
 
 			return await _timeLimiter.Enqueue(async () => {

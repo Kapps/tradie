@@ -3,7 +3,7 @@ namespace Tradie.Scanner {
 	/// <summary>
 	/// Provides meta information about a changeset, such as the one following it.
 	/// </summary>
-	public struct ChangeSetDetails {
+	public readonly struct ChangeSetDetails {
 		public readonly string NextChangeSetId;
 
 		/// <summary>

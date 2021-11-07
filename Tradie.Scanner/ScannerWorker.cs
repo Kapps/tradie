@@ -47,6 +47,9 @@ namespace Tradie.Scanner {
 
 		protected async Task<ChangeSetDetails> DispatchNextChangeSet(string changeId) {
 			var changeContents = await _apiClient.Get("public-stash-tabs", ("id", changeId));
+			if(changeContents.Contains("Kapps")) {
+				_logger.LogWarning("--------------------Got mine!-----------------");
+			}
 
 			using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(changeContents));
 			var header = await _parser.ReadHeader(inputStream);
@@ -54,7 +57,11 @@ namespace Tradie.Scanner {
 			using var contentStream = new MemoryStream();
 			await _parser.ReadChanges(inputStream, contentStream);
 
-			await _changeSetStore.WriteChangeSet(changeId, contentStream.ToArray());
+			if(contentStream.Length > 0) {
+				// Can get empty changesets if a new one isn't ready yet.
+				await _changeSetStore.WriteChangeSet(changeId, contentStream.ToArray());
+			}
+
 			return header;
 		}
 
