@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-Tradie.Analyzer-1EF28C49-CB5F-484E-A844-1CC435498F5A</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-rc.2.21480.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Analyzers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Analyzers\" />
+  </ItemGroup>
+</Project>

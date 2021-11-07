@@ -1,0 +1,49 @@
+{
+    "verified": false,
+    "w": 1,
+    "h": 1,
+    "icon": "https:\/\/web.poecdn.com\/gen\/image\/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9UdXJxdW9pc2VBbXVsZXQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d\/605b4da0e1\/TurquoiseAmulet.png",
+    "league": "Scourge",
+    "id": "e6dc58aa1b0f28a8dde845c77175b599ad4fc44f35fa04c16569fb776f66ca5e",
+    "influences": {
+        "hunter": true
+    },
+    "name": "Rift Idol",
+    "typeLine": "Turquoise Amulet",
+    "baseType": "Turquoise Amulet",
+    "identified": true,
+    "ilvl": 82,
+    "requirements": [
+        {
+            "name": "Level",
+            "values": [
+                [
+                    "54",
+                    0
+                ]
+            ],
+            "displayMode": 0
+        }
+    ],
+    "implicitMods": [
+        "+17 to Dexterity and Intelligence"
+    ],
+    "explicitMods": [
+        "+11 to all Attributes",
+        "+12% to Chaos Damage over Time Multiplier",
+        "Adds 12 to 24 Fire Damage to Attacks",
+        "Items and Gems have 9% reduced Attribute Requirements"
+    ],
+    "frameType": 2,
+    "extended": {
+        "category": "accessories",
+        "subcategories": [
+            "amulet"
+        ],
+        "prefixes": 1,
+        "suffixes": 3
+    },
+    "x": 6,
+    "y": 0,
+    "inventoryId": "Stash18"
+}

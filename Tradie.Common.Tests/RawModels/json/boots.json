@@ -1,0 +1,108 @@
+{
+  "verified": false,
+  "w": 2,
+  "h": 2,
+  "icon": "https:\/\/web.poecdn.com\/gen\/image\/WzI1LDE0LHsiZiI6IjJESXRlbXMvQXJtb3Vycy9Cb290cy9Cb290c1N0ckludDEiLCJ3IjoyLCJoIjoyLCJzY2FsZSI6MX1d\/0519faf993\/BootsStrInt1.png",
+  "league": "Scourge",
+  "id": "8539e17c6080305f4c9996a0b47f40ad7d18780d008d21667895adbbfea09580",
+  "sockets": [
+    {
+      "group": 0,
+      "attr": "S",
+      "sColour": "R"
+    },
+    {
+      "group": 0,
+      "attr": "S",
+      "sColour": "R"
+    },
+    {
+      "group": 1,
+      "attr": "I",
+      "sColour": "B"
+    }
+  ],
+  "name": "Skull Span",
+  "typeLine": "Riveted Boots",
+  "baseType": "Riveted Boots",
+  "identified": true,
+  "ilvl": 85,
+  "properties": [
+    {
+      "name": "Armour",
+      "values": [
+        [
+          "94",
+          1
+        ]
+      ],
+      "displayMode": 0,
+      "type": 16
+    },
+    {
+      "name": "Energy Shield",
+      "values": [
+        [
+          "20",
+          1
+        ]
+      ],
+      "displayMode": 0,
+      "type": 18
+    }
+  ],
+  "requirements": [
+    {
+      "name": "Level",
+      "values": [
+        [
+          "63",
+          0
+        ]
+      ],
+      "displayMode": 0
+    },
+    {
+      "name": "Str",
+      "values": [
+        [
+          "35",
+          0
+        ]
+      ],
+      "displayMode": 1
+    },
+    {
+      "name": "Int",
+      "values": [
+        [
+          "35",
+          0
+        ]
+      ],
+      "displayMode": 1
+    }
+  ],
+  "enchantMods": [
+    "90% increased Critical Strike Chance if you haven't Crit Recently"
+  ],
+  "explicitMods": [
+    "+32 to Strength",
+    "33% increased Armour and Energy Shield",
+    "+13 to maximum Life",
+    "41% increased Stun and Block Recovery"
+  ],
+  "frameType": 2,
+  "extended": {
+    "category": "armour",
+    "subcategories": [
+      "boots"
+    ],
+    "prefixes": 2,
+    "suffixes": 2
+  },
+  "x": 0,
+  "y": 0,
+  "inventoryId": "Stash33",
+  "socketedItems": []
+}
