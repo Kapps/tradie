@@ -25,7 +25,7 @@ namespace Tradie.Infrastructure {
 	        new DockerProvider(this, "docker", new DockerProviderConfig() {
 				
 	        });
-
+	        
 	        var permissions = new Permissions(this);
 	        var network = new Tradie.Infrastructure.Resources.Network(this);
 
@@ -43,7 +43,7 @@ namespace Tradie.Infrastructure {
             var stack = new MyApp(app, "tradie-dev", new ResourceConfig() {
 	            Environment = "tradie-dev-ca",
 	            Region = "ca-central-1",
-	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../"),
+	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../src/"),
             });
             
             new S3Backend(stack, new S3BackendProps() {

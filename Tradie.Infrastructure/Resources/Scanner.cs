@@ -69,21 +69,26 @@ namespace Tradie.Infrastructure.Resources {
 					new IamRoleInlinePolicy() {
 						Name = "allow-s3-readwrite",
 						Policy = JsonSerializer.Serialize(new {
-							Effect = "Allow",
-							Actions = new[] {
-								"AbortMultipartUpload",
-								"CompleteMultipartUpload",
-								"CreateMultipartUpload",
-								"GetObject",
-								"HeadObject",
-								"ListBuckets",
-								"ListObjects",
-								"ListMultipartUploads",
-								"UploadPart",
+							Version = Permissions.PolicyVersion,
+							Statement = new[] {
+								new {
+									Effect = "Allow",
+									Action = new[] {
+										"s3:AbortMultipartUpload",
+										"s3:CompleteMultipartUpload",
+										"s3:CreateMultipartUpload",
+										"s3:GetObject",
+										"s3:HeadObject",
+										"s3:ListBuckets",
+										"s3:ListObjects",
+										"s3:ListMultipartUploads",
+										"s3:UploadPart",
+									},
+									Resource = new[] {
+										this.changeBucket.Arn,
+									}
+								}
 							},
-							Resource = new[] {
-								this.changeBucket.Arn,
-							}
 						})
 					}
 				},

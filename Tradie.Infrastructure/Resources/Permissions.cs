@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Tradie.Infrastructure.Resources {
 	public class Permissions {
-		private const string PolicyVersion = "2012-10-17";
+		public const string PolicyVersion = "2012-10-17";
 		
 		/// <summary>
 		/// An IAM role for an arbitrary task that needs to pull a Docker image and run.
@@ -89,7 +89,8 @@ namespace Tradie.Infrastructure.Resources {
 										"logs:PutLogEvents",
 									}
 								}
-							}
+							},
+							Resource = new[] { "*" },
 						}),
 					}	
 				},

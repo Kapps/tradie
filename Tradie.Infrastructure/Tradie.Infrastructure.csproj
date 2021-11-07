@@ -17,8 +17,15 @@
     <None Remove="HashiCorp.Cdktf.Providers.Aws" />
     <None Remove="HashiCorp.Cdktf.Providers.Local" />
     <None Remove="Resources\" />
+    <None Remove="cdktf.out\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="cdktf.out\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="cdktf.out\**" />
   </ItemGroup>
 </Project>
