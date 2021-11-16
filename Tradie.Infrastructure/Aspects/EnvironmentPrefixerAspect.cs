@@ -17,10 +17,11 @@ namespace Tradie.Infrastructure.Aspects {
 
 		public void Visit(IConstruct node) {
 			bool updated = false;
-			updated |= TryPrefix(node, "Name");
-			updated |= TryPrefix(node, "Bucket");
-			updated |= TryPrefix(node, "Family");
-
+			var prefixedProps = new[] {"Name", "Bucket", "Family", "Identifier", "ClusterIdentifier"};
+			foreach(var prop in prefixedProps) {
+				updated |= TryPrefix(node, prop);
+			}
+			
 			if(!updated) {
 				Console.WriteLine($"No prefix rewrites were performed on {node}.");
 			}

@@ -1,28 +1,45 @@
 ﻿using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using System.Reflection;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
 namespace Tradie.Common {
 	/// <summary>
 	/// Basic config details that typically do not change frequently.
 	/// </summary>
-	public class TradieConfig {
+	public static class TradieConfig {
+		/// <summary>
+		/// Initializes the TradieConfig with only default values assigned.
+		/// No remote values will be loaded, however [DefaultValue] properties shall be assigned the default.
+		/// </summary>
+		public static void InitializeWithDefaults(string environment) {
+			Console.WriteLine($"Initializing config with defaults for environment {environment}.");
+			TradieConfig.Environment = environment;
+			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static);
+			foreach (var prop in props) {
+				var defaultAttr = prop.GetCustomAttribute<DefaultValueAttribute>();
+				if(defaultAttr == null)
+					continue;
+				
+				prop.SetValue(null, defaultAttr.Value, null);
+			}
+		}
 		/// <summary>
 		/// Returns a TradieConfig with all properties loaded from SSM.
 		/// If a property is not marked [DefaultValue], an error will be thrown if it is not present in SSM.
 		/// </summary>
-		public static async Task<TradieConfig> LoadFromSSM(IAmazonSimpleSystemsManagement ssmClient) {
-			var res = new TradieConfig();
+		public static async Task InitializeFromSsm(string environment, IAmazonSimpleSystemsManagement ssmClient) {
+			Console.WriteLine($"Initializing config from SSM for environment {environment}.");
 			HashSet<PropertyInfo> matchedProperties = new HashSet<PropertyInfo>();
 
-			var props = res.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static);
 			var chunks = props.Chunk(10);
+			
+			// TODO: Should actually be the opposite where we load all params and then set the right ones.
 
 			foreach(var chunk in chunks) {
 				var req = new GetParametersRequest() {
-					Names = chunk.Select(c => $"Config.{c.Name}").ToList(),
+					Names = chunk.Select(c => $"${environment}-Config.{c.Name}").ToList(),
 					WithDecryption = true,
 				};
 
@@ -32,7 +49,7 @@ namespace Tradie.Common {
 					string propName = param.Name.Substring(param.Name.IndexOf(".") + 1);
 					var prop = props.Single(c => c.Name == propName);
 					object val = Convert.ChangeType(param.Value, prop.PropertyType);
-					prop.SetValue(res, val);
+					prop.SetValue(null, val);
 					matchedProperties.Add(prop);
 				}
 			}
@@ -42,11 +59,8 @@ namespace Tradie.Common {
 					?? throw new ArgumentNullException(missingProp.Name);
 				
 				object? convertedDefault = Convert.ChangeType(defaultAttr.Value, missingProp.PropertyType);
-				missingProp.SetValue(res, convertedDefault);
+				missingProp.SetValue(null, convertedDefault);
 			}
-
-			return res;
-			
 		}
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -55,25 +69,50 @@ namespace Tradie.Common {
 		/// The user agent to include for all PoE API calls.
 		/// </summary>
 		[DefaultValue("User-Agent: OAuth tradie/1.0.0 (contact: tradie@ogi.bio) StrictMode")]
-		public string UserAgent { get; set; }
+		public static string? UserAgent { get; set; }
 
 		/// <summary>
 		/// Timeout of any HTTP calls, in seconds.
 		/// </summary>
 		[DefaultValue(30)]
-		public int HttpTimeout { get; set; }
+		public static int HttpTimeout { get; set; }
 
 		/// <summary>
 		/// The S3 bucket to store raw changesets in.
 		/// </summary>
-		public string ChangeSetBucket { get; set; }
+		public static string? ChangeSetBucket { get; set; }
 
 		/// <summary>
 		/// Prefix, including trailing slash, for the folder to write raw changesets to.
 		/// </summary>
 		[DefaultValue("raw/")]
-		public string RawChangeSetPrefix { get; set; }
+		public static string? RawChangeSetPrefix { get; set; }
+
+		/// <summary>
+		/// Whether to enable detailed EF Core error messages.
+		/// </summary>
+		[DefaultValue(true)]
+		public static bool DetailedSqlErrors { get; set; }
+
+		// TODO: Add support for nested SSM params.
+		/// <summary>
+		/// Host for the analysis database.
+		/// </summary>
+		public static string? DbHost { get; set; }
+		/// <summary>
+		/// Username for the analysis database.
+		/// </summary>
+		public static string? DbUser { get; set; }
+		/// <summary>
+		/// Password for the analysis database.
+		/// </summary>
+		public static string? DbPass { get; set; }
+
+		/// <summary>
+		/// Returns the environment that we're running under, such as "test" or "tradie-prod-ca".
+		/// </summary>
+		public static string Environment { get; private set; }
+	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	}
 }

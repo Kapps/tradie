@@ -42,8 +42,10 @@ namespace Tradie.Infrastructure.Resources {
 
 			var auth = new DataAwsEcrAuthorizationToken(stack, "scanner-auth", new DataAwsEcrAuthorizationTokenConfig() {
 				DependsOn = new [] {this.ecrRepo},
-				RegistryId = this.ecrRepo.RegistryId
+				RegistryId = this.ecrRepo.RegistryId,
 			});
+			
+			
 
 			var asset = new TerraformAsset(stack, "scanner-project", new TerraformAssetConfig() {
 				Path = Path.Combine(resourceConfig.BaseDirectory, "./"),
@@ -55,7 +57,7 @@ namespace Tradie.Infrastructure.Resources {
 				DependsOn = new[] { auth },
 			});
 			image.AddOverride("provisioner.local-exec.command",
-				$"echo $(pwd) && docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
+				$"docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
 				+ $"docker build -f \"{resourceConfig.BaseDirectory}/Tradie.Scanner/Dockerfile\" -t \"{tag}\" \"{asset.Path}\" && " 
 				+ $"docker push \"{tag}\"");
 
@@ -124,7 +126,7 @@ namespace Tradie.Infrastructure.Resources {
 						},
 						logConfiguration = new {
 							logDriver = "awslogs",
-							options = new Dictionary<string, string>() { // Invalid identifiers used.
+							options = new Dictionary<string, string>() { // Invalid identifiers used, so use a Dictionary.
 								{ "awslogs-group", logs.Name },
 								{ "awslogs-region", resourceConfig.Region },
 								{ "awslogs-stream-prefix", "tradie-scanner" }, 

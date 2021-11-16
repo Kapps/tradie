@@ -9,9 +9,12 @@ using Tradie.Common;
 using Tradie.Scanner;
 using System.Threading.Tasks;
 
+var environment = Environment.GetEnvironmentVariable("TRADIE_ENV") ??
+          throw new ArgumentException("TRADIE_ENV environment variable not set.");
 var ssmClient = new AmazonSimpleSystemsManagementClient();
 var s3Client = new AmazonS3Client();
-var config = await TradieConfig.LoadFromSSM(ssmClient);
+
+await TradieConfig.InitializeFromSsm(environment, ssmClient);
 
 IHost host = Host.CreateDefaultBuilder(args)
 	.ConfigureServices(services => {
@@ -30,7 +33,6 @@ IHost host = Host.CreateDefaultBuilder(args)
 			.AddSingleton<IApiClient, ApiClient>()
 			.AddSingleton<IChangeSetParser, ChangeSetParser>()
 			.AddSingleton<IChangeSetStore, S3ChangeSetStore>()
-			.AddSingleton<TradieConfig>(config)
 			.AddSingleton<ICompressor, BrotliCompressor>();
 	})
 	.Build();

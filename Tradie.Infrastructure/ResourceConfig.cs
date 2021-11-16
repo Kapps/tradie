@@ -16,5 +16,9 @@
 		/// The compile-time base directory for the solution file.
 		/// </summary>
 		public string BaseDirectory { get; set; }
+		/// <summary>
+		/// Password for the admin account for the database.
+		/// </summary>
+		public string DbPassword { get; set; }
 	}
 }

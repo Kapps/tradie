@@ -20,11 +20,10 @@ namespace Tradie.Common {
 	}
 
 	public class ApiClient : IApiClient {
-		public ApiClient(TradieConfig config) {
-			_config = config;
+		public ApiClient() {
 			_httpClient = new HttpClient() {
 				BaseAddress = new Uri("https://www.pathofexile.com/api/"),
-				Timeout = TimeSpan.FromSeconds(config.HttpTimeout),
+				Timeout = TimeSpan.FromSeconds(TradieConfig.HttpTimeout),
 			};
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "tradie/0.1.0 (contact: tradie@ogi.bio) StrictMode");
 			_timeLimiter = TimeLimiter.GetFromMaxCountByInterval(2, TimeSpan.FromSeconds(1));
@@ -55,8 +54,7 @@ namespace Tradie.Common {
 			});
 		}
 
-		private TradieConfig _config;
-		private HttpClient _httpClient;
-		private TimeLimiter _timeLimiter;
+		private readonly HttpClient _httpClient;
+		private readonly TimeLimiter _timeLimiter;
 	}
 }

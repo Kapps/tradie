@@ -24,10 +24,9 @@ namespace Tradie.Scanner {
 	/// Implementation of IChangeSetStore that writes changesets to a predefined S3 bucket.
 	/// </summary>
 	public class S3ChangeSetStore : IChangeSetStore {
-		public S3ChangeSetStore(ILogger<S3ChangeSetStore> logger, IAmazonS3 s3Client, TradieConfig config, ICompressor compressor) {
+		public S3ChangeSetStore(ILogger<S3ChangeSetStore> logger, IAmazonS3 s3Client, ICompressor compressor) {
 			_s3Client = s3Client;
 			_logger = logger;
-			_config = config;
 			_compressor = compressor;
 		}
 
@@ -37,8 +36,8 @@ namespace Tradie.Scanner {
 				DisableMD5Stream = true,
 				DisablePayloadSigning = true,
 				ContentType = "application/json",
-				BucketName = _config.ChangeSetBucket,
-				Key = $"{_config.RawChangeSetPrefix}{changeSetId}.json.br",
+				BucketName = TradieConfig.ChangeSetBucket,
+				Key = $"{TradieConfig.RawChangeSetPrefix}{changeSetId}.json.br",
 			};
 
 			// S3 requires content length to be known, and we have to write to an intermediate memory stream anyways.
@@ -48,7 +47,7 @@ namespace Tradie.Scanner {
 			var compressed = _compressor.Compress(changeSetContents);
 			var compressMS = sw.ElapsedMilliseconds;
 
-			using var ms = new MemoryStream(compressed);
+			await using var ms = new MemoryStream(compressed);
 			
 			req.InputStream = ms;
 			req.Headers.ContentLength = ms.Length;
@@ -64,7 +63,6 @@ namespace Tradie.Scanner {
 
 		private IAmazonS3 _s3Client;
 		private ILogger<S3ChangeSetStore> _logger;
-		private TradieConfig _config;
 		private ICompressor _compressor;
 	}
 } 

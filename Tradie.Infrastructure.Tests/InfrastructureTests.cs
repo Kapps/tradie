@@ -1,6 +1,7 @@
 using HashiCorp.Cdktf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 using Tradie.Infrastructure;
 
 namespace Tradie.Infrastructure.Tests {
@@ -12,6 +13,9 @@ namespace Tradie.Infrastructure.Tests {
 			var stack = new MyApp(app, "Tradie.Infrastructure", new ResourceConfig() {
 				Environment = "test",
 				Region = "ca-central-1",
+				Version = "0.1.0",
+				BaseDirectory = Path.GetFullPath("../"),
+				DbPassword = "not used",
 			});
 			var res = Testing.FullSynth(stack);
 			Console.WriteLine(res);
