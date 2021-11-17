@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Infrastructure", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Infrastructure.Tests", "..\Tradie.Infrastructure.Tests\Tradie.Infrastructure.Tests.csproj", "{6D8F8241-F325-43A1-A99F-BA25919262A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Migrations", "Tradie.Migrations\Tradie.Migrations.csproj", "{EBD0A403-CF92-4B3A-816F-989298CE4617}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,14 @@ Global
 		{6D8F8241-F325-43A1-A99F-BA25919262A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D8F8241-F325-43A1-A99F-BA25919262A4}.Release|x64.ActiveCfg = Release|Any CPU
 		{6D8F8241-F325-43A1-A99F-BA25919262A4}.Release|x64.Build.0 = Release|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Debug|x64.Build.0 = Debug|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Release|x64.ActiveCfg = Release|Any CPU
+		{EBD0A403-CF92-4B3A-816F-989298CE4617}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

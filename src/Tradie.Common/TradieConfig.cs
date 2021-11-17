@@ -9,12 +9,28 @@ namespace Tradie.Common {
 	/// </summary>
 	public static class TradieConfig {
 		/// <summary>
+		/// Initializes the config either from SSM or from defaults, depending on the environment set.
+		/// </summary>
+		public static async Task InitializeFromEnvironment(IAmazonSimpleSystemsManagement ssmClient)  {
+			string environment = System.Environment.GetEnvironmentVariable("TRADIE_ENV")
+			                     ?? throw new ArgumentNullException("TRADIE_ENV");
+			
+			if(environment == "test") {
+				InitializeWithDefaults(environment);
+				DbHost = System.Environment.GetEnvironmentVariable("TRADIE_DB_HOST") ?? "127.0.0.1";
+				DbUser = System.Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? "tradieadmin";
+				DbPass = System.Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? "tradie";
+			} else {
+				await InitializeFromSsm(environment, ssmClient);
+			}
+		}
+		/// <summary>
 		/// Initializes the TradieConfig with only default values assigned.
 		/// No remote values will be loaded, however [DefaultValue] properties shall be assigned the default.
 		/// </summary>
 		public static void InitializeWithDefaults(string environment) {
 			Console.WriteLine($"Initializing config with defaults for environment {environment}.");
-			TradieConfig.Environment = environment;
+			Environment = environment;
 			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static);
 			foreach (var prop in props) {
 				var defaultAttr = prop.GetCustomAttribute<DefaultValueAttribute>();
@@ -30,8 +46,8 @@ namespace Tradie.Common {
 		/// </summary>
 		public static async Task InitializeFromSsm(string environment, IAmazonSimpleSystemsManagement ssmClient) {
 			Console.WriteLine($"Initializing config from SSM for environment {environment}.");
-			HashSet<PropertyInfo> matchedProperties = new HashSet<PropertyInfo>();
-
+			var matchedProperties = new HashSet<PropertyInfo>();
+			
 			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static);
 			var chunks = props.Chunk(10);
 			
@@ -39,7 +55,7 @@ namespace Tradie.Common {
 
 			foreach(var chunk in chunks) {
 				var req = new GetParametersRequest() {
-					Names = chunk.Select(c => $"${environment}-Config.{c.Name}").ToList(),
+					Names = chunk.Select(c => $"tradie-{environment}-Config.{c.Name}").ToList(),
 					WithDecryption = true,
 				};
 

@@ -59,6 +59,30 @@ namespace Tradie.Analyzer.Migrations
                             b1.Property<int>("ItemTypeId")
                                 .HasColumnType("integer");
 
+                            b1.Property<int>("Dex")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasDefaultValue(0)
+                                .HasColumnName("DexRequirement");
+
+                            b1.Property<int>("Int")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasDefaultValue(0)
+                                .HasColumnName("IntRequirement");
+
+                            b1.Property<int>("Level")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasDefaultValue(0)
+                                .HasColumnName("LevelRequirement");
+
+                            b1.Property<int>("Str")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasDefaultValue(0)
+                                .HasColumnName("StrRequirement");
+
                             b1.HasKey("ItemTypeId");
 
                             b1.ToTable("ItemTypes");
@@ -67,7 +91,8 @@ namespace Tradie.Analyzer.Migrations
                                 .HasForeignKey("ItemTypeId");
                         });
 
-                    b.Navigation("Requirements");
+                    b.Navigation("Requirements")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

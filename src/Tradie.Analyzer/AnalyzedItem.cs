@@ -10,4 +10,11 @@ public struct AnalyzedItem {
 	/// The raw item being analyzed.
 	/// </summary>
 	public readonly Item RawItem;
+
+	/// <summary>
+	/// Creates a new AnalyzedItem from the given raw item.
+	/// </summary>
+	public AnalyzedItem(Item rawItem) {
+		this.RawItem = rawItem;
+	}
 }

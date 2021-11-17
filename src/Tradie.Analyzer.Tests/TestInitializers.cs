@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
@@ -15,12 +16,10 @@ namespace Tradie.Analyzer.Tests;
 public class TestInitializers {
 	[AssemblyInitialize]
 	public static async Task InitializeAssemblySetup(TestContext context) {
-		TradieConfig.InitializeWithDefaults("test");
-		TradieConfig.DbHost = "localhost";
-		TradieConfig.DbUser = "tradie";
-		TradieConfig.DbPass = "tradie";
+		Environment.SetEnvironmentVariable("TRADIE_ENV", "test");
+		await TradieConfig.InitializeFromEnvironment(null!);
 
-		using var dbContext = new AnalysisContext();
+		await using var dbContext = new AnalysisContext();
 		await dbContext.Database.MigrateAsync();
 	}
 }

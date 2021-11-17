@@ -1,4 +1,6 @@
-﻿namespace Tradie.Infrastructure {
+﻿using System.Net;
+
+namespace Tradie.Infrastructure {
 	public class ResourceConfig {
 		/// <summary>
 		/// Environment is the environment prefix for this deploy, such as tradie-ca.
@@ -17,8 +19,8 @@
 		/// </summary>
 		public string BaseDirectory { get; set; }
 		/// <summary>
-		/// Password for the admin account for the database.
+		/// IP Address of the machine running this executable.
 		/// </summary>
-		public string DbPassword { get; set; }
+		public IPAddress LocalIpAddress { get; set; }
 	}
 }

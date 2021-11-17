@@ -65,6 +65,45 @@ namespace Tradie.Infrastructure.Resources {
 				SecurityGroups = Array.Empty<string>(),
 				SelfAttribute = false,
 			};
+
+			var egressGateway = new EgressOnlyInternetGateway(stack, "egress-gateway", new EgressOnlyInternetGatewayConfig() {
+				VpcId = this.Vpc.Id,
+			});
+
+			var inetGateway = new InternetGateway(stack, "internet-gateway", new InternetGatewayConfig() {
+				VpcId = this.Vpc.Id,
+			});
+
+			var routeTable = new RouteTable(stack, "route-table", new RouteTableConfig() {
+				VpcId = this.Vpc.Id,
+				Route = new[] {
+					new RouteTableRoute() {
+						CidrBlock = "10.200.1.0/24",
+						GatewayId = inetGateway.Id,
+						EgressOnlyGatewayId = "", InstanceId = "", CarrierGatewayId = "",
+						LocalGatewayId = "", NatGatewayId = "", NetworkInterfaceId = "",
+						TransitGatewayId = "", VpcEndpointId = "", VpcPeeringConnectionId = "",
+						DestinationPrefixListId = "", Ipv6CidrBlock = "",
+					},
+					new RouteTableRoute() {
+						CidrBlock = "10.200.2.0/24",
+						GatewayId = inetGateway.Id,
+						EgressOnlyGatewayId = "", InstanceId = "", CarrierGatewayId = "",
+						LocalGatewayId = "", NatGatewayId = "", NetworkInterfaceId = "",
+						TransitGatewayId = "", VpcEndpointId = "", VpcPeeringConnectionId = "",
+						DestinationPrefixListId = "", Ipv6CidrBlock = "",
+					},
+					new RouteTableRoute() {
+						Ipv6CidrBlock = "::/0",
+						CidrBlock = "",
+						EgressOnlyGatewayId = egressGateway.Id,
+						GatewayId = "", InstanceId = "", CarrierGatewayId = "",
+						LocalGatewayId = "", NatGatewayId = "", NetworkInterfaceId = "",
+						TransitGatewayId = "", VpcEndpointId = "", VpcPeeringConnectionId = "",
+						DestinationPrefixListId = ""
+					},
+				},
+			});
 		}
 	}
 }

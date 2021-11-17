@@ -1,0 +1,30 @@
+{
+  "verified": false,
+  "w": 1,
+  "h": 1,
+  "icon": "https:\/\/web.poecdn.com\/gen\/image\/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL2Jhc2ljaW50IiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ\/510013aec2\/basicint.png",
+  "league": "Scourge",
+  "id": "c6e23a8ae7a993ca9edb30ec9dc6d3687ea52f8a55ff612e44aef04d82302f61",
+  "name": "Cataclysm Gnarl",
+  "typeLine": "Cobalt Jewel",
+  "baseType": "Cobalt Jewel",
+  "identified": true,
+  "ilvl": 72,
+  "note": "~b\/o 8 chaos",
+  "explicitMods": [
+    "+9 to Dexterity and Intelligence",
+    "16% increased Trap Damage",
+    "16% increased Spell Damage while wielding a Staff",
+    "+14% to Cold Resistance"
+  ],
+  "descrText": "Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to remove from the Socket.",
+  "frameType": 2,
+  "extended": {
+    "category": "jewels",
+    "prefixes": 2,
+    "suffixes": 2
+  },
+  "x": 2,
+  "y": 6,
+  "inventoryId": "Stash2"
+}

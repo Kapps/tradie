@@ -19,10 +19,10 @@ public interface IItemTypeRepository {
 	/// </summary>
 	Task<ItemType[]> LoadByNames(params string[] names);
 	/// <summary>
-	/// Inserts or updates all of the base types with the new properties.
-	/// Returns the database inserted rows.
+	/// Inserts all of the base types with given properties.
+	/// If a type already exists, an exception is thrown.
 	/// </summary>
-	Task Upsert(IEnumerable<ItemType> baseTypes);
+	Task Insert(IEnumerable<ItemType> baseTypes);
 }
 
 public class ItemTypeRepository : IItemTypeRepository {
@@ -38,12 +38,10 @@ public class ItemTypeRepository : IItemTypeRepository {
 		return this._context.ItemTypes.Where(c => names.Contains(c.Name)).ToArrayAsync();
 	}
 
-	public Task Upsert(IEnumerable<ItemType> baseTypes) {
-		return this._context.ItemTypes.UpsertRange(baseTypes)
-			.On(c => c.Name)
-			.NoUpdate() // Nothing to update for base types.
-			.RunAsync();
+	public Task Insert(IEnumerable<ItemType> baseTypes) {
+		this._context.ItemTypes.AddRange(baseTypes);
+		return this._context.SaveChangesAsync();
 	}
 
-	private AnalysisContext _context;
+	private readonly AnalysisContext _context;
 }

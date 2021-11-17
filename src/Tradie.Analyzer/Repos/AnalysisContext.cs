@@ -15,7 +15,8 @@ public class AnalysisContext : DbContext {
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
-
+		optionsBuilder.LogTo(Console.WriteLine);
+		
 		optionsBuilder.UseNpgsql(new NpgsqlConnectionStringBuilder() {
 			Database = "tradie",
 			Timezone = "UTC",
@@ -36,7 +37,12 @@ public class AnalysisContext : DbContext {
 		modelBuilder.Entity<ItemType>()
 			.Property(c => c.Id).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Throw);
 		modelBuilder.Entity<ItemType>()
-			.OwnsOne<Requirements>(c => c.Requirements);
+			.OwnsOne(c => c.Requirements, b => {
+				b.Property(c=>c.Dex).HasColumnName("DexRequirement").HasDefaultValue(0).IsRequired();
+				b.Property(c => c.Int).HasColumnName("IntRequirement").HasDefaultValue(0).IsRequired();
+				b.Property(c => c.Str).HasColumnName("StrRequirement").HasDefaultValue(0).IsRequired();
+				b.Property(c => c.Level).HasColumnName("LevelRequirement").HasDefaultValue(0).IsRequired();
+			});
 		base.OnModelCreating(modelBuilder);
 	}
 }

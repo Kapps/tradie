@@ -2,12 +2,10 @@
 using Tradie.Analyzer;
 using Tradie.Common;
 
-string environment = System.Environment.GetEnvironmentVariable("TRADIE_ENV")
-                     ?? throw new ArgumentNullException("TRADIE_ENV");
+
 
 var ssm = new AmazonSimpleSystemsManagementClient();
-
-await TradieConfig.InitializeFromSsm(environment, ssm);
+await TradieConfig.InitializeFromEnvironment(ssm);
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>

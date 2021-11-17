@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Tradie.Analyzer.Models; 
@@ -8,12 +10,12 @@ namespace Tradie.Analyzer.Models;
 /// </summary>
 [Owned]
 public class Requirements {
-	[DataMember(Name = "dex")]
+	[Column]
 	public int Dex;
-	[DataMember(Name = "str")]
+	[Column]
 	public int Str;
-	[DataMember(Name = "int")]
+	[Column]
 	public int Int;
-	[DataMember(Name = "level")]
+	[Column]
 	public int Level;
 }

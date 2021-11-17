@@ -11,17 +11,23 @@ namespace Tradie.Analyzer.Tests.Repos;
 [TestClass]
 public class ItemTypeRepositoryTest {
 	[TestInitialize]
-	public void Initialize() {
-		this.context = new AnalysisContext();
-		this.repo = new ItemTypeRepository(this.context);
+	public async Task Initialize() {
+		this._context = new AnalysisContext();
+		await this._context.Database.BeginTransactionAsync();
+		this._repo = new ItemTypeRepository(this._context);
+	}
+
+	[TestCleanup]
+	public async Task Cleanup() {
+		await this._context.Database.RollbackTransactionAsync();
 	}
 
 	[TestMethod]
 	public async Task TestItemTypeRepo_EmptyDataSet() {
-		var results = await repo.RetrieveAll();
+		var results = await this._repo.RetrieveAll();
 		Assert.IsTrue(results.Length == 0);
 
-		results = await repo.LoadByNames("foo", "bar");
+		results = await this._repo.LoadByNames("foo", "bar");
 		Assert.IsTrue(results.Length == 0);
 	}
 
@@ -38,9 +44,9 @@ public class ItemTypeRepositoryTest {
 			},
 		};
 
-		await this.repo.Upsert(new[] { itemType });
+		await this._repo.Insert(new[] { itemType });
 
-		var returned = await this.context.ItemTypes.SingleAsync();
+		var returned = await this._context.ItemTypes.SingleAsync();
 
 		returned.WithDeepEqual(itemType)
 			.IgnoreProperty<ItemType>(c=>c.Id)
@@ -48,6 +54,6 @@ public class ItemTypeRepositoryTest {
 			.Assert();
 	}
 
-	private ItemTypeRepository repo;
-	private AnalysisContext context;
+	private ItemTypeRepository _repo = null!;
+	private AnalysisContext _context = null!;
 }

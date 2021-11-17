@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.8" />
+        <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.9" />
         <PackageReference Include="DeepEqual" Version="2.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
         <PackageReference Include="Moq" Version="4.16.1" />
@@ -19,6 +19,15 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Tradie.Analyzer\Tradie.Analyzer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Analyzers\json\jewel.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Analyzers\json\boots.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

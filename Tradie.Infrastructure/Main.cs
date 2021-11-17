@@ -9,13 +9,15 @@ using HashiCorp.Cdktf.Providers.Docker;
 using HashiCorp.Cdktf.Providers.Null;
 using HashiCorp.Cdktf.Providers.Random;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using Tradie.Infrastructure.Aspects;
 using Tradie.Infrastructure.Resources;
 
 namespace Tradie.Infrastructure {
     public class MyApp : TerraformStack {
 	    public MyApp(Construct scope, string id, ResourceConfig config) : base(scope, id) {
-	        HashiCorp.Cdktf.Aspects.Of(this).Add(new EnvironmentPrefixerAspect($"tradie-{config.Environment}"));
+		    HashiCorp.Cdktf.Aspects.Of(this).Add(new EnvironmentPrefixerAspect($"tradie-{config.Environment}"));
 
 	        new AwsProvider(this, "AWS", new AwsProviderConfig {
 				Region = config.Region,
@@ -31,9 +33,9 @@ namespace Tradie.Infrastructure {
 	        });
 
 	        new RandomProvider(this, "random-provider", new RandomProviderConfig() {
-		        
+
 	        });
-	        
+
 	        var permissions = new Permissions(this);
 	        var network = new Tradie.Infrastructure.Resources.Network(this, config);
 
@@ -44,17 +46,19 @@ namespace Tradie.Infrastructure {
 
             var scanner = new Scanner(this, ecs, config, permissions);
             var analyzer = new Analyzer(this);
-            var rds = new Rds(this, network);
+            var rds = new Rds(this, network, config);
 	    }
 
         public static void Main(string[] args) {
             App app = new App();
+            var httpClient = new HttpClient();
+            var localIp = IPAddress.Parse(httpClient.GetStringAsync("https://api.ipify.org").Result);
             var devStack = new MyApp(app, "tradie-dev", new ResourceConfig() {
 	            Environment = "dev",
 	            Region = "ca-central-1",
 	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../src/"),
 	            Version = "0.1.0",
-	            //DbPassword = Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? throw new ArgumentException(),
+	            LocalIpAddress = localIp, 
             });
             
             new S3Backend(devStack, new S3BackendProps() {
