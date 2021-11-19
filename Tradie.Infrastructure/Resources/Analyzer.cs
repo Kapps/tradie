@@ -3,20 +3,21 @@ using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Ecr;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using System.IO;
 
 namespace Tradie.Infrastructure.Resources {
 	public class Analyzer {
 		public readonly S3Bucket analyzedItemBucket;
 		public readonly EcrRepository ecrRepo;
 
-		public Analyzer(TerraformStack stack) {
+		public Analyzer(TerraformStack stack, ResourceConfig resourceConfig, Permissions permissions) {
 			this.analyzedItemBucket = new S3Bucket(stack, "analyzed-changesets-bucket", new S3BucketConfig() {
 				Bucket = "analyzed-changesets",
 				ForceDestroy = true,
 				Versioning = new S3BucketVersioning() {
 					Enabled = false,
 				},
-				LifecycleRule = new [] {
+				LifecycleRule = new[] {
 					new S3BucketLifecycleRule() {
 						Enabled = true,
 						Expiration = new S3BucketLifecycleRuleExpiration() {
@@ -36,9 +37,6 @@ namespace Tradie.Infrastructure.Resources {
 				Type = "String",
 			});
 
-			this.ecrRepo = new EcrRepository(stack, "analyzer-repo",new EcrRepositoryConfig() {
-				Name = "analyzer-repo",
-			});
 		}
 	}
 }

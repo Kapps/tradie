@@ -39,13 +39,10 @@ namespace Tradie.Infrastructure {
 	        var permissions = new Permissions(this);
 	        var network = new Tradie.Infrastructure.Resources.Network(this, config);
 
-            var ecs = new EcsCluster(this, "ecs", new EcsClusterConfig() {
-                Name  = $"primary-cluster",
-                CapacityProviders = new string[] { "FARGATE" },
-            });
-
-            var scanner = new Scanner(this, ecs, config, permissions);
-            var analyzer = new Analyzer(this);
+	        var ecs = new Ecs(this, network);
+	        var routing = new Routing(this, network, ecs, config);
+	        var scanner = new Scanner(this, ecs, config, permissions);
+            var analyzer = new Analyzer(this, config, permissions);
             var rds = new Rds(this, network, config);
 	    }
 

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.9.1" />
     <PackageReference Include="HashiCorp.Cdktf" Version="0.7.0" />
     <PackageReference Include="HashiCorp.Cdktf.Providers.Aws" Version="2.0.13" />
     <PackageReference Include="HashiCorp.Cdktf.Providers.Docker" Version="0.3.94" />

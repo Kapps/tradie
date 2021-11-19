@@ -13,16 +13,16 @@ using System.Text.Json;
 
 namespace Tradie.Infrastructure.Resources {
     public class Scanner {
-		public readonly S3Bucket changeBucket;
-		public readonly EcrRepository ecrRepo;
-
+		public readonly S3Bucket ChangeBucket;
+		public readonly EcrProjectRepository Repo;
+		
         public Scanner(
 	        TerraformStack stack,
-	        EcsCluster ecsCluster,
+	        Ecs ecs,
 	        ResourceConfig resourceConfig,
 	        Permissions permissions
 	    ) {
-	        this.changeBucket = new S3Bucket(stack, "raw-changesets-bucket", new S3BucketConfig() {
+	        this.ChangeBucket = new S3Bucket(stack, "raw-changesets-bucket", new S3BucketConfig() {
 				Bucket = "raw-changesets",
 				ForceDestroy = true,
 				Versioning = new S3BucketVersioning() {
@@ -32,34 +32,11 @@ namespace Tradie.Infrastructure.Resources {
 
 			new SsmParameter(stack, "raw-changesets-ssm", new SsmParameterConfig() {
 				Name = "Config.ChangeSetBucket",
-				Value = changeBucket.Bucket,
+				Value = this.ChangeBucket.Bucket,
 				Type = "String",
 			});
 
-			this.ecrRepo = new EcrRepository(stack, "scanner-repo", new EcrRepositoryConfig() {
-				Name = $"scanner-repo",
-			});
-
-			var auth = new DataAwsEcrAuthorizationToken(stack, "scanner-auth", new DataAwsEcrAuthorizationTokenConfig() {
-				DependsOn = new [] {this.ecrRepo},
-				RegistryId = this.ecrRepo.RegistryId,
-			});
-			
-			
-
-			var asset = new TerraformAsset(stack, "scanner-project", new TerraformAssetConfig() {
-				Path = Path.Combine(resourceConfig.BaseDirectory, "./"),
-			});
-
-			string tag = $"{this.ecrRepo.RepositoryUrl}:{resourceConfig.Version}-{asset.AssetHash}";
-
-			var image = new HashiCorp.Cdktf.Providers.Null.Resource(stack, $"scanner-image-{tag}", new HashiCorp.Cdktf.Providers.Null.ResourceConfig() {
-				DependsOn = new[] { auth },
-			});
-			image.AddOverride("provisioner.local-exec.command",
-				$"docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
-				+ $"docker build -f \"{resourceConfig.BaseDirectory}/Tradie.Scanner/Dockerfile\" -t \"{tag}\" \"{asset.Path}\" && " 
-				+ $"docker push \"{tag}\"");
+			this.Repo = new EcrProjectRepository(stack, "scanner", "Tradie.Scanner", resourceConfig);
 
 			var logs = new CloudwatchLogGroup(stack, "scanner-log-group", new CloudwatchLogGroupConfig() {
 				Name = "scanner-logs",
@@ -90,7 +67,7 @@ namespace Tradie.Infrastructure.Resources {
 										"s3:UploadPart",
 									},
 									Resource = new[] {
-										this.changeBucket.Arn,
+										this.ChangeBucket.Arn,
 									}
 								}
 							},
@@ -108,12 +85,12 @@ namespace Tradie.Infrastructure.Resources {
 				TaskRoleArn = taskRole.Arn,
 				RequiresCompatibilities = new [] { "EC2", "FARGATE" },
 				ExecutionRoleArn = permissions.ExecutionRole.Arn,
-				DependsOn = new[] { image },
+				DependsOn = new[] {this.Repo.BuildResource},
 				ContainerDefinitions = JsonSerializer.Serialize(new[] {
 					new {
 						name = "tradie-scanner",
-						tag,
-						image = tag,
+						this.Repo.Tag,
+						image = this.Repo.Tag,
 						cpu = 256,
 						memory = 512,
 						executionRoleArn = permissions.ExecutionRole.Arn,
