@@ -10,8 +10,8 @@ namespace Tradie.Analyzer.Models;
 /// </summary>
 [Table("ItemTypes")]
 [Index(nameof(Name), IsUnique = true, Name = "idx_itemtype_name")]
-public class ItemType : IAnalyzedProperties {
-	public Guid Analyzer => ItemTypeAnalyzer.Id;
+public class ItemType {
+	public static Guid Analyzer => ItemTypeAnalyzer.Id;
 
 	/// <summary>
 	/// Unique ID for the item type.

@@ -52,6 +52,8 @@ public class ItemTypeRepositoryTest {
 			.IgnoreProperty<ItemType>(c=>c.Id)
 			.SkipDefault<ItemType>()
 			.Assert();
+		
+		Assert.AreNotEqual(0, itemType.Id);
 	}
 
 	private ItemTypeRepository _repo = null!;

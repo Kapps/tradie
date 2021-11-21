@@ -8,7 +8,9 @@ using HashiCorp.Cdktf.Providers.Aws.Ssm;
 using HashiCorp.Cdktf.Providers.Null;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace Tradie.Infrastructure.Resources {
@@ -18,6 +20,7 @@ namespace Tradie.Infrastructure.Resources {
 		
         public Scanner(
 	        TerraformStack stack,
+	        Network network,
 	        Ecs ecs,
 	        ResourceConfig resourceConfig,
 	        Permissions permissions
@@ -55,35 +58,39 @@ namespace Tradie.Infrastructure.Resources {
 							Statement = new[] {
 								new {
 									Effect = "Allow",
-									Action = new[] {
-										"s3:AbortMultipartUpload",
-										"s3:CompleteMultipartUpload",
-										"s3:CreateMultipartUpload",
-										"s3:GetObject",
-										"s3:HeadObject",
-										"s3:ListBuckets",
-										"s3:ListObjects",
-										"s3:ListMultipartUploads",
-										"s3:UploadPart",
-									},
+									Action = new[] { "s3:*" },
 									Resource = new[] {
 										this.ChangeBucket.Arn,
+										$"{this.ChangeBucket.Arn}/*",
 									}
 								}
 							},
 						})
+					},
+					new IamRoleInlinePolicy() {
+						Name = "allow-ssm-write",
+						Policy = JsonSerializer.Serialize(new {
+							Version = Permissions.PolicyVersion,
+							Statement = new[] {
+								new {
+									Effect = "Allow",
+									Action = new[] { "ssm:PutParameter" },
+									Resource = new[] { "*" },
+								}
+							}
+						}),
 					}
 				},
-				AssumeRolePolicy = Permissions.AssumeRolePolicy,
+				AssumeRolePolicy = Permissions.EcsAssumeRolePolicy,
 			});
 			
-			new EcsTaskDefinition(stack, "scanner-taskdef", new EcsTaskDefinitionConfig() {
+			var taskDef = new EcsTaskDefinition(stack, "scanner-taskdef", new EcsTaskDefinitionConfig() {
 				Cpu = "256",
 				Memory = "512",
-				NetworkMode = "awsvpc",
+				NetworkMode = "host",
 				Family = "scanner",
 				TaskRoleArn = taskRole.Arn,
-				RequiresCompatibilities = new [] { "EC2", "FARGATE" },
+				RequiresCompatibilities = new [] { "EC2" },
 				ExecutionRoleArn = permissions.ExecutionRole.Arn,
 				DependsOn = new[] {this.Repo.BuildResource},
 				ContainerDefinitions = JsonSerializer.Serialize(new[] {
@@ -111,6 +118,19 @@ namespace Tradie.Infrastructure.Resources {
 						},
 					},
 				}),
+			});	
+
+			var service = new EcsService(stack, "scanner-service", new EcsServiceConfig() {
+				Cluster = ecs.Cluster.Arn,
+				Name = "scanner-service",
+				DesiredCount = 1,
+				LaunchType = "EC2",
+				TaskDefinition = taskDef.Arn,
+				EnableEcsManagedTags = true
+				/*NetworkConfiguration = new EcsServiceNetworkConfiguration() {
+					Subnets = new[] { network.PublicSubnets[0].Id },
+					SecurityGroups = new[] { network.InternalTrafficOnlySecurityGroup.Id }
+				},*/
 			});
         }
     }

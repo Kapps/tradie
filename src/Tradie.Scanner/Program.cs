@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 var environment = Environment.GetEnvironmentVariable("TRADIE_ENV") ??
           throw new ArgumentException("TRADIE_ENV environment variable not set.");
+Console.WriteLine($"Env: {environment}");
 var ssmClient = new AmazonSimpleSystemsManagementClient();
 var s3Client = new AmazonS3Client();
 
@@ -36,6 +37,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 			.AddSingleton<ICompressor, BrotliCompressor>();
 	})
 	.Build();
+
 
 await host.RunAsync();
 

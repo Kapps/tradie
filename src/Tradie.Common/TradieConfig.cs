@@ -2,6 +2,7 @@
 using Amazon.SimpleSystemsManagement.Model;
 using System.Reflection;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Tradie.Common {
 	/// <summary>
@@ -47,8 +48,10 @@ namespace Tradie.Common {
 		public static async Task InitializeFromSsm(string environment, IAmazonSimpleSystemsManagement ssmClient) {
 			Console.WriteLine($"Initializing config from SSM for environment {environment}.");
 			var matchedProperties = new HashSet<PropertyInfo>();
-			
-			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static);
+
+			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static)
+				.Where(c => c.GetCustomAttribute<IgnoreDataMemberAttribute>() == null)
+				.ToArray();
 			var chunks = props.Chunk(10);
 			
 			// TODO: Should actually be the opposite where we load all params and then set the right ones.
@@ -58,8 +61,10 @@ namespace Tradie.Common {
 					Names = chunk.Select(c => $"tradie-{environment}-Config.{c.Name}").ToList(),
 					WithDecryption = true,
 				};
+				
 
 				var resp = await ssmClient.GetParametersAsync(req);
+				Console.WriteLine($"Got resp {SpanJson.JsonSerializer.Generic.Utf16.Serialize(resp)}");
 
 				foreach(var param in resp.Parameters) {
 					string propName = param.Name.Substring(param.Name.IndexOf(".") + 1);
@@ -127,6 +132,7 @@ namespace Tradie.Common {
 		/// <summary>
 		/// Returns the environment that we're running under, such as "test" or "tradie-prod-ca".
 		/// </summary>
+		[IgnoreDataMember]
 		public static string Environment { get; private set; }
 	}
 

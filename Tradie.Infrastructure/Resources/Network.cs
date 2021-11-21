@@ -29,6 +29,11 @@ namespace Tradie.Infrastructure.Resources {
 		/// A SecurityGroupIngress that allows all incoming traffic from the internal network.
 		/// </summary>
 		public readonly SecurityGroupIngress AllInternalTrafficIngress;
+		/// <summary>
+		/// A security group that allows all internal traffic to hit this instance, and no external traffic.
+		/// All egress traffic is allowed.
+		/// </summary>
+		public readonly SecurityGroup InternalTrafficOnlySecurityGroup;
 		
 		public Network(TerraformStack stack, ResourceConfig config) {
 			this.Vpc = new Vpc(stack, "vpc", new VpcConfig() {
@@ -84,6 +89,14 @@ namespace Tradie.Infrastructure.Resources {
 				SelfAttribute = false,
 				PrefixListIds = Array.Empty<string>()
 			};
+
+			this.InternalTrafficOnlySecurityGroup = new SecurityGroup(stack, "internal-only-sg",
+				new SecurityGroupConfig() {
+					Name = "internal-only-sg",
+					Egress = new[] {this.AllOutgoingTrafficEgress},
+					Ingress = new[] {this.AllInternalTrafficIngress},
+					VpcId = this.Vpc.Id,
+				});
 		}
 	}
 }

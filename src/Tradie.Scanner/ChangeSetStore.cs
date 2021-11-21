@@ -61,8 +61,8 @@ namespace Tradie.Scanner {
 				changeSetId, putResp.HttpStatusCode, putResp.ResponseMetadata.RequestId, compressMS, totalMS - compressMS, ms.Length / 1024);
 		}
 
-		private IAmazonS3 _s3Client;
-		private ILogger<S3ChangeSetStore> _logger;
-		private ICompressor _compressor;
+		private readonly IAmazonS3 _s3Client;
+		private readonly ILogger<S3ChangeSetStore> _logger;
+		private readonly ICompressor _compressor;
 	}
 } 

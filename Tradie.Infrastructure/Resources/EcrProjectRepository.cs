@@ -56,7 +56,7 @@ namespace Tradie.Infrastructure.Resources {
 			});
 			this.BuildResource.AddOverride("provisioner.local-exec.command",
 				$"docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
-				+ $"docker build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.Tag}\" \"{_cachedSolutionAsset.Path}\" && " 
+				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.Tag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
 				+ $"docker push \"{this.Tag}\"");
 		}
 

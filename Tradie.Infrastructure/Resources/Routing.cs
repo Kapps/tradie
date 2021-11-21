@@ -1,4 +1,6 @@
-﻿using HashiCorp.Cdktf;
+﻿using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
+using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Ec2;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
 
@@ -7,7 +9,19 @@ namespace Tradie.Infrastructure.Resources {
 	/// Handles private and public subnet routing through a NAT Instance and other gateways.
 	/// </summary>
 	public class Routing {
-		public Routing(TerraformStack stack, Network network, Ecs ecs, ResourceConfig config) {
+		public Routing(
+			TerraformStack stack, 
+			Network network, 
+			Ecs ecs,
+			IAmazonSimpleSystemsManagement ssmClient
+		) {
+			// Create a NAT instance instead of a NAT gateway, as NAT gateways are too expensive.
+			// Can't use an ECS image for this because it doesn't work as a NAT instance?
+			// So use a regular one and add ECS resources.
+			var natAmi = ssmClient.GetParameterAsync(new GetParameterRequest() {
+				Name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-arm64-gp2",
+			}).Result.Parameter.Value;
+
 			var natSg = new SecurityGroup(stack, "nat-sg", new SecurityGroupConfig() {
 				VpcId = network.Vpc.Id,
 				Name = "nat-sg",
@@ -25,7 +39,7 @@ namespace Tradie.Infrastructure.Resources {
 					Name = ecs.LaunchTemplate.Name,
 					Version = "$Latest",
 				},*/
-				Ami = ecs.InstanceAmi,
+				Ami = natAmi,
 				IamInstanceProfile = ecs.EcsInstanceProfile.Name,
 				InstanceType = "t4g.micro",
 				VpcSecurityGroupIds = new[] { natSg.Id },

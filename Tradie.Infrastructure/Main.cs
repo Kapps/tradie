@@ -1,3 +1,4 @@
+using Amazon.SimpleSystemsManagement;
 using System;
 using Constructs;
 using HashiCorp.Cdktf;
@@ -36,13 +37,15 @@ namespace Tradie.Infrastructure {
 
 	        });
 
+	        var ssm = new AmazonSimpleSystemsManagementClient();
+
 	        var permissions = new Permissions(this);
 	        var network = new Tradie.Infrastructure.Resources.Network(this, config);
 
-	        var ecs = new Ecs(this, network);
-	        var routing = new Routing(this, network, ecs, config);
-	        var scanner = new Scanner(this, ecs, config, permissions);
-            var analyzer = new Analyzer(this, config, permissions);
+	        var ecs = new Ecs(this, network, ssm);
+	        var routing = new Routing(this, network, ecs, ssm);
+	        var scanner = new Scanner(this, network, ecs, config, permissions);
+            var analyzer = new Analyzer(this, config, permissions, scanner, network);
             var rds = new Rds(this, network, config);
 	    }
 
@@ -55,7 +58,7 @@ namespace Tradie.Infrastructure {
 	            Region = "ca-central-1",
 	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../src/"),
 	            Version = "0.1.0",
-	            LocalIpAddress = localIp, 
+	            LocalIpAddress = localIp,
             });
             
             new S3Backend(devStack, new S3BackendProps() {
@@ -63,6 +66,7 @@ namespace Tradie.Infrastructure {
 	            Region = "us-east-1",
 	            Key = "cdktf-remote",
             });
+            
             app.Synth();
             Console.WriteLine("App synth complete");
         }

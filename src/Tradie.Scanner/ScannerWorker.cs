@@ -33,7 +33,7 @@ namespace Tradie.Scanner {
 						slept = true;
 						await Task.Delay(1000); // Give the API a bit of time to get something new.
 					}
-					_logger.LogInformation("Read changeset {changeId} -- next changeset is ${nextChangeId} -- slept: {slept}", nextChangeId, details.NextChangeSetId, slept);
+					_logger.LogInformation("Read changeset {changeId} -- next changeset is {nextChangeId} -- slept: {slept}", nextChangeId, details.NextChangeSetId, slept);
 					nextChangeId = details.NextChangeSetId;
 				} catch(OperationCanceledException) {
 					_logger.LogInformation("Worker cancelled at: {time}", DateTimeOffset.Now);

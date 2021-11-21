@@ -2,13 +2,10 @@
 using Amazon.SimpleSystemsManagement.Model;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.AutoScaling;
-using HashiCorp.Cdktf.Providers.Aws.DataSources;
 using HashiCorp.Cdktf.Providers.Aws.Ec2;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
-using System.Buffers.Text;
-using System.Linq;
 using System.Text;
 
 namespace Tradie.Infrastructure.Resources {
@@ -26,23 +23,13 @@ namespace Tradie.Infrastructure.Resources {
 		/// </summary>
 		public readonly IamInstanceProfile EcsInstanceProfile;
 		/// <summary>
-		/// The latest AMI of the AWS Linux 2 ARM64 GP image.
-		/// </summary>
-		public readonly string InstanceAmi;
-		/// <summary>
 		/// The autoscaling group that launches instances for the primary cluster.
 		/// </summary>
 		public readonly AutoscalingGroup ClusterAsg;
 		
-		public Ecs(TerraformStack stack, Network network) {
-			// Create an ECS cluster that uses a single EC2 instance currently.
-			// That EC2 instance is also used as a NAT instance, but can also run containers.
-			// This saves the $40/month of a NAT Gateway.
-
-			var ssmClient = new AmazonSimpleSystemsManagementClient();
-			this.InstanceAmi = ssmClient.GetParameterAsync(new GetParameterRequest() {
-				Name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-arm64-gp2",
-				//Name = "/aws/service/ecs/optimized-ami/amazon-linux-2/arm64/recommended/image_id",
+		public Ecs(TerraformStack stack, Network network, IAmazonSimpleSystemsManagement ssmClient) {
+			var instanceAmi = ssmClient.GetParameterAsync(new GetParameterRequest() {
+				Name = "/aws/service/ecs/optimized-ami/amazon-linux-2/arm64/recommended/image_id",
 			}).Result.Parameter.Value;
 				
 			
@@ -94,7 +81,7 @@ namespace Tradie.Infrastructure.Resources {
 			});
 
 			this.LaunchTemplate = new LaunchTemplate(stack, "launch-template", new LaunchTemplateConfig() {
-				ImageId = this.InstanceAmi,
+				ImageId = instanceAmi,
 				InstanceType = "t4g.micro",
 				VpcSecurityGroupIds = new[] { instanceSg.Id },
 				IamInstanceProfile = new LaunchTemplateIamInstanceProfile() {

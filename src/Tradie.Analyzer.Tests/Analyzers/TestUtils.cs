@@ -29,9 +29,9 @@ public static class TestUtils {
 			.AddLogging(builder=>builder.AddDebug())
 			.BuildServiceProvider();
 
-		var factory = serviceProvider.GetService<ILoggerFactory>();
+		var factory = serviceProvider.GetService<ILoggerFactory>()!;
 
-		var logger = factory.CreateLogger<T>();
+		var logger = factory.CreateLogger<T>()!;
 		return logger;
 	}
 

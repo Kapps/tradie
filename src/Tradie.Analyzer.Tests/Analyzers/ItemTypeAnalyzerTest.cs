@@ -39,6 +39,9 @@ public class ItemTypeAnalyzerTest {
 		var analyzedItem = new AnalyzedItem(item);
 		await analyzer.AnalyzeItems(new[] {analyzedItem});
 		
+		var itemType = ((ItemTypeAnalysis)analyzedItem.Analysis[ItemTypeAnalyzer.Id]).ItemType; 
+		Assert.IsTrue(itemType.Name == "Cobalt Jewel");
+		
 		repo.VerifyAll();
 	}
 	

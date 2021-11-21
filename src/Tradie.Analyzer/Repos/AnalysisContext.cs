@@ -15,7 +15,7 @@ public class AnalysisContext : DbContext {
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
-		optionsBuilder.LogTo(Console.WriteLine);
+		//optionsBuilder.LogTo(Console.WriteLine);
 		
 		optionsBuilder.UseNpgsql(new NpgsqlConnectionStringBuilder() {
 			Database = "tradie",

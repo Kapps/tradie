@@ -3,8 +3,7 @@
     "Tradie.Scanner": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development",
-        "TRADIE_ENV": "test"
+        "DOTNET_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true
     },

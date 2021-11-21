@@ -55,7 +55,7 @@ namespace Tradie.Infrastructure.Resources {
 		/// <summary>
 		/// Policy string to allow assuming an ECS Task role.
 		/// </summary>
-		public static readonly string AssumeRolePolicy = JsonSerializer.Serialize(new {
+		public static readonly string EcsAssumeRolePolicy = JsonSerializer.Serialize(new {
 			Version = PolicyVersion,
 			Statement = new[] {
 				new {
@@ -64,6 +64,23 @@ namespace Tradie.Infrastructure.Resources {
 					Sid = "",
 					Principal = new {
 						Service = "ecs-tasks.amazonaws.com",
+					}
+				}
+			}
+		});
+		
+		/// <summary>
+		/// Policy string to allow assuming a Lambda role.
+		/// </summary>
+		public static readonly string LambdaAssumeRolePolicy = JsonSerializer.Serialize(new {
+			Version = PolicyVersion,
+			Statement = new[] {
+				new {
+					Action = "sts:AssumeRole",
+					Effect = "Allow",
+					Sid = "",
+					Principal = new {
+						Service = "lambda.amazonaws.com",
 					}
 				}
 			}
@@ -94,7 +111,7 @@ namespace Tradie.Infrastructure.Resources {
 						}),
 					}	
 				},
-				AssumeRolePolicy = AssumeRolePolicy,
+				AssumeRolePolicy = EcsAssumeRolePolicy,
 			});
 		}
 	}

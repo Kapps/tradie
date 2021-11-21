@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RestSharp.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,7 +13,7 @@ namespace Tradie.Analyzer.Analyzers;
 /// An analyzer that scans for new base types and records them as they come in.
 /// </summary>
 public class ItemTypeAnalyzer : IItemAnalyzer {
-	private ILogger<ItemTypeAnalyzer> _logger;
+	private readonly ILogger<ItemTypeAnalyzer> _logger;
 	public static Guid Id { get; } = new Guid("6FCA53F9-D3C1-432F-A0CE-9F43EC449C36");
 
 	public ItemTypeAnalyzer(ILogger<ItemTypeAnalyzer> logger, IItemTypeRepository repo) {
@@ -21,6 +22,14 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 	}
 
 	public async Task AnalyzeItems(AnalyzedItem[] items) {
+		var mappedTypes = await this.MapTypesWithRepo(items);
+		foreach(var item in items) {
+			var mappedType = mappedTypes[item.RawItem.BaseType];
+			item.Analysis.PushAnalysis(Id, new ItemTypeAnalysis(mappedType));
+		}
+	}
+
+	private async Task<Dictionary<string, ItemType>> MapTypesWithRepo(AnalyzedItem[] items) {
 		var distinctTypes = items.Select(c => c.RawItem)
 			.DistinctBy(c => c.BaseType)
 			.ToArray();
@@ -32,7 +41,8 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 		var toInsert = new List<ItemType>();
 		foreach(var missing in missingTypes) {
 			if(missing.ExtendedProperties?.Subcategories?.Length > 1) {
-				this._logger.LogWarning("Item with ID {ID} had subcategories {subcategories}, which is more than 1.", missing.Id, missing.ExtendedProperties?.Subcategories);
+				this._logger.LogWarning("Item with ID {ID} had subcategories {Subcategories}, which is more than 1",
+					missing.Id, missing.ExtendedProperties?.Subcategories);
 			}
 			var converted = new ItemType() {
 				Category = missing.ExtendedProperties?.Category,
@@ -48,8 +58,12 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 		if(toInsert.Any()) {
 			await this._repo.Insert(toInsert);
 		}
+
+		return existingTypes.Values.ToArray()
+			.Concat(toInsert)
+			.ToDictionary(c => c.Name!);
 	}
-	
+
 	private Requirements? MapRequirements(Item item) {
 		if(item.Requirements == null) {
 			return new Requirements();
@@ -87,4 +101,22 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 	}
 
 	private readonly IItemTypeRepository _repo;
+}
+
+/// <summary>
+/// A set of analyzed properties to view the attributes for the base type of an item.
+/// </summary>
+public readonly struct ItemTypeAnalysis : IAnalyzedProperties {
+	/// <summary>
+	/// The base type of the item.
+	/// </summary>
+	public readonly ItemType ItemType;
+
+	public ItemTypeAnalysis(ItemType itemType) {
+		this.ItemType = itemType;
+	}
+
+	public void Serialize(BinaryWriter writer) {
+		writer.Write(this.ItemType.Id);
+	}
 }

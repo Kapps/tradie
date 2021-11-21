@@ -5,7 +5,8 @@
 /// </summary>
 public interface IAnalyzedProperties {
 	/// <summary>
-	/// The ID of the analyzer that provided these properties.
+	/// Serializes these properties in binary format, in such a way that a reader can retrieve them.
+	/// This may be just IDs, or may be other data required.
 	/// </summary>
-	public Guid Analyzer { get; }
+	void Serialize(BinaryWriter writer);
 }
