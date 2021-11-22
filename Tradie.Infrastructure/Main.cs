@@ -55,7 +55,8 @@ namespace Tradie.Infrastructure {
             var localIp = IPAddress.Parse(httpClient.GetStringAsync("https://api.ipify.org").Result);
             var devStack = new MyApp(app, "tradie-dev", new ResourceConfig() {
 	            Environment = "dev",
-	            Region = "ca-central-1",
+	            //Region = "ca-central-1",
+	            Region = "us-east-1",
 	            BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../src/"),
 	            Version = "0.1.0",
 	            LocalIpAddress = localIp,

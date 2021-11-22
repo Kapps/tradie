@@ -40,7 +40,7 @@ namespace Tradie.Infrastructure.Resources {
 			});
 
 			if(_cachedSolutionAsset == null) {
-				lock(_cachedSolutionLock) {
+				lock(CachedSolutionLock) {
 					if(_cachedSolutionAsset == null) {
 						_cachedSolutionAsset = new TerraformAsset(stack, $"solution-directory", new TerraformAssetConfig() {
 							Path = Path.Combine(resourceConfig.BaseDirectory, "./"),
@@ -50,17 +50,18 @@ namespace Tradie.Infrastructure.Resources {
 			}
 
 			this.Tag = $"{this.EcrRepo.RepositoryUrl}:{resourceConfig.Version}-{_cachedSolutionAsset.AssetHash}";
-
+			string latestTag = $"{this.EcrRepo.RepositoryUrl}:latest";
+			
 			this.BuildResource = new HashiCorp.Cdktf.Providers.Null.Resource(stack, $"{name}-image-{this.Tag}", new HashiCorp.Cdktf.Providers.Null.ResourceConfig() {
 				DependsOn = new ITerraformDependable[] { auth },
 			});
 			this.BuildResource.AddOverride("provisioner.local-exec.command",
 				$"docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
-				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.Tag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
-				+ $"docker push \"{this.Tag}\"");
+				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.Tag}\" -t \"{latestTag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
+				+ $"docker push \"{latestTag}\"");
 		}
 
 		private static TerraformAsset _cachedSolutionAsset;
-		private static readonly Mutex _cachedSolutionLock = new Mutex();
+		private static readonly Mutex CachedSolutionLock = new Mutex();
 	}
 }

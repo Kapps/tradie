@@ -52,7 +52,7 @@ namespace Tradie.Infrastructure.Resources {
 				Name = "analyzer-dlq",
 			});
 			
-			var taskRole = new IamRole(stack, "analyzer-task-role", new IamRoleConfig() {
+			var role = new IamRole(stack, "analyzer-task-role", new IamRoleConfig() {
 				Name = "analyzer-task-role",
 				InlinePolicy = new[] {
 					permissions.InlineLogPolicy,
@@ -82,6 +82,21 @@ namespace Tradie.Infrastructure.Resources {
 									Resource = new[] {
 										dlq.Arn
 									}
+								}, new {
+									Effect = "Allow",
+									Action = new[] {
+										"ec2:CreateNetworkInterface",
+										"ec2:DescribeNetworkInterfaces",
+										"ec2:DeleteNetworkInterface"
+									},
+									Resource = new[] { "*" }
+								}, new {
+									Effect = "Allow",
+									Action = new[] {
+										"ecr:BatchGetImage",
+										"ecr:GetDownloadUrlForLayer"
+									},
+									Resource = new[] { "*" }
 								}
 							},
 						})
@@ -95,7 +110,7 @@ namespace Tradie.Infrastructure.Resources {
 				RetentionInDays = 14,
 			});
 
-			var repo = new EcrProjectRepository(stack, "analyzer", "Tradie.Analysis", resourceConfig);
+			var repo = new EcrProjectRepository(stack, "analyzer", "Tradie.Analyzer", resourceConfig);
 
 			var lambda = new LambdaFunction(stack, "analyzer-lambda", new LambdaFunctionConfig() {
 				Architectures = new[] { "arm64" },
@@ -103,15 +118,23 @@ namespace Tradie.Infrastructure.Resources {
 					SubnetIds = new[] { network.PublicSubnets[0].Id },
 					SecurityGroupIds = new[] { network.InternalTrafficOnlySecurityGroup.Id },
 				},
-				Runtime = "provided.al2",
-				ImageConfig = new LambdaFunctionImageConfig() {
-					
+				FunctionName = "analyzer",
+				Role = role.Arn,
+				Environment = new LambdaFunctionEnvironment() {
+					Variables = new[] {
+						new {
+							TRADIE_ENV=resourceConfig.Environment
+						}
+					}
 				},
-				ImageUri = repo.EcrRepo.RepositoryUrl,
+				DeadLetterConfig = new LambdaFunctionDeadLetterConfig() {
+					TargetArn = dlq.Arn
+				},
+				Runtime = "provided.al2",
+				ImageUri = $"{repo.EcrRepo.RepositoryUrl}:latest",
 				MemorySize = 512,
 				PackageType = "Image",
 				Timeout = 300,
-				
 			});
 		}
 	}
