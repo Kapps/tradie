@@ -60,9 +60,9 @@ namespace Tradie.Common {
 		public byte[] Decompress(byte[] compressedContents) {
 			var src = new MemoryStream(compressedContents);
 			var dest = new MemoryStream();
-			var uncompressor = new BrotliStream(src, CompressionMode.Decompress);
-			uncompressor.CopyTo(dest);
-			uncompressor.Flush();
+			var decompressor = new BrotliStream(src, CompressionMode.Decompress);
+			decompressor.CopyTo(dest);
+			decompressor.Flush();
 			return dest.ToArray();
 			/*var ms = new MemoryStream();
 			var sourceOffset = 0;

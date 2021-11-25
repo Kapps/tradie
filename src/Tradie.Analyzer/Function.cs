@@ -5,6 +5,9 @@ using Amazon.SimpleSystemsManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Tradie.Analyzer.Analysis;
+using Tradie.Analyzer.Analysis.Analyzers;
+using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.RawModels;
 
@@ -32,12 +35,21 @@ public class Function {
 				});
 				services.AddSingleton<IParameterStore, SsmParameterStore>()
 					.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
-					.AddSingleton<IAmazonS3>(s3Client);
+					.AddSingleton<IAmazonS3>(s3Client)
+					.AddSingleton<IItemAnalyzer, ItemTypeAnalyzer>()
+					.AddSingleton<IItemTypeRepository, ItemTypeRepository>();
 			})
 			.Build();
 		
 		Console.WriteLine($"Got input file {input.Records[0].S3.Object.Key}.");
 
+		var itemAnalyzers = host.Services.GetServices<IItemAnalyzer>().ToArray();
+
+		foreach(var analyzer in itemAnalyzers) {
+			Console.WriteLine($"Registered analyzer {analyzer.GetType().Name}.");
+		}
+		
+		var stashAnalyzer = new StashTabAnalyzer(itemAnalyzers);
 		
 		foreach(var record in input.Records) {
 			var obj = await s3Client.GetObjectAsync(record.S3.Bucket.Name, record.S3.Object.Key);
@@ -46,6 +58,8 @@ public class Function {
 			var stashes = await SpanJson.JsonSerializer.Generic.Utf8.DeserializeAsync<RawStashTab[]>(jsonStream);
 			foreach(var stash in stashes) {
 				Console.WriteLine($"Found stash with id {stash.Id} containing {stash.Items.Length} items.");
+				var analyzedItems = await stashAnalyzer.AnalyzeTab(stash);
+				
 			}
 		}
 	}

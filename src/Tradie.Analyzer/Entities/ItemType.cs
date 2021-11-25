@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Tradie.Analyzer.Analyzers;
 
-namespace Tradie.Analyzer.Models; 
+namespace Tradie.Analyzer.Entities; 
 
 /// <summary>
 /// The base type for an item, such as a Coral Amulet.
@@ -11,8 +10,6 @@ namespace Tradie.Analyzer.Models;
 [Table("ItemTypes")]
 [Index(nameof(Name), IsUnique = true, Name = "idx_itemtype_name")]
 public class ItemType {
-	public static Guid Analyzer => ItemTypeAnalyzer.Id;
-
 	/// <summary>
 	/// Unique ID for the item type.
 	/// </summary>

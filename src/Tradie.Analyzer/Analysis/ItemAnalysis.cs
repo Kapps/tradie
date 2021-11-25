@@ -1,18 +1,20 @@
 using System.Collections;
-using Tradie.Analyzer.Analyzers;
+using System.Collections.Concurrent;
+using Tradie.Analyzer.Analysis;
 
 namespace Tradie.Analyzer; 
 
 /// <summary>
 /// Provides data that was calculated as a result of analyzing a raw item.
+/// All methods in this class are thread-safe.
 /// </summary>
 public class ItemAnalysis {
-	private readonly Dictionary<Guid, IAnalyzedProperties> _properties = new();
+	private readonly ConcurrentDictionary<Guid, IAnalyzedProperties> _properties = new();
 
 	/// <summary>
 	/// Gets all of the properties added to this analysis.
 	/// </summary>
-	public IEnumerable<IAnalyzedProperties> Properties => this._properties.Values;
+	public IEnumerable<KeyValuePair<Guid, IAnalyzedProperties>> Properties => this._properties.ToArray();
 
 	/// <summary>
 	/// Returns the properties for this analyzer, or null if the analysis is not present.
@@ -29,17 +31,7 @@ public class ItemAnalysis {
 	/// Appends an analyzed set of properties for this item to the properties collection.
 	/// </summary>
 	public void PushAnalysis<T>(Guid analyzerId, T properties) where T : IAnalyzedProperties {
-		this._properties.Add(analyzerId, properties);
-	}
-
-	/// <summary>
-	/// Serializes this item and its properties with the given writer.
-	/// </summary>
-	public void Serialize(BinaryWriter writer) {
-		writer.Write(this._properties.Count);
-		foreach(var prop in this._properties) {
-			writer.Write(prop.Key.ToByteArray());
-			prop.Value.Serialize(writer);
-		}
+		if(!this._properties.TryAdd(analyzerId, properties))
+			throw new ArgumentException($"Analysis for analyzer {analyzerId} already exists.");
 	}
 }

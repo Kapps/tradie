@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tradie.Analyzer.Analyzers;
-using Tradie.Analyzer.Models;
+using Tradie.Analyzer.Analysis;
+using Tradie.Analyzer.Entities;
 
 namespace Tradie.Analyzer.Repos;
 

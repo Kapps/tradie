@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
-namespace Tradie.Analyzer.Models; 
+namespace Tradie.Analyzer.Entities; 
 
 /// <summary>
 /// Requirements to use a specific item, such as stat or level.

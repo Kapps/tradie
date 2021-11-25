@@ -128,12 +128,17 @@ namespace Tradie.Common {
 		/// Password for the analysis database.
 		/// </summary>
 		public static string? DbPass { get; set; }
+		/// <summary>
+		/// Name of the Kinesis stream used for sending analyzed item data.
+		/// </summary>
+		public static string AnalyzedItemStreamName { get; set; }
 
 		/// <summary>
 		/// Returns the environment that we're running under, such as "test" or "tradie-prod-ca".
 		/// </summary>
 		[IgnoreDataMember]
 		public static string Environment { get; private set; }
+
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

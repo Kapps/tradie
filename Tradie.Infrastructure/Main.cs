@@ -47,6 +47,7 @@ namespace Tradie.Infrastructure {
 	        var scanner = new Scanner(this, network, ecs, config, permissions);
             var analyzer = new Analyzer(this, config, permissions, scanner, network);
             var rds = new Rds(this, network, config);
+            var itemStream = new ItemStream(this);
 	    }
 
         public static void Main(string[] args) {

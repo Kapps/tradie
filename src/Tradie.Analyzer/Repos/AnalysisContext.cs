@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Npgsql;
-using Tradie.Analyzer.Models;
+using Tradie.Analyzer.Entities;
 using Tradie.Common;
 
 namespace Tradie.Analyzer.Repos; 
