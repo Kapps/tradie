@@ -4,6 +4,7 @@ using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using Tradie.Common;
 using Tradie.Scanner;

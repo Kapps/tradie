@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Common;
 using Amazon.S3;
+using System.IO;
 using System.Text;
 
 namespace Tradie.Scanner {
