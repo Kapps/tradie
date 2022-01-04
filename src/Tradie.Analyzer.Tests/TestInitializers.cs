@@ -22,4 +22,4 @@ public class TestInitializers {
 		await using var dbContext = new AnalysisContext();
 		await dbContext.Database.MigrateAsync();
 	}
-}
+}	

@@ -21,6 +21,9 @@ namespace Tradie.Scanner {
 		}
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
+			this._logger.LogInformation("Starting scan with build hash {buildHash}",
+				System.Environment.GetEnvironmentVariable("BUILD_HASH"));
+			
 			var stashParam = await _paramStore.GetParameter(paramNextChangeId, "1295601985-1301161226-1256819523-1404257053-1350867496");
 			string nextChangeId = stashParam.Value ?? throw new ArgumentNullException();
 
@@ -46,16 +49,16 @@ namespace Tradie.Scanner {
 			}
 		}
 
-		protected async Task<ChangeSetDetails> DispatchNextChangeSet(string changeId) {
+		private async Task<ChangeSetDetails> DispatchNextChangeSet(string changeId) {
 			var changeContents = await _apiClient.Get("public-stash-tabs", ("id", changeId));
-			if(changeContents.Contains("Kapps")) {
+			/*if(changeContents.Contains("Kapps")) {
 				_logger.LogWarning("--------------------Got mine!-----------------");
-			}
+			}*/
 
-			using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(changeContents));
+			await using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(changeContents));
 			var header = await _parser.ReadHeader(inputStream);
 
-			using var contentStream = new MemoryStream();
+			await using var contentStream = new MemoryStream();
 			await _parser.ReadChanges(inputStream, contentStream);
 
 			if(contentStream.Length > 0) {

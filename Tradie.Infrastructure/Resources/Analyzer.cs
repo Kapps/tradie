@@ -7,6 +7,7 @@ using HashiCorp.Cdktf.Providers.Aws.LambdaFunction;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using HashiCorp.Cdktf.Providers.Aws.Sqs;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
@@ -20,7 +21,8 @@ namespace Tradie.Infrastructure.Resources {
 			ResourceConfig resourceConfig,
 			Permissions permissions,
 			Scanner scanner,
-			Network network
+			Network network,
+			ItemStream itemStream
 		) {
 			this.AnalyzedItemBucket = new S3Bucket(stack, "analyzed-changesets-bucket", new S3BucketConfig() {
 				Bucket = "analyzed-changesets",
@@ -55,8 +57,9 @@ namespace Tradie.Infrastructure.Resources {
 			var role = new IamRole(stack, "analyzer-task-role", new IamRoleConfig() {
 				Name = "analyzer-task-role",
 				InlinePolicy = new[] {
-					permissions.InlineLogPolicy,
+					permissions.AllowLoggingPolicy,
 					permissions.ReadConfigPolicy,
+					permissions.CreateBasicLambdaPolicy(dlq.Arn),
 					new IamRoleInlinePolicy() {
 						Name = "analyzer-s3",
 						Policy = JsonSerializer.Serialize(new {
@@ -71,70 +74,82 @@ namespace Tradie.Infrastructure.Resources {
 										scanner.ChangeBucket.Arn,
 										$"{scanner.ChangeBucket.Arn}/*"
 									}
-								}, new {
-									Effect = "Allow",
-									Action = new[] {
-										"sqs:SendMessage",
-										"sqs:ReceiveMessage",
-										"sqs:DeleteMessage",
-										"sqs:ChangeMessageVisibility"
-									},
-									Resource = new[] {
-										dlq.Arn
-									}
-								}, new {
-									Effect = "Allow",
-									Action = new[] {
-										"ec2:CreateNetworkInterface",
-										"ec2:DescribeNetworkInterfaces",
-										"ec2:DeleteNetworkInterface"
-									},
-									Resource = new[] { "*" }
-								}, new {
-									Effect = "Allow",
-									Action = new[] {
-										"ecr:BatchGetImage",
-										"ecr:GetDownloadUrlForLayer"
-									},
-									Resource = new[] { "*" }
 								}
-							},
+							}
+						})
+					},
+					new IamRoleInlinePolicy() {
+						Name = "analyzer-kinesis",
+						Policy = JsonSerializer.Serialize(new {
+							Version = Permissions.PolicyVersion,
+							Statement = new[] {
+								new {
+									Effect = "Allow",
+									Action = new[] { "kinesis:*" },
+									Resource = new[] {
+										itemStream.KinesisStream.Arn
+									}
+								}
+							}
 						})
 					}
 				},
 				AssumeRolePolicy = Permissions.LambdaAssumeRolePolicy,
 			});
 
-			var logs = new CloudwatchLogGroup(stack, "analyzer-log-group", new CloudwatchLogGroupConfig() {
+			/*var logs = new CloudwatchLogGroup(stack, "analyzer-log-group", new CloudwatchLogGroupConfig() {
 				Name = "analyzer-logs",
 				RetentionInDays = 14,
-			});
+			});*/
 
 			var repo = new EcrProjectRepository(stack, "analyzer", "Tradie.Analyzer", resourceConfig);
 
 			var lambda = new LambdaFunction(stack, "analyzer-lambda", new LambdaFunctionConfig() {
 				Architectures = new[] { "arm64" },
 				VpcConfig = new LambdaFunctionVpcConfig() {
-					SubnetIds = new[] { network.PublicSubnets[0].Id },
+					SubnetIds = new[] { network.PrivateSubnets[0].Id },
 					SecurityGroupIds = new[] { network.InternalTrafficOnlySecurityGroup.Id },
 				},
 				FunctionName = "analyzer",
 				Role = role.Arn,
 				Environment = new LambdaFunctionEnvironment() {
-					Variables = new[] {
-						new {
-							TRADIE_ENV=resourceConfig.Environment
-						}
-					}
+					Variables = new Dictionary<string, string>() {
+						{ "TRADIE_ENV", resourceConfig.Environment },
+						{ "DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false" },
+						{ "BUILD_HASH", repo.HashTag }
+					},
 				},
 				DeadLetterConfig = new LambdaFunctionDeadLetterConfig() {
 					TargetArn = dlq.Arn
 				},
-				Runtime = "provided.al2",
-				ImageUri = $"{repo.EcrRepo.RepositoryUrl}:latest",
+				ImageUri = repo.EcrImageUri,
+				Tags = new[] { repo.BuildResource.Id },
 				MemorySize = 512,
 				PackageType = "Image",
-				Timeout = 300,
+				Timeout = 30,
+				DependsOn = new[] { repo.BuildResource }
+			});
+			
+
+			var triggerPerm = new LambdaPermission(stack, "analyzer-s3-perm", new LambdaPermissionConfig() {
+				Action = "lambda:InvokeFunction",
+				StatementId = "AllowExecutionFromS3Bucket",
+				FunctionName = lambda.Arn,
+				Principal = "s3.amazonaws.com",
+				SourceArn = scanner.ChangeBucket.Arn
+			});
+			
+			var trigger = new S3BucketNotification(stack, "analyzer-s3-trigger", new S3BucketNotificationConfig() {
+				Bucket = scanner.ChangeBucket.Bucket,
+				DependsOn = new[] { triggerPerm },
+				LambdaFunction = new IS3BucketNotificationLambdaFunction[] {
+					new S3BucketNotificationLambdaFunction() {
+						Events = new[] {
+							"s3:ObjectCreated:*",
+						},
+						LambdaFunctionArn = lambda.Arn,
+					}
+				}
 			});
 		}
 	}

@@ -16,15 +16,57 @@ namespace Tradie.Infrastructure.Resources {
 		/// <summary>
 		/// Inline policy to allow creating log streams and putting events.
 		/// </summary>
-		public readonly IIamRoleInlinePolicy InlineLogPolicy = new IamRoleInlinePolicy() {
+		public readonly IIamRoleInlinePolicy AllowLoggingPolicy = new IamRoleInlinePolicy() {
 			Name = "allow-logs",
 			Policy = JsonSerializer.Serialize(new {
 				Version = PolicyVersion,
 				Statement = new[] {
 					new {
 						Effect = "Allow",
-						Action = new[] { "logs:CreateLogStream", "logs:PutLogEvents" },
+						Action = new[] { "logs:CreateLogStream", "logs:PutLogEvents", "logs:CreateLogGroup" },
 						Resource = new[] { "*" },
+					}
+				}
+			})
+		};
+
+		/// <summary>
+		/// Creates an inline policy for Lambda images to allow access to the DLQ, networking interfaces, and pulling images.
+		/// Does not include the InlineLogPolicy.l
+		/// </summary>
+		public IIamRoleInlinePolicy CreateBasicLambdaPolicy(string dlqArn) => new IamRoleInlinePolicy() {
+			Name = "lambda-basics",
+			Policy = JsonSerializer.Serialize(new {
+				Version = PolicyVersion,
+				Statement = new[] {
+					new {
+						Effect = "Allow",
+						Action = new[] {
+							"sqs:SendMessage",
+							"sqs:ReceiveMessage",
+							"sqs:DeleteMessage",
+							"sqs:ChangeMessageVisibility"
+						},
+						Resource = new[] {
+							dlqArn,
+						}
+					},
+					new {
+						Effect = "Allow",
+						Action = new[] {
+							"ec2:CreateNetworkInterface",
+							"ec2:DescribeNetworkInterfaces",
+							"ec2:DeleteNetworkInterface"
+						},
+						Resource = new[] {"*"}
+					},
+					new {
+						Effect = "Allow",
+						Action = new[] {
+							"ecr:BatchGetImage",
+							"ecr:GetDownloadUrlForLayer"
+						},
+						Resource = new[] {"*"}
 					}
 				}
 			})

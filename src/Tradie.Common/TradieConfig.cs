@@ -47,6 +47,7 @@ namespace Tradie.Common {
 		/// </summary>
 		public static async Task InitializeFromSsm(string environment, IAmazonSimpleSystemsManagement ssmClient) {
 			Console.WriteLine($"Initializing config from SSM for environment {environment}.");
+			Environment = environment;
 			var matchedProperties = new HashSet<PropertyInfo>();
 
 			var props = typeof(TradieConfig).GetProperties(BindingFlags.Public | BindingFlags.Static)
@@ -64,7 +65,6 @@ namespace Tradie.Common {
 				
 
 				var resp = await ssmClient.GetParametersAsync(req);
-				Console.WriteLine($"Got resp {SpanJson.JsonSerializer.Generic.Utf16.Serialize(resp)}");
 
 				foreach(var param in resp.Parameters) {
 					string propName = param.Name.Substring(param.Name.IndexOf(".") + 1);
@@ -132,13 +132,24 @@ namespace Tradie.Common {
 		/// Name of the Kinesis stream used for sending analyzed item data.
 		/// </summary>
 		public static string AnalyzedItemStreamName { get; set; }
+		
+		/// <summary>
+		/// Default amount of stash tabs to load at a time when analyzing the item stream.
+		/// </summary>
+		[DefaultValue(100)]
+		public static int ItemStreamBatchSize { get; set; }
+		
+		/// <summary>
+		/// The ID of the shard used for building item logs to read the Kinesis item stream.
+		/// </summary>
+		[DefaultValue("1")]
+		public static string LogBuilderShardId { get; set; }
 
 		/// <summary>
 		/// Returns the environment that we're running under, such as "test" or "tradie-prod-ca".
 		/// </summary>
 		[IgnoreDataMember]
 		public static string Environment { get; private set; }
-
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

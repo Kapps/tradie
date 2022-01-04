@@ -13,13 +13,15 @@ namespace Tradie.Common.RawModels {
             bool crusader,
             bool shaper,
             bool warlord,
-            bool hunter
+            bool hunter,
+            bool elder
         ) {
             this.Redeemer = redeemer;
             this.Crusader = crusader;
             this.Shaper = shaper;
             this.Warlord = warlord;
             this.Hunter = hunter;
+            this.Elder = elder;
         }
 
         [DataMember(Name = "redeemer")]
@@ -36,5 +38,8 @@ namespace Tradie.Common.RawModels {
 
         [DataMember(Name = "hunter")]
         public readonly bool Hunter;
+
+        [DataMember(Name = "elder")]
+        public readonly bool Elder;
     }
 }

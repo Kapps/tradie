@@ -33,8 +33,8 @@ namespace Tradie.Scanner {
 		public async Task WriteChangeSet(string changeSetId, byte[] changeSetContents) {
 			var req = new PutObjectRequest() {
 				AutoCloseStream = false,
-				DisableMD5Stream = true,
-				DisablePayloadSigning = true,
+				DisableMD5Stream = false,
+				DisablePayloadSigning = false,
 				ContentType = "application/json",
 				BucketName = TradieConfig.ChangeSetBucket,
 				Key = $"{TradieConfig.RawChangeSetPrefix}{changeSetId}.json.br",
@@ -45,7 +45,7 @@ namespace Tradie.Scanner {
 
 			var sw = Stopwatch.StartNew();
 			var compressed = _compressor.Compress(changeSetContents);
-			var compressMS = sw.ElapsedMilliseconds;
+			var compressMs = sw.ElapsedMilliseconds;
 
 			await using var ms = new MemoryStream(compressed);
 			
@@ -55,10 +55,10 @@ namespace Tradie.Scanner {
 			req.Headers.ContentEncoding = "br";
 				
 			var putResp = await _s3Client.PutObjectAsync(req);
-			var totalMS = sw.ElapsedMilliseconds;
+			var totalMs = sw.ElapsedMilliseconds;
 
 			_logger.LogInformation("Uploaded changeset {changeSetId} with status code {statusCode} (request {requestId}). Took {compressMS}ms to compress and {totalMS}ms to upload {size}KB.",
-				changeSetId, putResp.HttpStatusCode, putResp.ResponseMetadata.RequestId, compressMS, totalMS - compressMS, ms.Length / 1024);
+				changeSetId, putResp.HttpStatusCode, putResp.ResponseMetadata.RequestId, compressMs, totalMs - compressMs, ms.Length / 1024);
 		}
 
 		private readonly IAmazonS3 _s3Client;

@@ -12,7 +12,7 @@ public class InfluenceTest {
 			""hunter"": true,
 			""crusader"": true
 		}";
-		var expected = new Influence(false, true, false, false, true);
+		var expected = new Influence(false, true, false, false, true, false);
 		var actual = SpanJson.JsonSerializer.Generic.Utf16.Deserialize<Influence>(json);
 		actual.ShouldDeepEqual(expected);
 	}

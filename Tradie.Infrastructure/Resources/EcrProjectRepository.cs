@@ -15,12 +15,24 @@ namespace Tradie.Infrastructure.Resources {
 		/// <summary>
 		/// The tag for the build version that was pushed to the repo.
 		/// </summary>
-		public readonly string Tag;
+		public readonly string HashTag;
+		/// <summary>
+		/// The tag for the build version that is the latest build.
+		/// </summary>
+		public readonly string LatestTag;
 		/// <summary>
 		/// The resource that handles the building of this project.
 		/// Anything that needs the compiled output of the project should depend on this resource.
 		/// </summary>
 		public readonly HashiCorp.Cdktf.Providers.Null.Resource BuildResource;
+		/// <summary>
+		/// EcrImage with an ID of the build version.
+		/// </summary>
+		public readonly DataAwsEcrImage EcrImage;
+		/// <summary>
+		/// Full URL to the EcrImage for this build version (latest tag).
+		/// </summary>
+		public string EcrImageUri => $"{this.EcrRepo.RepositoryUrl}@{this.EcrImage.Id}";
 
 		/// <summary>
 		/// Creates a new DotnetDockerRepository that builds the given project and pushes it to an ECR repo.
@@ -49,16 +61,21 @@ namespace Tradie.Infrastructure.Resources {
 				}
 			}
 
-			this.Tag = $"{this.EcrRepo.RepositoryUrl}:{resourceConfig.Version}-{_cachedSolutionAsset.AssetHash}";
-			string latestTag = $"{this.EcrRepo.RepositoryUrl}:latest";
+			this.HashTag = $"{this.EcrRepo.RepositoryUrl}:{resourceConfig.Version}-{_cachedSolutionAsset.AssetHash}";
+			this.LatestTag = $"{this.EcrRepo.RepositoryUrl}:latest";
 			
-			this.BuildResource = new HashiCorp.Cdktf.Providers.Null.Resource(stack, $"{name}-image-{this.Tag}", new HashiCorp.Cdktf.Providers.Null.ResourceConfig() {
+			this.BuildResource = new HashiCorp.Cdktf.Providers.Null.Resource(stack, $"{name}-image-{this.HashTag}", new HashiCorp.Cdktf.Providers.Null.ResourceConfig() {
 				DependsOn = new ITerraformDependable[] { auth },
 			});
 			this.BuildResource.AddOverride("provisioner.local-exec.command",
 				$"docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
-				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.Tag}\" -t \"{latestTag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
-				+ $"docker push \"{latestTag}\"");
+				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.HashTag}\" -t \"{this.LatestTag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
+				+ $"docker push \"{this.LatestTag}\"");
+
+			this.EcrImage = new DataAwsEcrImage(stack, $"{name}-ecr-image", new DataAwsEcrImageConfig() {
+				ImageTag = "latest",
+				RepositoryName = this.EcrRepo.Name,
+			});
 		}
 
 		private static TerraformAsset _cachedSolutionAsset;

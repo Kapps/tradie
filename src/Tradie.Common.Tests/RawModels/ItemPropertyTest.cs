@@ -10,7 +10,7 @@ public class ItemPropertyTest {
 
 	[TestMethod]
 	public void TestFromJson() {
-		string json = "{\"name\":\"Level\",\"values\":[[\"54\",11]],\"displayMode\":12}";
+		string json = "{\"name\":\"Level\",\"values\":[[\"54\",11]],\"displayMode\":12,\"Type\":0}";
 		var expected = new ItemProperty("Level", new ItemPropertyValue[] {
 			new ItemPropertyValue("54", 11),
 		}, 12);
@@ -24,7 +24,7 @@ public class ItemPropertyTest {
 		var prop = new ItemProperty("Level", new ItemPropertyValue[] {
 			new ItemPropertyValue("54", 11),
 		}, 12);
-		var expectedJson = "{\"name\":\"Level\",\"values\":[[\"54\",11]],\"displayMode\":12}";
+		var expectedJson = "{\"name\":\"Level\",\"values\":[[\"54\",11]],\"displayMode\":12,\"Type\":0}";
 		string actualJson = SpanJson.JsonSerializer.Generic.Utf16.Serialize(prop).Replace("\n", "");
 		Assert.AreEqual(expectedJson, actualJson);
 	}

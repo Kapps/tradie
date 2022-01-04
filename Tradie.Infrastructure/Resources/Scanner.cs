@@ -49,7 +49,7 @@ namespace Tradie.Infrastructure.Resources {
 			var taskRole = new IamRole(stack, "scanner-task-role", new IamRoleConfig() {
 				Name = "scanner-task-role",
 				InlinePolicy = new[] {
-					permissions.InlineLogPolicy,
+					permissions.AllowLoggingPolicy,
 					permissions.ReadConfigPolicy,
 					new IamRoleInlinePolicy() {
 						Name = "allow-s3-readwrite",
@@ -85,8 +85,8 @@ namespace Tradie.Infrastructure.Resources {
 			});
 			
 			var taskDef = new EcsTaskDefinition(stack, "scanner-taskdef", new EcsTaskDefinitionConfig() {
-				Cpu = "256",
-				Memory = "512",
+				Cpu = "128",
+				Memory = "256",
 				NetworkMode = "host",
 				Family = "scanner",
 				TaskRoleArn = taskRole.Arn,
@@ -96,10 +96,10 @@ namespace Tradie.Infrastructure.Resources {
 				ContainerDefinitions = JsonSerializer.Serialize(new[] {
 					new {
 						name = "tradie-scanner",
-						this.Repo.Tag,
-						image = this.Repo.Tag,
-						cpu = 256,
-						memory = 512,
+						Tag = this.Repo.LatestTag,
+						image = this.Repo.EcrImageUri,
+						cpu = 128,
+						memory = 128,
 						executionRoleArn = permissions.ExecutionRole.Arn,
 						taskRole = taskRole.Arn,
 						environment = new[] {
@@ -107,6 +107,10 @@ namespace Tradie.Infrastructure.Resources {
 								name = "TRADIE_ENV",
 								Value = resourceConfig.Environment,
 							},
+							new {
+								name = "BUILD_HASH",
+								Value = this.Repo.HashTag
+							}
 						},
 						logConfiguration = new {
 							logDriver = "awslogs",

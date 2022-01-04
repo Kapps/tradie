@@ -86,7 +86,7 @@ public class ChangeSetParser : IChangeSetParser {
 		}
 
 		int copyStart = arrayStart;
-		int leftover = 0;
+		bool firstCopy = true;
 
 		// At this point we're inside a {, and starting to copy at a [.
 		// So we want to read until the second last character (]) in the stream, to prevent an extra trailing } in the tab array.
@@ -95,10 +95,21 @@ public class ChangeSetParser : IChangeSetParser {
 			// Leave one character left for the next read, as we don't want to write the last character.
 			// So when we get to a 0 byte read, discard the remaining character.
 			await outputStream.WriteAsync(buff, copyStart, bytesRead - copyStart);
+
+			if(firstCopy) {
+				copyStart = 1;
+				firstCopy = false;
+			} else {
+				buff[0] = buff[bytesRead];
+				copyStart = 0;
+			}
+			bytesRead = await changeSetStream.ReadAsync(buff, 1, buff.Length - 1);
+			
+			/*
 			buff[0] = buff[bytesRead - (1 - leftover)];
 			copyStart = 0;
 			leftover = 1;
-			bytesRead = await changeSetStream.ReadAsync(buff, 1, buff.Length - 1);
+			bytesRead = await changeSetStream.ReadAsync(buff, 1, buff.Length - 1);*/
 		}		
 	}
 }

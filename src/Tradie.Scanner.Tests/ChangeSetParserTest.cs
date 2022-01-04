@@ -1,9 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Tradie.Common.RawModels;
 
 namespace Tradie.Scanner.Tests {
 	[TestClass]
@@ -34,17 +37,21 @@ namespace Tradie.Scanner.Tests {
 				using var doc = JsonDocument.Parse(Encoding.UTF8.GetString(ms.ToArray()));
 			}
 		}
-
-		[TestMethod]
-		public async Task TestReadFull() {
+		
+		[DataTestMethod]
+		[DataRow("sample-stashtab.json", "1295845615-1301399396-1257065509-1404516195-1351110417")]
+		[DataRow("sample-stashtab2.json", "1295772059-1301316531-1256989813-1404414243-1351025004")]
+		[DataRow("sample-stashtab3.json", "1368672698-1373918108-1327697241-1481062033-1427414116")]
+		public async Task TestReadFull(string inputFile, string nextChangeId) {
+			Console.WriteLine("Running the test...");
 			var parser = new ChangeSetParser();
 
 			using var ms = new MemoryStream();
-			using(var inputStream = File.OpenRead("sample-stashtab2.json")) {
+			using(var inputStream = File.OpenRead(inputFile)) {
 				var sw = Stopwatch.StartNew();
 
 				var header = await parser.ReadHeader(inputStream);
-				Assert.AreEqual("1295772059-1301316531-1256989813-1404414243-1351025004", header.NextChangeSetId);
+				Assert.AreEqual(nextChangeId, header.NextChangeSetId);
 				System.Console.WriteLine($"Reading header took {sw.ElapsedMilliseconds}ms.");
 
 				await parser.ReadChanges(inputStream, ms);
@@ -52,6 +59,9 @@ namespace Tradie.Scanner.Tests {
 				System.Console.WriteLine($"Reading all changes took {sw.ElapsedMilliseconds}ms.");
 
 				using var doc = JsonDocument.Parse(Encoding.UTF8.GetString(ms.ToArray()));
+
+				var tab = JsonConvert.DeserializeObject<RawStashTab[]>(Encoding.UTF8.GetString(ms.ToArray()));
+				Console.WriteLine(tab.Length);
 			}
 		}
 

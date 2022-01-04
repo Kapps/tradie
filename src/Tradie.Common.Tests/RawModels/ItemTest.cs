@@ -61,7 +61,7 @@ public class ItemTest {
 			league: "Scourge",
 			name: "Rift Idol", typeLine: "Turquoise Amulet", baseType: "Turquoise Amulet",
 			identified: true, itemLevel: 82, frameType: 2, x: 6, y: 0, inventoryId: "Stash18",
-			influences: new Influence(false, false, false, false, true),
+			influences: new Influence(false, false, false, false, true, false),
 			requirements: new[] {
 				new ItemProperty("Level", new[] {new ItemPropertyValue("54", 0)}, 0),
 			},

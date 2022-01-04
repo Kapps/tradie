@@ -9,6 +9,8 @@ namespace Tradie.Analyzer.Entities;
 /// </summary>
 [Table("ItemTypes")]
 [Index(nameof(Name), IsUnique = true, Name = "idx_itemtype_name")]
+[Index(nameof(Category), Name = "idx_itemtype_category")]
+[Index(nameof(Subcategory), Name = "idx_itemtype_subcategory")]
 public class ItemType {
 	/// <summary>
 	/// Unique ID for the item type.

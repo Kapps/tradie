@@ -1,6 +1,7 @@
 ﻿using Amazon.JSII.Runtime.Deputy;
 using Constructs;
 using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Aws.S3;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,11 +20,14 @@ namespace Tradie.Infrastructure.Aspects {
 			bool updated = false;
 			var prefixedProps = new[] {"Name", "Bucket", "Family", "Identifier", "ClusterIdentifier"};
 			foreach(var prop in prefixedProps) {
+				if(prop == "Bucket" && node.GetType() != typeof(S3Bucket)) {
+					continue;
+				}
 				updated |= TryPrefix(node, prop);
 			}
 			
 			if(!updated) {
-				Console.WriteLine($"No prefix rewrites were performed on {node}.");
+				Console.WriteLine($"No prefix rewrites were performed on {node.GetType().Name} {node}.");
 			}
 		}
 
@@ -35,13 +39,13 @@ namespace Tradie.Infrastructure.Aspects {
 
 			string currVal = (string)obj.GetType().GetProperty(inputProp).GetValue(obj);
 			if(String.IsNullOrWhiteSpace(currVal)) {
-				Console.WriteLine($"Skipped prefixing {obj} as the {property} property was null or empty.");
+				Console.WriteLine($"Skipped prefixing {obj.GetType().Name} {obj} as the {property} property was null or empty.");
 				return false;
 			}
 				
 			string newVal = $"{this.prefix}-{currVal}";
 			obj.GetType().GetProperty(property).SetValue(obj, newVal, null);
-			Console.WriteLine($"Prefixed {obj} to {newVal}");
+			Console.WriteLine($"Prefixed {obj.GetType().Name} {obj} to {newVal}");
 			return true;
 		}
 

@@ -21,7 +21,7 @@ namespace Tradie.Analyzer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Tradie.Analyzer.Models.ItemType", b =>
+            modelBuilder.Entity("Tradie.Analyzer.Entities.ItemType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,15 +46,45 @@ namespace Tradie.Analyzer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex(new[] { "Category" }, "idx_itemtype_category");
+
                     b.HasIndex(new[] { "Name" }, "idx_itemtype_name")
                         .IsUnique();
+
+                    b.HasIndex(new[] { "Subcategory" }, "idx_itemtype_subcategory");
 
                     b.ToTable("ItemTypes");
                 });
 
-            modelBuilder.Entity("Tradie.Analyzer.Models.ItemType", b =>
+            modelBuilder.Entity("Tradie.Analyzer.Entities.Modifier", b =>
                 {
-                    b.OwnsOne("Tradie.Analyzer.Models.Requirements", "Requirements", b1 =>
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("ModHash")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("ModifierText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "ModHash" }, "idx_modifier_modhash")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "ModifierText" }, "idx_modifier_modtext")
+                        .IsUnique();
+
+                    b.ToTable("Modifiers");
+                });
+
+            modelBuilder.Entity("Tradie.Analyzer.Entities.ItemType", b =>
+                {
+                    b.OwnsOne("Tradie.Analyzer.Entities.Requirements", "Requirements", b1 =>
                         {
                             b1.Property<int>("ItemTypeId")
                                 .HasColumnType("integer");

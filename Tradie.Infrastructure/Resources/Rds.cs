@@ -90,6 +90,7 @@ namespace Tradie.Infrastructure.Resources {
 					SecondsUntilAutoPause = 300,
 					TimeoutAction = "ForceApplyCapacityChange",
 				},
+				EnableHttpEndpoint = true,
 				SkipFinalSnapshot = true,
 			});
 			

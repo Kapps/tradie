@@ -13,12 +13,14 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
         <PackageReference Include="Moq" Version="4.16.1" />
         <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-        <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
         <PackageReference Include="coverlet.collector" Version="3.0.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Tradie.Analyzer\Tradie.Analyzer.csproj" />
+      <ProjectReference Include="..\Tradie.Common.Tests\Tradie.Common.Tests.csproj" />
+      <ProjectReference Include="..\Tradie.TestUtils\Tradie.TestUtils.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,6 +34,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="SampleItems\jewel.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="SampleItems\2mod.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
