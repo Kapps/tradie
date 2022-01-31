@@ -22,14 +22,16 @@ public class StashTabAnalyzer : IStashTabAnalyzer {
 	
 	public async Task<AnalyzedStashTab> AnalyzeTab(RawStashTab tab) {
 		if(tab.Items.Length == 0) {
-			return new AnalyzedStashTab(tab.Id, Array.Empty<ItemAnalysis>());
+			return new AnalyzedStashTab(tab.Id, tab.Name ?? "<removed>", tab.LastCharacterName,
+				tab.AccountName, tab.League, tab.Type, Array.Empty<ItemAnalysis>());
 		}
 		
 		var items = tab.Items!.Select(c => new AnalyzedItem(c)).ToArray();
 		
 		await Parallel.ForEachAsync(this._analyzers, (c, token) => new ValueTask(c.AnalyzeItems(items)));
 
-		return new AnalyzedStashTab(tab.Id, items.Select(c=>c.Analysis).ToArray());
+		return new AnalyzedStashTab(tab.Id, tab.Name, tab.LastCharacterName,
+			tab.AccountName, tab.League, tab.Type, items.Select(c=>c.Analysis).ToArray());
 	}
 
 	private readonly IItemAnalyzer[] _analyzers;

@@ -39,6 +39,11 @@ public readonly struct ItemAnalysis {
 		this.ItemId = itemId;
 		this._properties = new ConcurrentDictionary<ushort, IAnalyzedProperties>();
 	}
+
+	public ItemAnalysis(string itemId, ICollection<KeyValuePair<ushort, IAnalyzedProperties>> properties) {
+		this.ItemId = itemId;
+		this._properties = new(properties);
+	}
 	
 	/// <summary>
 	/// Appends an analyzed set of properties for this item to the properties collection.

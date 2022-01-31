@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Tests.Analyzers;
 using Tradie.Common.RawModels;
-using Tradie.Common.Tests;
 
 namespace Tradie.Analyzer.Tests; 
 

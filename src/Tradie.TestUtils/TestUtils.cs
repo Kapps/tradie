@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using DeepEqual.Syntax;
+﻿using DeepEqual.Syntax;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -64,4 +63,3 @@ public static class TestUtils {
 	private static readonly ConcurrentDictionary<ulong, bool> UsedIds = new();
 	private static readonly Random Rng = new Random();
 }
-#endif

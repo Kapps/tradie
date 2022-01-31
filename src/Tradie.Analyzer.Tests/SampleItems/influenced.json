@@ -1,0 +1,141 @@
+﻿{
+  "verified": false,
+  "w": 2,
+  "h": 2,
+  "icon": "https:\/\/web.poecdn.com\/gen\/image\/WzI1LDE0LHsiZiI6IjJESXRlbXMvQXJtb3Vycy9Cb290cy9Cb290c1N0ckRleDIiLCJ3IjoyLCJoIjoyLCJzY2FsZSI6MX1d\/d5b5430d4c\/BootsStrDex2.png",
+  "league": "Scourge",
+  "id": "00922016fba8ddd45de9de08fe05d6d4b9c4629be5f722eba05ea44004105d5d",
+  "sockets": [
+    {
+      "group": 0,
+      "attr": "S",
+      "sColour": "R"
+    },
+    {
+      "group": 0,
+      "attr": "S",
+      "sColour": "R"
+    },
+    {
+      "group": 0,
+      "attr": "S",
+      "sColour": "R"
+    },
+    {
+      "group": 0,
+      "attr": "S",
+      "sColour": "R"
+    }
+  ],
+  "name": "Behemoth March",
+  "typeLine": "Hydrascale Boots",
+  "baseType": "Hydrascale Boots",
+  "identified": true,
+  "ilvl": 67,
+  "note": "~price 75 chaos",
+  "properties": [
+    {
+      "name": "Quality",
+      "values": [
+        [
+          "+20%",
+          1
+        ]
+      ],
+      "displayMode": 0,
+      "type": 6
+    },
+    {
+      "name": "Armour",
+      "values": [
+        [
+          "132",
+          1
+        ]
+      ],
+      "displayMode": 0,
+      "type": 16
+    },
+    {
+      "name": "Evasion Rating",
+      "values": [
+        [
+          "155",
+          1
+        ]
+      ],
+      "displayMode": 0,
+      "type": 17
+    }
+  ],
+  "requirements": [
+    {
+      "name": "Level",
+      "values": [
+        [
+          "60",
+          0
+        ]
+      ],
+      "displayMode": 0
+    },
+    {
+      "name": "Str",
+      "values": [
+        [
+          "56",
+          0
+        ]
+      ],
+      "displayMode": 1
+    },
+    {
+      "name": "Dex",
+      "values": [
+        [
+          "56",
+          0
+        ]
+      ],
+      "displayMode": 1
+    }
+  ],
+  "enchantMods": [
+    "10% increased Movement Speed"
+  ],
+  "explicitMods": [
+    "20% increased Movement Speed",
+    "+46% to Cold Resistance"
+  ],
+  "craftedMods": [
+    "+23% to Cold Resistance"
+  ],
+  "scourgeMods": [
+    "20% increased Movement Speed"
+  ],
+  "frameType": 2,
+  "extended": {
+    "category": "armour",
+    "subcategories": [
+      "boots"
+    ],
+    "prefixes": 3,
+    "suffixes": 3
+  },
+  "x": 8,
+  "y": 6,
+  "inventoryId": "Stash1",
+  "socketedItems": [],
+  "influences": {
+    "shaper": true,
+    "crusader": true
+  },
+  "corrupted": true,
+  "synthesized": true,
+  "incubatedItem": {
+    "name": "Item",
+    "level": 64,
+    "progress": 0,
+    "total": 8000
+  }
+}

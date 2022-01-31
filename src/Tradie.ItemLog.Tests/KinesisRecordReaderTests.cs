@@ -10,9 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Common;
-using Tradie.Common.Tests;
 using Tradie.TestUtils;
-using static Tradie.TestUtils.TestUtils;
 
 namespace Tradie.ItemLog.Tests; 
 
@@ -99,11 +97,10 @@ public class KinesisRecordReaderTests : TestBase {
 		res.ShouldDeepEqual(records.ToArray());
 	}
 
-	[TestInitialize]
-	public void Initialize() {
+	protected override void Initialize() {
 		this._recordReader = new KinesisRecordReader(this._kinesisClient.Object);
 	}
-	
+
 	private Mock<IAmazonKinesis> _kinesisClient = null!;
 	private KinesisRecordReader _recordReader = null!;
 }

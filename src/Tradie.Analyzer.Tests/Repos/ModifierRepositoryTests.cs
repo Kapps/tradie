@@ -5,21 +5,14 @@ using System.Threading.Tasks;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.TestUtils;
 
 namespace Tradie.Analyzer.Tests.Repos; 
 
 [TestClass]
-public class ModifierRepositoryTest {
-	[TestInitialize]
-	public async Task Initialize() {
-		this._context = new AnalysisContext();
-		await this._context.Database.BeginTransactionAsync();
+public class ModifierRepositoryTest : TestBase {
+	protected override void Initialize() {
 		this._repo = new ModifierDbRepository(this._context);
-	}
-
-	[TestCleanup]
-	public async Task Cleanup() {
-		await this._context.Database.RollbackTransactionAsync();
 	}
 
 	[TestMethod]

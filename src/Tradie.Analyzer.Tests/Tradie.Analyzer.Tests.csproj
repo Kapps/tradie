@@ -19,7 +19,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Tradie.Analyzer\Tradie.Analyzer.csproj" />
-      <ProjectReference Include="..\Tradie.Common.Tests\Tradie.Common.Tests.csproj" />
       <ProjectReference Include="..\Tradie.TestUtils\Tradie.TestUtils.csproj" />
     </ItemGroup>
 
@@ -37,6 +36,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="SampleItems\2mod.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="SampleItems\influenced.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

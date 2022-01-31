@@ -22,7 +22,7 @@ namespace Tradie.Common.Tests {
 		[DataTestMethod]
 		public async Task TestGetParameter(string name, string stringVal, object result) {
 			var req = new GetParameterRequest() {
-				Name = name,
+				Name = $"tradie-test.Param.{name}",
 				WithDecryption = true,
 			};
 			var resp = new GetParameterResponse() {

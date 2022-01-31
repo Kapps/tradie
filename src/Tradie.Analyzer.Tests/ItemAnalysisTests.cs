@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using Tradie.Analyzer;
 using Tradie.Analyzer.Tests.Analyzers;
-using Tradie.Common.Tests;
 using static Tradie.TestUtils.TestUtils;
 
 namespace Tradie.Analyzer.Tests; 

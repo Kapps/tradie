@@ -18,9 +18,6 @@ namespace Tradie.Common {
 			
 			if(environment == "test") {
 				InitializeWithDefaults(environment);
-				DbHost = System.Environment.GetEnvironmentVariable("TRADIE_DB_HOST") ?? "127.0.0.1";
-				DbUser = System.Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? "tradieadmin";
-				DbPass = System.Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? "tradie";
 			} else {
 				await InitializeFromSsm(environment, ssmClient);
 			}
@@ -40,6 +37,10 @@ namespace Tradie.Common {
 				
 				prop.SetValue(null, defaultAttr.Value, null);
 			}
+			
+			DbHost = System.Environment.GetEnvironmentVariable("TRADIE_DB_HOST") ?? "127.0.0.1";
+			DbUser = System.Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? "tradieadmin";
+			DbPass = System.Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? "tradie";
 		}
 		/// <summary>
 		/// Returns a TradieConfig with all properties loaded from SSM.
@@ -89,7 +90,7 @@ namespace Tradie.Common {
 		/// <summary>
 		/// The user agent to include for all PoE API calls.
 		/// </summary>
-		[DefaultValue("User-Agent: OAuth tradie/1.0.0 (contact: tradie@ogi.bio) StrictMode")]
+		[DefaultValue("tradie/0.1.0 (contact: tradie@ogi.bio) StrictMode")]
 		public static string? UserAgent { get; set; }
 
 		/// <summary>
@@ -142,14 +143,20 @@ namespace Tradie.Common {
 		/// <summary>
 		/// The ID of the shard used for building item logs to read the Kinesis item stream.
 		/// </summary>
-		[DefaultValue("1")]
+		[DefaultValue("shardId-000000000000")]
 		public static string LogBuilderShardId { get; set; }
 
 		/// <summary>
-		/// Returns the environment that we're running under, such as "test" or "tradie-prod-ca".
+		/// Returns the environment that we're running under, such as "test" or "prod-ca".
 		/// </summary>
 		[IgnoreDataMember]
 		public static string Environment { get; private set; }
+
+		/// <summary>
+		/// The number of tabs to handle at a time in a batch when building an item log.
+		/// </summary>
+		[DefaultValue(1000)]
+		public static int LogBuilderBatchSize { get; set; }
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -25,7 +25,7 @@ namespace Tradie.Common {
 				BaseAddress = new Uri("https://www.pathofexile.com/api/"),
 				Timeout = TimeSpan.FromSeconds(TradieConfig.HttpTimeout),
 			};
-			_httpClient.DefaultRequestHeaders.Add("User-Agent", "tradie/0.1.0 (contact: tradie@ogi.bio) StrictMode");
+			_httpClient.DefaultRequestHeaders.Add("User-Agent", TradieConfig.UserAgent);
 			_timeLimiter = TimeLimiter.GetFromMaxCountByInterval(2, TimeSpan.FromSeconds(1));
 		}
 

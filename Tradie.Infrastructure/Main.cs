@@ -3,11 +3,7 @@ using System;
 using Constructs;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws;
-using HashiCorp.Cdktf.Providers.Aws.CloudWatch;
-using HashiCorp.Cdktf.Providers.Aws.Ecs;
-using HashiCorp.Cdktf.Providers.Aws.Vpc;
-using HashiCorp.Cdktf.Providers.Docker;
-using HashiCorp.Cdktf.Providers.Null;
+using Providers.Null;
 using HashiCorp.Cdktf.Providers.Random;
 using System.IO;
 using System.Net;
@@ -28,10 +24,6 @@ namespace Tradie.Infrastructure {
 			});
 
 	        new NullProvider(this, id);
-
-	        new DockerProvider(this, "docker", new DockerProviderConfig() {
-				
-	        });
 
 	        new RandomProvider(this, "random-provider", new RandomProviderConfig() {
 
@@ -58,6 +50,7 @@ namespace Tradie.Infrastructure {
             var httpClient = new HttpClient();
             var localIp = IPAddress.Parse(httpClient.GetStringAsync("https://api.ipify.org").Result);
             var devStack = new MyApp(app, "tradie-dev", new ResourceConfig() {
+	            
 	            Environment = "dev",
 	            //Region = "ca-central-1",
 	            Region = "us-east-1",

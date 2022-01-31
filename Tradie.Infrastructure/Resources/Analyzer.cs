@@ -1,9 +1,7 @@
 ﻿using Constructs;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.CloudWatch;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
-using HashiCorp.Cdktf.Providers.Aws.LambdaFunction;
+using HashiCorp.Cdktf.Providers.Aws.Lambdafunction;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using HashiCorp.Cdktf.Providers.Aws.Sqs;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
@@ -124,9 +122,9 @@ namespace Tradie.Infrastructure.Resources {
 				},
 				ImageUri = repo.EcrImageUri,
 				Tags = new[] { repo.BuildResource.Id },
-				MemorySize = 512,
+				MemorySize = 1024,
 				PackageType = "Image",
-				Timeout = 30,
+				Timeout = 120,
 				DependsOn = new[] { repo.BuildResource }
 			});
 			

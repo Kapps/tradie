@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json;
 
 namespace Tradie.Analyzer.Entities; 
 
@@ -8,10 +11,21 @@ namespace Tradie.Analyzer.Entities;
 /// An analyzed item being persisted within the context to be used as an item log entry.
 /// </summary>
 [Table("Items")]
+[Index(nameof(RawId), IsUnique = true, Name = "idx_item_RawId")]
+[Index(nameof(StashTabId), IsUnique = false, Name = "idx_item_StashTabId")]
 public class LoggedItem {
+	public LoggedItem(string rawId, long stashTabId, byte[] properties) {
+		this.RawId = rawId ?? throw new ArgumentNullException(nameof(rawId));
+		this.StashTabId = stashTabId;
+		this.Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+	}
+
 	/// <summary>
 	/// An auto-generated serial entity ID for this item.
 	/// </summary>
+	[Column]
+	[Key]
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public long Id { get; set; }
 
 	/// <summary>
@@ -29,80 +43,11 @@ public class LoggedItem {
 	public long StashTabId { get; set; }
 
 	/// <summary>
-	/// The name of this item, such as the random name on a rare item.
+	/// The analyzed properties of this item, stored as a Jsonb blob.
 	/// </summary>
-	[Column]
+	[Column(TypeName = "jsonb")]
 	[Required]
-	public string Name { get; set; }
-
-	/// <summary>
-	/// The item level of the item, if applicable.
-	/// </summary>
-	[Column]
-	public int? ItemLevel { get; set; }
-
-	/// <summary>
-	/// The note, which is often a list or buyout price.
-	/// </summary>
-	[Column]
-	public string Note { get; set; }
-
-	/// <summary>
-	/// The X coordinate within the stash tab for the top-left of this item.
-	/// </summary>
-	[Column]
-	[Required]
-	public ushort X { get; set; }
-	
-	/// <summary>
-	/// The Y coordinate within the stash tab for the top-left of this item.
-	/// </summary>
-	[Column]
-	[Required]
-	public ushort Y { get; set; }
-
-	/// <summary>
-	/// Any flags that apply to this item, such as being corrupted.
-	/// </summary>
-	[Column]
-	[Required]
-	[DefaultValue(ItemFlags.None)]
-	public ItemFlags Flags { get; set; }
-
-	/// <summary>
-	/// The type of influences, if any, that apply to this item.
-	/// </summary>
-	[Column]
-	[Required]
-	[DefaultValue(InfluenceKind.None)]
-	public InfluenceKind Influences { get; set; }
+	[DefaultValue("{}")]
+	public byte[] Properties { get; set; }
 }
 
-/// <summary>
-/// Additional flags that apply to an item, such as being corrupted.
-/// </summary>
-[Flags]
-public enum ItemFlags {
-	None = 0,
-	Corrupted = 1,
-	Mirrored = 2,
-	Veiled = 4,
-	Relic = 8,
-	Replica = 16,
-	Synthesized = 32,
-	Fractured = 64
-}
-
-/// <summary>
-/// The types of influences present on an item.
-/// </summary>
-[Flags]
-public enum InfluenceKind {
-	None = 0,
-	Redeemer = 1,
-	Crusader = 2,
-	Warlord = 4,
-	Hunter = 8,
-	Shaper = 16,
-	Elder = 32
-}

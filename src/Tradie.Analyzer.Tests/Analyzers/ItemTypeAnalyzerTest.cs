@@ -7,7 +7,6 @@ using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common.RawModels;
-using Tradie.Common.Tests;
 using Tradie.TestUtils;
 using static Tradie.TestUtils.TestUtils;
 
@@ -96,5 +95,5 @@ public class ItemTypeAnalyzerTest : TestBase {
 		await analyzer.AnalyzeItems(new[] {analyzedItem});
 	}
 
-	private readonly Mock<IItemTypeRepository> _repo;
+	private readonly Mock<IItemTypeRepository> _repo = null!;
 }

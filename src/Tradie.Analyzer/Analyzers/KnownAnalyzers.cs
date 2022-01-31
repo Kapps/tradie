@@ -6,5 +6,7 @@ namespace Tradie.Analyzer.Analyzers;
 /// </summary>
 public enum KnownAnalyzers : ushort {
 	ItemType = 1,
-	Modifiers = 2
+	Modifiers = 2,
+	TradeAttributes = 3,
+	ItemDetails = 4
 }

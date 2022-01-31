@@ -11,8 +11,19 @@ namespace Tradie.Analyzer.Entities;
 [Index(nameof(RawId), IsUnique = true, Name = "idx_stash_RawId")]
 [Index(nameof(LastModified), IsUnique = false, Name = "idx_stash_LastModified")]
 [Index(nameof(Created), IsUnique = false, Name = "idx_stash_Created")]
-[Index(nameof(League), IsUnique = true, Name = "idx_stash_League")]
+[Index(nameof(League), IsUnique = false, Name = "idx_stash_League")]
 public class LoggedStashTab {
+	public LoggedStashTab(string rawId, DateTime lastModified, DateTime created, string? owner,
+		string? lastCharacterName, string? name, string? league) {
+		this.RawId = rawId ?? throw new ArgumentNullException(nameof(rawId));
+		this.LastModified = lastModified;
+		this.Created = created;
+		this.Owner = owner;
+		this.LastCharacterName = lastCharacterName;
+		this.Name = name;
+		this.League = league;
+	}
+
 	/// <summary>
 	/// Unique serial ID of this entity.
 	/// </summary>
@@ -36,18 +47,17 @@ public class LoggedStashTab {
 	public DateTime LastModified { get; set; }
 	
 	/// <summary>
-	/// Time that this tab was first seen, in UTC.
+	/// Time that this tab was first seen, in UTC; defaults to transaction time in UTC.
 	/// </summary>
 	[Column]
 	[Required]
 	public DateTime Created { get; set; }
 
 	/// <summary>
-	/// The account that owns this tab.
+	/// The account that owns this tab, if it's public; null otherwise.
 	/// </summary>
 	[Column]
-	[Required]
-	public string Owner { get; set; }
+	public string? Owner { get; set; }
 
 	/// <summary>
 	/// The character name the account was last seen using.
@@ -56,16 +66,14 @@ public class LoggedStashTab {
 	public string? LastCharacterName { get; set; }
 	
 	/// <summary>
-	/// Name of this tab.
+	/// Name of this tab, if it's public; may be null otherwise?
 	/// </summary>
 	[Column]
-	[Required]
-	public string Name { get; set; }
+	public string? Name { get; set; }
 	
 	/// <summary>
-	/// Name of the league this tab is in.
+	/// Name of the league this tab is in if p
 	/// </summary>
 	[Column]
-	[Required]
-	public string League { get; set; }
+	public string? League { get; set; }
 }

@@ -1,14 +1,7 @@
-using Amazon;
-using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
 using Tradie.Common;
 using Tradie.Scanner;
-using System.Threading.Tasks;
 
 var environment = Environment.GetEnvironmentVariable("TRADIE_ENV") ??
           throw new ArgumentException("TRADIE_ENV environment variable not set.");
@@ -19,6 +12,7 @@ var s3Client = new AmazonS3Client();
 await TradieConfig.InitializeFromSsm(environment, ssmClient);
 
 IHost host = Host.CreateDefaultBuilder(args)
+	.UseConsoleLifetime()
 	.ConfigureServices(services => {
 		services.AddLogging(builder => {
 			builder.AddSimpleConsole(format => {
@@ -40,5 +34,13 @@ IHost host = Host.CreateDefaultBuilder(args)
 	.Build();
 
 
-await host.RunAsync();
+Console.WriteLine("About to run at {0}", DateTime.Now);
+try {
+	await host.RunAsync();
+} catch(Exception ex) {
+	Console.WriteLine("Running the host encountered an error and is going to exit.");
+	Console.WriteLine(ex.ToString());
+}
+
+Console.WriteLine("Exiting at {0}", DateTime.Now);
 

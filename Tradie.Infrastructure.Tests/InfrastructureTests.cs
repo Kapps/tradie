@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Net;
-using Tradie.Infrastructure;
 
 namespace Tradie.Infrastructure.Tests {
 	[TestClass]

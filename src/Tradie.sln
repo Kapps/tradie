@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.ItemLog.Tests", "Tra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.TestUtils", "Tradie.TestUtils\Tradie.TestUtils.csproj", "{48354D5A-6E43-49AE-818F-74998ABD97EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Providers.Null", "..\Tradie.Infrastructure\.gen\Providers.Null\Providers.Null.csproj", "{171C0550-4BB5-407F-820A-C04874760C78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,14 @@ Global
 		{48354D5A-6E43-49AE-818F-74998ABD97EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48354D5A-6E43-49AE-818F-74998ABD97EF}.Release|x64.ActiveCfg = Release|Any CPU
 		{48354D5A-6E43-49AE-818F-74998ABD97EF}.Release|x64.Build.0 = Release|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|x64.Build.0 = Debug|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Release|x64.ActiveCfg = Release|Any CPU
+		{171C0550-4BB5-407F-820A-C04874760C78}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

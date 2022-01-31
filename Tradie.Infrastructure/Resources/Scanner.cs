@@ -1,16 +1,10 @@
 ﻿using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.CloudWatch;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
+using HashiCorp.Cdktf.Providers.Aws.Cloudwatch;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
-using HashiCorp.Cdktf.Providers.Null;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 
 namespace Tradie.Infrastructure.Resources {
@@ -85,8 +79,8 @@ namespace Tradie.Infrastructure.Resources {
 			});
 			
 			var taskDef = new EcsTaskDefinition(stack, "scanner-taskdef", new EcsTaskDefinitionConfig() {
-				Cpu = "128",
-				Memory = "256",
+				Cpu = "256",
+				Memory = "512",
 				NetworkMode = "host",
 				Family = "scanner",
 				TaskRoleArn = taskRole.Arn,
@@ -98,8 +92,8 @@ namespace Tradie.Infrastructure.Resources {
 						name = "tradie-scanner",
 						Tag = this.Repo.LatestTag,
 						image = this.Repo.EcrImageUri,
-						cpu = 128,
-						memory = 128,
+						cpu = 256,
+						memory = 512,
 						executionRoleArn = permissions.ExecutionRole.Arn,
 						taskRole = taskRole.Arn,
 						environment = new[] {

@@ -7,7 +7,7 @@ namespace Tradie.Analyzer.Repos;
 /// <summary>
 /// Repository for storing base types for all equippable items.
 /// </summary>
-public interface IItemTypeRepository {
+public interface IItemTypeRepository : IAsyncDisposable {
 	/// <summary>
 	/// Retrieves a list of all of the base types.
 	/// </summary>
@@ -41,6 +41,10 @@ public class ItemTypeDbRepository : IItemTypeRepository {
 	public Task Insert(IEnumerable<ItemType> baseTypes) {
 		this._context.ItemTypes.AddRange(baseTypes);
 		return this._context.SaveChangesAsync();
+	}
+	
+	public async ValueTask DisposeAsync() {
+		await this._context.DisposeAsync();
 	}
 
 	private readonly AnalysisContext _context;

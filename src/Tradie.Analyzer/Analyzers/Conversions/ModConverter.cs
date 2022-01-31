@@ -45,15 +45,18 @@ public class AnalyzingModConverter : IModConverter {
 	}
 
 	private static IEnumerable<Affix>? MapValues(string[]? itemAffixes, ModKind kind) {
-		if(itemAffixes == null || itemAffixes.Length == 0) {
+		if(itemAffixes == null || itemAffixes.Length == 0 || itemAffixes.All(String.IsNullOrWhiteSpace)) {
 			return null;
 		}
 
-		return itemAffixes.Select(c => {
-			var hash = ModifierText.CalculateValueIndependentHash(c);
-			var scalar = ModifierText.ExtractScalar(c);
-			return new Affix(hash, scalar, kind);
-		}).ToArray();
+		return itemAffixes
+			.Where(c=>!String.IsNullOrWhiteSpace(c))
+			.Select(c => {
+				var hash = ModifierText.CalculateValueIndependentHash(c);
+				var scalar = ModifierText.ExtractScalar(c);
+				return new Affix(hash, scalar, kind);
+			})
+			.ToArray();
 	}
 
 	public async Task<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items) {
@@ -61,7 +64,7 @@ public class AnalyzingModConverter : IModConverter {
 			c.EnchantMods, c.ExplicitMods, c.FracturedMods,
 			c.ImplicitMods, c.ScourgeMods, c.UtilityMods,
 			c.VeiledMods
-		));
+		)).Where(c=>!String.IsNullOrWhiteSpace(c));
 
 		var modifiers = modTexts.Select(c => new Modifier(
 			ModifierText.CalculateValueIndependentHash(c),

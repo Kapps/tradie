@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Tests.Analyzers;
-using Tradie.Common.Tests;
 using static Tradie.TestUtils.TestUtils;
 
 namespace Tradie.Analyzer.Tests.Dispatch; 
@@ -58,10 +57,10 @@ public class StashTabSerializerTests {
 		});
 
 		var tabs = new[] {
-			new AnalyzedStashTab("foo", new[] {
+			new AnalyzedStashTab("foo", "name", null, "acc", "Scourge", "Standard", new[] {
 				analyzedItem.Analysis
 			}),
-			new AnalyzedStashTab("bar", new[] {
+			new AnalyzedStashTab("bar", "name", null, "acc", "Scourge", "Standard", new[] {
 				analyzedItem.Analysis
 			}),
 		};

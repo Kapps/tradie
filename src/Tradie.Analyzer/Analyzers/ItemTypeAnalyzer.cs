@@ -99,6 +99,9 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 	}
 
 	private readonly IItemTypeRepository _repo;
+	public async ValueTask DisposeAsync() {
+		await this._repo.DisposeAsync();
+	}
 }
 
 /// <summary>

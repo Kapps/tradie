@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Common;
 using Amazon.S3;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -23,6 +24,7 @@ namespace Tradie.Scanner {
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
 			this._logger.LogInformation("Starting scan with build hash {buildHash}",
 				System.Environment.GetEnvironmentVariable("BUILD_HASH"));
+			this._logger.LogDebug($"Cancellation token is ${stoppingToken}");
 			
 			var stashParam = await _paramStore.GetParameter(paramNextChangeId, "1295601985-1301161226-1256819523-1404257053-1350867496");
 			string nextChangeId = stashParam.Value ?? throw new ArgumentNullException();
@@ -35,18 +37,22 @@ namespace Tradie.Scanner {
 					await _paramStore.SetParameter(paramNextChangeId, details.NextChangeSetId);
 					if(details.NextChangeSetId == nextChangeId) {
 						slept = true;
-						await Task.Delay(1000); // Give the API a bit of time to get something new.
+						await Task.Delay(1000, stoppingToken); // Give the API a bit of time to get something new.
 					}
 					_logger.LogInformation("Read changeset {changeId} -- next changeset is {nextChangeId} -- slept: {slept}", nextChangeId, details.NextChangeSetId, slept);
 					nextChangeId = details.NextChangeSetId;
-				} catch(OperationCanceledException) {
+				} catch(OperationCanceledException ex) {
 					_logger.LogInformation("Worker cancelled at: {time}", DateTimeOffset.Now);
-					return;
+					this._logger.LogWarning("Exception: {ex} -- stack: {stack}", ex, ex.StackTrace);
+					throw;
 				} catch(Exception ex) {
 					_logger.LogError("Exception occurred while scanning: {ex}", ex.ToString());
 					throw;
 				}
 			}
+			
+			this._logger.LogInformation("We appear to have exited for some reason.");
+			this._logger.LogInformation("Cancellation token is {cancellationToken}", stoppingToken);
 		}
 
 		private async Task<ChangeSetDetails> DispatchNextChangeSet(string changeId) {

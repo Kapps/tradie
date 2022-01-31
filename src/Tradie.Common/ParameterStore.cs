@@ -30,7 +30,7 @@ namespace Tradie.Common {
 
 		public async Task<DynamicParameter<TValue?>> GetParameter<TValue>(string key, TValue? defaultValue = default) {
 			var req = new GetParameterRequest() {
-				Name = key,
+				Name = GetParameterName(key),
 				WithDecryption = true,
 			};
 
@@ -48,7 +48,7 @@ namespace Tradie.Common {
 			string? valString = Convert.ToString(value);
 			var req = new PutParameterRequest() {
 				Type = "String",
-				Name = key,
+				Name = GetParameterName(key),
 				Tier = ParameterTier.Standard,
 				Value = valString,
 				Overwrite = true,
@@ -59,6 +59,8 @@ namespace Tradie.Common {
 				throw new ParameterExecutionException();
 			}
 		}
+
+		private string GetParameterName(string key) => $"tradie-{TradieConfig.Environment}.Param.{key}";
 
 		private IAmazonSimpleSystemsManagement ssmClient;
 	}

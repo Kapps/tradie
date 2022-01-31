@@ -16,4 +16,10 @@
         <PackageReference Include="coverlet.collector" Version="3.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Tradie.Analyzer\Tradie.Analyzer.csproj" />
+      <ProjectReference Include="..\Tradie.ItemLogBuilder\Tradie.ItemLogBuilder.csproj" />
+      <ProjectReference Include="..\Tradie.TestUtils\Tradie.TestUtils.csproj" />
+    </ItemGroup>
+
 </Project>

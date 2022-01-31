@@ -1,15 +1,19 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Analyzers.Conversions;
+using Tradie.TestUtils;
 
 namespace Tradie.Analyzer.Tests.Analyzers; 
 
 [TestClass]
-public class ModifierAnalyzerTests {
+public class ModifierAnalyzerTests : TestBase {
+
 	[TestInitialize]
-	public void Initialize() {
-		this._converter = new Mock<IModConverter>(MockBehavior.Strict);
+	public void Initializer() {
+		this._analyzer = new ModifierAnalyzer(this._converter.Object);
 	}
 
-	private Mock<IModConverter> _converter;
+	private ModifierAnalyzer _analyzer = null!;
+	private Mock<IModConverter> _converter = null!;
 }

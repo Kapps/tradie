@@ -17,4 +17,9 @@
       <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Tradie.Analyzer\Tradie.Analyzer.csproj" />
+      <ProjectReference Include="..\Tradie.Common\Tradie.Common.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,7 +1,7 @@
 ﻿using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.AutoScaling;
+using HashiCorp.Cdktf.Providers.Aws.Autoscaling;
 using HashiCorp.Cdktf.Providers.Aws.Ec2;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Iam;

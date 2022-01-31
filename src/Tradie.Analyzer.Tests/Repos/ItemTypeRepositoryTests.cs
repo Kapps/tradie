@@ -1,32 +1,26 @@
 ﻿using DeepEqual.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.TestUtils;
 
 namespace Tradie.Analyzer.Tests.Repos; 
 
 [TestClass]
-public class ItemTypeRepositoryTest {
-	[TestInitialize]
-	public async Task Initialize() {
-		this._context = new AnalysisContext();
-		await this._context.Database.BeginTransactionAsync();
-		this._repo = new ItemTypeDbRepository(this._context);
-	}
+public class ItemTypeRepositoryTest : TestBase {
 
-	[TestCleanup]
-	public async Task Cleanup() {
-		await this._context.Database.RollbackTransactionAsync();
+	protected override void Initialize() {
+		this._repo = new ItemTypeDbRepository(this._context);
 	}
 
 	[TestMethod]
 	public async Task TestItemTypeRepo_EmptyDataSet() {
 		var results = await this._repo.RetrieveAll();
 		Assert.IsTrue(results.Length == 0);
-
 		results = await this._repo.LoadByNames("foo", "bar");
 		Assert.IsTrue(results.Length == 0);
 	}

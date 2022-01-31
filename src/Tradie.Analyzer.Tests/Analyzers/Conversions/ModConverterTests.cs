@@ -10,7 +10,6 @@ using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.RawModels;
-using Tradie.Common.Tests;
 
 namespace Tradie.Analyzer.Tests.Analyzers.Conversions; 
 
@@ -92,7 +91,7 @@ public class ModConverterTests {
 
 		await this._converter.ConvertModifiers(items);
 	}
-	
+
 	[TestMethod]
 	public async Task TestConvert_WithAllMissingItems() {
 		var items = new[] {

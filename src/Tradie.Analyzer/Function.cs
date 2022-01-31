@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO.Compression;
 using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Analyzers.Conversions;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
@@ -51,6 +52,11 @@ public class Function {
 						.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
 						.AddSingleton<IAmazonS3>(s3Client)
 						.AddSingleton<IItemAnalyzer, ItemTypeAnalyzer>()
+						.AddSingleton<IItemAnalyzer, ModifierAnalyzer>()
+						.AddSingleton<IModConverter, AnalyzingModConverter>()
+						.AddSingleton<IModifierRepository, ModifierDbRepository>()
+						.AddSingleton<IItemAnalyzer, ItemDetailsAnalyzer>()
+						.AddSingleton<IItemAnalyzer, TradePropertiesAnalyzer>()
 						.AddSingleton<IItemTypeRepository, ItemTypeDbRepository>()
 						.AddSingleton<IAnalyzedStashTabDispatcher, AnalyzedStashTabKinesisDispatcher>()
 						.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>();

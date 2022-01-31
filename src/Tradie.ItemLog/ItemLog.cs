@@ -3,7 +3,7 @@ using Tradie.Analyzer;
 namespace Tradie.ItemLog; 
 
 /// <summary>
-/// Represents a snapshot of items at a given point in time that are streamed on demand.
+/// Represents a snapshot of analyzed tabs at a given point in time that are streamed on demand.
 /// </summary>
 public interface IItemLog {
 	/// <summary>
@@ -25,5 +25,5 @@ public record struct ItemLogOffset(string? Offset);
 /// Provides data about a single record within an ItemLog.
 /// </summary>
 /// <param name="Offset">The offset to this item within the log.</param>
-/// <param name="Analysis">The analysis for the record.</param>
-public readonly record struct LogRecord(ItemLogOffset Offset, ItemAnalysis Analysis);
+/// <param name="StashTab">The stash tab present at this offset.</param>
+public readonly record struct LogRecord(ItemLogOffset Offset, AnalyzedStashTab StashTab);

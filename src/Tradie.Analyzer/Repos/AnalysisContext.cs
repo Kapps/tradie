@@ -21,9 +21,19 @@ public class AnalysisContext : DbContext {
 	/// </summary>
 	public DbSet<Modifier> Modifiers { get; set; } = null!;
 
+	/// <summary>
+	/// Returns all analyzed items logged to the context.
+	/// </summary>
+	public DbSet<LoggedItem> LoggedItems { get; set; } = null!;
+
+	/// <summary>
+	/// Returns all stash tabs logged to the context.
+	/// </summary>
+	public DbSet<LoggedStashTab> LoggedStashTabs { get; set; } = null!;
+
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
-		//optionsBuilder.LogTo(Console.WriteLine);
+		optionsBuilder.LogTo(Console.WriteLine);
 		
 		optionsBuilder.UseNpgsql(new NpgsqlConnectionStringBuilder() {
 			Database = "tradie",
@@ -31,15 +41,20 @@ public class AnalysisContext : DbContext {
 			Pooling = true,
 			SslMode = SslMode.Prefer,
 			ApplicationName = "Tradie.Analyzer",
-			Host = TradieConfig.DbHost,
-			Username = TradieConfig.DbUser,
-			Password = TradieConfig.DbPass,
+			Host = Environment.GetEnvironmentVariable("TRADIE_DB_HOST") ?? TradieConfig.DbHost,
+			Username = Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? TradieConfig.DbUser,
+			Password = Environment.GetEnvironmentVariable("TRADIE_DB_PASSWORD") ?? TradieConfig.DbPass,
 			TrustServerCertificate = true,
 			Timeout = 120,
 			CommandTimeout = 120,
 			InternalCommandTimeout = 120,
 			MaxAutoPrepare = 60,
 			MaxPoolSize = 3,
+			IncludeErrorDetail = true,
+			Enlist = true,
+			TcpKeepAlive = true,
+			TcpKeepAliveTime = 10,
+			KeepAlive = 10
 		}.ToString());
 
 		
@@ -56,6 +71,9 @@ public class AnalysisContext : DbContext {
 				b.Property(c => c.Str).HasColumnName("StrRequirement").HasDefaultValue(0).IsRequired();
 				b.Property(c => c.Level).HasColumnName("LevelRequirement").HasDefaultValue(0).IsRequired();
 			});
+		modelBuilder.Entity<LoggedItem>()
+			.HasIndex(c => c.Properties, "idx_item_Properties")
+			.HasMethod("GIN");
 		base.OnModelCreating(modelBuilder);
 	}
 }

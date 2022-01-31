@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Tests.Analyzers;
 using Tradie.Common;
-using Tradie.Common.Tests;
 using static Tradie.TestUtils.TestUtils;
 
 namespace Tradie.Analyzer.Tests.Dispatch; 
@@ -23,7 +22,7 @@ public class AnalyzedStashTabStoreTests {
 		var kinesis = new Mock<IAmazonKinesis>(MockBehavior.Strict);
 		var serializer = new Mock<IStashTabSerializer>(MockBehavior.Strict);
 		var dispatcher = new AnalyzedStashTabKinesisDispatcher(logger, kinesis.Object, serializer.Object);
-		var analyzedTab = new AnalyzedStashTab("foo", Array.Empty<ItemAnalysis>());
+		var analyzedTab = new AnalyzedStashTab("foo", "name", null, "acc", "Scourge", "Standard", Array.Empty<ItemAnalysis>());
 
 		Stream? recordStream = null;
 

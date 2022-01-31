@@ -1,5 +1,6 @@
 ﻿using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Ecr;
+using System;
 using System.IO;
 using System.Threading;
 
@@ -24,7 +25,7 @@ namespace Tradie.Infrastructure.Resources {
 		/// The resource that handles the building of this project.
 		/// Anything that needs the compiled output of the project should depend on this resource.
 		/// </summary>
-		public readonly HashiCorp.Cdktf.Providers.Null.Resource BuildResource;
+		public readonly Providers.Null.Resource BuildResource;
 		/// <summary>
 		/// EcrImage with an ID of the build version.
 		/// </summary>
@@ -64,11 +65,11 @@ namespace Tradie.Infrastructure.Resources {
 			this.HashTag = $"{this.EcrRepo.RepositoryUrl}:{resourceConfig.Version}-{_cachedSolutionAsset.AssetHash}";
 			this.LatestTag = $"{this.EcrRepo.RepositoryUrl}:latest";
 			
-			this.BuildResource = new HashiCorp.Cdktf.Providers.Null.Resource(stack, $"{name}-image-{this.HashTag}", new HashiCorp.Cdktf.Providers.Null.ResourceConfig() {
+			this.BuildResource = new Providers.Null.Resource(stack, $"{name}-image-{DateTime.Now.ToFileTimeUtc()}", new Providers.Null.ResourceConfig() {
 				DependsOn = new ITerraformDependable[] { auth },
 			});
 			this.BuildResource.AddOverride("provisioner.local-exec.command",
-				$"docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
+				$"docker logout && docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
 				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.HashTag}\" -t \"{this.LatestTag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
 				+ $"docker push \"{this.LatestTag}\"");
 

@@ -36,7 +36,11 @@ public class ModifierAnalyzer : IItemAnalyzer {
 			item.Analysis.PushAnalysis(Id, props);
 		}
 	}
-	
+
+	public ValueTask DisposeAsync() {
+		return ValueTask.CompletedTask;
+	}
+
 	private readonly IModConverter _converter;
 }
 

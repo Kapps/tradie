@@ -22,9 +22,8 @@ public class KinesisItemLog : IItemLog {
 	public async IAsyncEnumerable<LogRecord> GetItems(ItemLogOffset offset, [EnumeratorCancellation] CancellationToken cancellationToken) {
 		await foreach(var record in this._kinesisReader.GetItems(this._streamReference, offset, cancellationToken)) {
 			var tab = await this._stashTabSerializer.Deserialize(record.Data, cancellationToken);
-			foreach(var item in tab.Items) {
-				yield return new LogRecord(new ItemLogOffset(record.SequenceNumber), item);
-			}
+			//Console.WriteLine($"Deserialized tab {tab.StashTabId}");
+			yield return new LogRecord(new ItemLogOffset(record.SequenceNumber), tab);
 		}
 	}
 	

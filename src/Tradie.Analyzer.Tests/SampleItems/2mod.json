@@ -113,6 +113,9 @@
   "scourgeMods": [
     "20% increased Movement Speed"
   ],
+  "corruptedMods": [
+    
+  ],
   "frameType": 2,
   "extended": {
     "category": "armour",

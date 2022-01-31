@@ -25,7 +25,7 @@ public class KinesisItemLogTests : TestBase {
 				}
 			}.ToAsyncEnumerable());
 
-		var tab = new AnalyzedStashTab("id", new[] {
+		var tab = new AnalyzedStashTab("id", "name", null, "acc", "league", "kind", new[] {
 			new ItemAnalysis("itemId"),
 		});
 		this._stashTabSerializer.Setup(c => c.Deserialize(ms, CancellationToken.None))
@@ -34,11 +34,10 @@ public class KinesisItemLogTests : TestBase {
 		var res = await this._itemLog.GetItems(new ItemLogOffset("foo"), CancellationToken.None)
 			.ToArrayAsync();
 
-		res.ShouldDeepEqual(new[] {new LogRecord(new ItemLogOffset("123"), tab.Items[0])});
+		res.ShouldDeepEqual(new[] {new LogRecord(new ItemLogOffset("123"), tab)});
 	}
 
-	[TestInitialize]
-	public void Initialize() {
+	protected override void Initialize() {
 		this._streamReference = new KinesisStreamReference("shard", "stream");
 		this._itemLog = new KinesisItemLog(this._streamReference, this._kinesisRecordReader.Object, this._stashTabSerializer.Object);
 	}

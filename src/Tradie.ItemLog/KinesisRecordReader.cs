@@ -34,14 +34,27 @@ public class KinesisRecordReader : IKinesisRecordReader {
 		var iterator = await GetStartingIterator(streamReference, offset, cancellationToken);
 		
 		while(!cancellationToken.IsCancellationRequested) {
-			var records = await GetRecordsFromIterator(streamReference, iterator, cancellationToken);
-			if(records.Records.Count == 0) {
+			GetRecordsResponse? records;
+			try {
+				records = await GetRecordsFromIterator(streamReference, iterator, cancellationToken);
+			} catch(OperationCanceledException) {
 				yield break;
 			}
+
+			if(records.NextShardIterator == null) {
+				yield break;
+			}
+
+			Console.WriteLine($"Next shard iterator is {records.NextShardIterator}");
+			/*if(records.Records.Count == 0) {
+				yield break;
+			}*/
 
 			foreach(var record in records.Records) {
 				yield return record;
 			}
+
+			iterator = records.NextShardIterator;
 		}
 	}
 	
@@ -70,6 +83,8 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			StreamName = streamReference.StreamName,
 			ShardIteratorType = String.IsNullOrWhiteSpace(offset.Offset) ? ShardIteratorType.TRIM_HORIZON : ShardIteratorType.AFTER_SEQUENCE_NUMBER,
 			StartingSequenceNumber = String.IsNullOrWhiteSpace(offset.Offset) ? null : offset.Offset,
+			//ShardIteratorType = ShardIteratorType.TRIM_HORIZON,
+			//StartingSequenceNumber = "49624433175630125410346380585994349795546281436103311362"
 		}, cancellationToken);
 		
 		return resp.ShardIterator;
