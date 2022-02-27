@@ -26,16 +26,26 @@ public class LogStreamer : ILogStreamer {
 	}
 	
 	public async Task CopyItemsFromLog(IItemLog source, IItemLogBuilder logBuilder, CancellationToken cancellationToken) {
-		var startingOffset = await this._parameterStore.GetParameter<string>(OffsetParameterKey);
+		string key = GetParameterKey(logBuilder.Name);
+		var startingOffset = await this._parameterStore.GetParameter<string>(key);
+		this._logger.LogInformation("Commencing streaming from {StartingOffset}.", startingOffset);
 		
 		var sourceRecords = source.GetItems(new(startingOffset.Value), cancellationToken);
 		await foreach(var batch in sourceRecords.BatchByAsync(TradieConfig.LogBuilderBatchSize, cancellationToken)) {
-			batch
-			await logBuilder.AppendEntries(batch, cancellationToken);	
+			LogRecord lastRecord = default;
+			var trackedBatch = batch.WithCompletionCallback(record => Task.FromResult(lastRecord = record));
+			
+			await logBuilder.AppendEntries(trackedBatch, cancellationToken);
+			
+			if(lastRecord != default) {
+				await this._parameterStore.SetParameter(key, lastRecord.Offset.Offset);
+				this._logger.LogInformation("Updated latest offset to {LastOffset}", lastRecord.Offset.Offset);
+			}
 		}
 	}
 
-	private const string OffsetParameterKey = "LogBuilder.Offset";
+	private static string GetParameterKey(string builderName) => $"LogBuilder.{builderName}.Offset"; 
+	
 	private readonly IParameterStore _parameterStore;
-	private ILogger<ILogStreamer> _logger;
+	private readonly ILogger<ILogStreamer> _logger;
 }

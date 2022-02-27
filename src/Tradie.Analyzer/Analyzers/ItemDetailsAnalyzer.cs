@@ -8,8 +8,10 @@ namespace Tradie.Analyzer.Analyzers;
 /// An analyzed that records basic properties, such as ilvl and influence.
 /// </summary>
 public class ItemDetailsAnalyzer : IItemAnalyzer {
+	
 	public static ushort Id { get; } = (ushort)KnownAnalyzers.ItemDetails;
-	public Task AnalyzeItems(AnalyzedItem[] items) {
+	
+	public ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		foreach(var item in items) {
 			var raw = item.RawItem;
 			var flags = GetFlags(raw);
@@ -18,7 +20,7 @@ public class ItemDetailsAnalyzer : IItemAnalyzer {
 			item.Analysis.PushAnalysis(Id, analyzed);
 		}
 
-		return Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 	
 	public ValueTask DisposeAsync() {

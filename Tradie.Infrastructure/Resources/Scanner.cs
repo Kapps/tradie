@@ -79,7 +79,7 @@ namespace Tradie.Infrastructure.Resources {
 			});
 			
 			var taskDef = new EcsTaskDefinition(stack, "scanner-taskdef", new EcsTaskDefinitionConfig() {
-				Cpu = "256",
+				Cpu = "512",
 				Memory = "512",
 				NetworkMode = "host",
 				Family = "scanner",
@@ -92,7 +92,7 @@ namespace Tradie.Infrastructure.Resources {
 						name = "tradie-scanner",
 						Tag = this.Repo.LatestTag,
 						image = this.Repo.EcrImageUri,
-						cpu = 256,
+						cpu = 512,
 						memory = 512,
 						executionRoleArn = permissions.ExecutionRole.Arn,
 						taskRole = taskRole.Arn,

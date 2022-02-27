@@ -10,7 +10,7 @@ namespace Tradie.Analyzer.Analyzers;
 public class TradePropertiesAnalyzer : IItemAnalyzer {
 	public static ushort Id { get; } = (ushort)KnownAnalyzers.TradeAttributes;
 
-	public Task AnalyzeItems(AnalyzedItem[] items) {
+	public ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		foreach(var item in items) {
 			var raw = item.RawItem;
 			var analysis = item.Analysis;
@@ -18,7 +18,7 @@ public class TradePropertiesAnalyzer : IItemAnalyzer {
 			analysis.PushAnalysis(Id, new TradeListingAnalysis(raw.X, raw.Y, price, raw.Note));
 		}
 
-		return Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 	
 	public ValueTask DisposeAsync() {

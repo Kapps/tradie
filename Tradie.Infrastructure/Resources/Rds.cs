@@ -5,7 +5,6 @@ using HashiCorp.Cdktf.Providers.Aws.Vpc;
 using HashiCorp.Cdktf.Providers.Random;
 using System;
 using System.Linq;
-using System.Net.Http;
 
 namespace Tradie.Infrastructure.Resources {
 	public class Rds {
@@ -54,7 +53,7 @@ namespace Tradie.Infrastructure.Resources {
 				Upper = true,
 			});
 
-			/*var rds = new DbInstance(stack, "rds", new DbInstanceConfig() {
+			var rds = new DbInstance(stack, "rds", new DbInstanceConfig() {
 				Identifier = "core",
 				DbSubnetGroupName = subnetGroup.Name,
 				Engine = "postgres",
@@ -62,18 +61,16 @@ namespace Tradie.Infrastructure.Resources {
 				Username = "tradie",
 				Password = passwordResource.Result,
 				MultiAz = false,
-				EngineVersion = "13.4",
-				InstanceClass = "t4g.micro",
+				EngineVersion = "14.1",
+				InstanceClass = "t4g.small",
 				VpcSecurityGroupIds = new[] { securityGroup.Id },
 				ApplyImmediately = true,
-				AllocatedStorage = 20,
+				AllocatedStorage = 50,
 				PubliclyAccessible = true,
-				SkipFinalSnapshot = true, // TODO: Remove this if ever getting to for realsies.
-			});*/
-
+				SkipFinalSnapshot = true // TODO: Remove this if ever getting to for realsies.
+			});
 			
-
-			var cluster = new RdsCluster(stack, "rds-cluster", new RdsClusterConfig() {
+			/*var cluster = new RdsCluster(stack, "rds-cluster", new RdsClusterConfig() {
 				Engine = "aurora-postgresql",
 				ApplyImmediately = true,
 				ClusterIdentifier = "core-cluster",
@@ -92,27 +89,34 @@ namespace Tradie.Infrastructure.Resources {
 				},
 				EnableHttpEndpoint = true,
 				SkipFinalSnapshot = true,
-			});
+			});*/
 			
 			var ssmHost = new SsmParameter(stack, "ssm-dbhost", new SsmParameterConfig() {
 				Name = "Config.DbHost",
 				Type = "String",
-				Value = cluster.Endpoint,
-				//Value = rds.Endpoint,
+				// Value = cluster.Endpoint,
+				Value = rds.Endpoint,
 			});
 			
 			var ssmUser = new SsmParameter(stack, "ssm-dbuser", new SsmParameterConfig() {
 				Name = "Config.DbUser",
 				Type = "String",
-				Value = cluster.MasterUsername!,
-				//Value = rds.Username!,
+				// Value = cluster.MasterUsername!,
+				Value = rds.Username!,
 			});
 
 			var ssmPass = new SsmParameter(stack, "ssm-dbpass", new SsmParameterConfig() {
 				Name = "Config.DbPass",
 				Type = "String",
-				Value = cluster.MasterPassword!,
-				//Value = rds.Password!,
+				// Value = cluster.MasterPassword!,
+				Value = rds.Password!,
+			});
+			
+			var ssmName = new SsmParameter(stack, "ssm-dbname", new SsmParameterConfig() {
+				Name = "Config.DbName",
+				Type = "String",
+				// Value = cluster.DatabaseName!
+				Value = rds.Name
 			});
 		}
 	}

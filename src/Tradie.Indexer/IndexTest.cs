@@ -4,17 +4,18 @@ using System.Text.Json;
 namespace Tradie.Indexer; 
 
 public class IndexTest {
-	public const int itemsPerBlock = 64;
-	public const int blocksPerBlock = 32;
-	public const int maxDepth = 5;
-	public const int itemsToAllocate = 50_000_000;
+	public const int itemsPerBlock = 16;
+	public const int blocksPerBlock = 10;
+	public const int maxDepth = 7;
+	public const int itemsToAllocate = 25_000_000;
+	public static readonly int itemCapacity = (int)Math.Pow(blocksPerBlock, maxDepth) * itemsPerBlock;
 
 	
 	static Random rng = new Random();
 	
 
 	int itemsAllocated;
-
+ 
 
 	byte searchKind = 1;
 
@@ -24,7 +25,7 @@ public class IndexTest {
 	int maxSum;
 
 	byte numQueries = 2;
-	ushort numMods = 6000;
+	ushort numMods = 1000;
 	int numTimesToScan = 100;
 
 	ScanStats stats;
@@ -59,8 +60,10 @@ public class IndexTest {
 				break;
 			} while(true);
 		}
+		
+		Array.Sort(affixes, (a, b) => a.modifier.CompareTo(b.modifier));
 
-		affixes = affixes.OrderBy(c => c.modifier).ToArray();
+		//affixes = affixes.OrderBy(c => c.modifier).ToArray();
 		return new Item(id, affixes);
 	}
 	
@@ -99,6 +102,7 @@ public class IndexTest {
 		stats.blocksScanned = 0;
 		stats.blocksSkipped = 0;
 		stats.itemsScanned = 0;
+		this.stats.itemsLoaded = 0;
 	}
 	
 	public void printResults() {
@@ -113,10 +117,14 @@ public class IndexTest {
 			Blocks Populated: {2}
 			Items Scanned: {3} ({4} blocks)
 			Items Skipped: {5}
-		", stats.blocksScanned, stats.blocksSkipped, stats.populatedBlocks, stats.itemsScanned, stats.itemsScanned / itemsPerBlock, itemsToAllocate - stats.itemsScanned);
+			Item Blocks Loaded: {6}
+		", stats.blocksScanned, stats.blocksSkipped, stats.populatedBlocks, stats.itemsScanned, stats.itemsScanned / itemsPerBlock, itemsToAllocate - stats.itemsScanned, this.stats.itemsLoaded);
 	}
 	
 	public void searchByBlocks() {
+		if(itemCapacity < itemsToAllocate) {
+			throw new ArgumentOutOfRangeException("itemCapacity");
+		}
 		var sw = Stopwatch.StartNew();
 
 	    Block root = new Block(BlockKind.node, null);
@@ -174,6 +182,7 @@ public class IndexTest {
 		}
 	    stats.blocksScanned++;
 	    if(block.kind == BlockKind.leaf) {
+		    this.stats.itemsLoaded++;
 	        foreach(var item in block.items!) {
 	            stats.itemsScanned++;
 	            int sum = 0;
@@ -214,8 +223,10 @@ public class IndexTest {
 
 	        itemsAllocated += itemsPerBlock;
 	        if((itemsAllocated % 100000) == 0) {
-	            Console.WriteLine("Finished allocating {0} items", itemsAllocated);
-			}
+		        var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
+		        long endBytes = currentProcess.WorkingSet64;
+	            Console.WriteLine("Finished allocating {0} items using {1}MB of RAM.", itemsAllocated, endBytes / (1024 * 1024));
+	        }
 		} else {
 		    block = new Block(BlockKind.node, parent);
 
@@ -317,6 +328,7 @@ public struct ScanStats {
 	public int blocksScanned;
 	public int blocksSkipped;
 	public int populatedBlocks;
+	public int itemsLoaded;
 };
 
 public class Block {

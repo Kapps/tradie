@@ -19,7 +19,7 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 		this._logger = logger;
 	}
 
-	public async Task AnalyzeItems(AnalyzedItem[] items) {
+	public async ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		var mappedTypes = await this.MapTypesWithRepo(items);
 		foreach(var item in items) {
 			var mappedType = mappedTypes[item.RawItem.BaseType];

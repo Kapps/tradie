@@ -3,11 +3,10 @@ using Amazon.Lambda.CloudWatchEvents.ScheduledEvents;
 using Amazon.Lambda.Core;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
+using Medallion.Threading.Postgres;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Npgsql;
-using System.Transactions;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
@@ -29,14 +28,27 @@ public class Function {
 			
 			Console.WriteLine($"Starting ItemLogBuilder with build hash {Environment.GetEnvironmentVariable("BUILD_HASH")}");
 			
+			var distributedLock = new PostgresDistributedLock(
+				new PostgresAdvisoryLockKey("ItemLogBuilder", true),
+				AnalysisContext.CreateConnectionString()
+			);
+			
+			await using var lockHandle = await distributedLock.TryAcquireAsync();
+			if(lockHandle == null) {
+				Console.WriteLine("Exiting early because a lock is already in place.");
+				return;
+			}
+
+			//var mongoClient = new MongoClient(TradieConfig.MongoItemLogConnectionString);
+			
 			IHost host = Host.CreateDefaultBuilder()
 				.ConfigureServices(services => {
 					services.AddLogging(builder => {
 						builder.AddSimpleConsole(format => {
-							format.TimestampFormat = "[yyyy-MM-dd HH:mm:ss] ";
+							format.TimestampFormat = "[yyyy-MM-dd HH:mm:ss.mmm] ";
 							format.UseUtcTimestamp = true;
-							format.IncludeScopes = true;
-							format.SingleLine = false;
+							format.IncludeScopes = false;
+							format.SingleLine = true;
 						});
 					});
 					services.AddSingleton<IParameterStore, SsmParameterStore>()
@@ -44,7 +56,9 @@ public class Function {
 						.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
 						.AddSingleton<IAmazonS3>(s3Client)
 						.AddSingleton<IItemLogBuilder, PostgresLogBuilder>()
-						.AddSingleton<ILoggedItemRepository, PostgresLoggedItemRepository>()
+						//.AddSingleton<IMongoClient>(mongoClient)
+						//.AddSingleton<IMongoDatabase>(mongoClient.GetDatabase("tradie"))
+						//.AddSingleton<IItemLogBuilder, MongoLogBuilder>()
 						.AddSingleton<ILoggedTabRepository, PostgresLoggedTabRepository>()
 						.AddSingleton<ILogStreamer, LogStreamer>()
 						.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>()
@@ -64,27 +78,15 @@ public class Function {
 			var logBuilder = host.Services.GetRequiredService<IItemLogBuilder>();
 			var sourceLog = host.Services.GetRequiredService<IItemLog>();
 			var streamer = host.Services.GetRequiredService<ILogStreamer>();
-			var dbContext = host.Services.GetRequiredService<AnalysisContext>();
-			var conn = await dbContext.GetOpenedConnection<NpgsqlConnection>();
-			await using var tx = await conn.BeginTransactionAsync();
+			
 			
 			using var cancellationTokenSource = new CancellationTokenSource(context.RemainingTime - TimeSpan.FromSeconds(30));
-			
-			//while(!cancellationTokenSource.IsCancellationRequested) {
-				//using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 				
-				Console.WriteLine("Starting copy.");
-				try {
-					await streamer.CopyItemsFromLog(sourceLog, logBuilder, new ItemLogOffset(null),
-						cancellationTokenSource.Token);
-				} catch(OperationCanceledException) {
-					
-				}
-				//scope.Complete();
-			//}
+			Console.WriteLine("Starting copy.");
+			await streamer.CopyItemsFromLog(sourceLog, logBuilder, cancellationTokenSource.Token);
 
-			Console.WriteLine("Committing");
-			await tx.CommitAsync(cancellationTokenSource.Token);
+			//Console.WriteLine("Committing");
+			//await tx.CommitAsync(cancellationTokenSource.Token);
 
 			Console.WriteLine("Finished copy.");
 

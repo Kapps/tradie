@@ -8,9 +8,9 @@ namespace Tradie.ItemLogBuilder;
 /// </summary>
 public interface IItemLogBuilder {
 	/// <summary>
-	/// A unique ID for this log implementation.
+	/// A unique human-readable name for this log implementation.
 	/// </summary>
-	Guid Id { get; }
+	string Name { get; }
 
 	/// <summary>
 	/// Appends the following records to this item log, replacing existing versions of each tab in the log.

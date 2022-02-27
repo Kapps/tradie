@@ -22,7 +22,9 @@ namespace Tradie.TestUtils {
 	public abstract class TestBase {
 		// NOTE: Initializer and Cleanup must be void, and _can not_ be async Tasks otherwise they are invoked
 		// on the wrong thread, and TransactionScopes end up applying in peculiar ways.
-		
+
+		public TestContext TestContext { get; set; } = null!;
+
 		[TestInitialize]
 		public void BaseInitializer() {
 			this.InstantiateContexts();
@@ -33,8 +35,10 @@ namespace Tradie.TestUtils {
 		[TestCleanup]
 		public void BaseCleaner() {
 			this.Cleanup();
-			this.AssertMocks();
 			this.DisposeContexts();
+			if(this.TestContext.CurrentTestOutcome != UnitTestOutcome.Failed) {
+				this.AssertMocks();
+			}
 		}
 
 		/// <summary>

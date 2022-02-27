@@ -12,7 +12,6 @@ using System.Text.Json;
 namespace Tradie.Infrastructure.Resources {
 	public class Analyzer {
 		public readonly S3Bucket AnalyzedItemBucket;
-		public readonly EcrProjectRepository ProjectRepository;
 
 		public Analyzer(
 			TerraformStack stack,
@@ -122,7 +121,7 @@ namespace Tradie.Infrastructure.Resources {
 				},
 				ImageUri = repo.EcrImageUri,
 				Tags = new[] { repo.BuildResource.Id },
-				MemorySize = 1024,
+				MemorySize = 1536,
 				PackageType = "Image",
 				Timeout = 120,
 				DependsOn = new[] { repo.BuildResource }

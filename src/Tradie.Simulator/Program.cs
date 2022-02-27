@@ -16,22 +16,29 @@ await TradieConfig.InitializeFromEnvironment(ssm);
 
 var context = new TestLambdaContext();
 context.RemainingTime = TimeSpan.FromSeconds(3000);
-var builderFunc = new Tradie.ItemLogBuilder.Function();
-await builderFunc.FunctionHandler(new ScheduledEvent(), context);
 
-/*var analyzerFunc = new Tradie.Analyzer.Function();
+bool analyzer = false;
+bool builder = true;
 
-await analyzerFunc.FunctionHandler(new S3Event() {
-	Records = new List<S3EventNotification.S3EventNotificationRecord>() {
-		new() {
-			S3 = new() {
-				Bucket = new() {
-					Name = TradieConfig.ChangeSetBucket,
-				},
-				Object = new() {
-					Key = "raw/1387785418-1392447676-1345885462-1500603708-1446791192.json.br"
+if(builder) {
+	var builderFunc = new Tradie.ItemLogBuilder.Function();
+	await builderFunc.FunctionHandler(new ScheduledEvent(), context);
+}
+
+if(analyzer) {
+	var analyzerFunc = new Tradie.Analyzer.Function();
+	await analyzerFunc.FunctionHandler(new S3Event() {
+		Records = new List<S3EventNotification.S3EventNotificationRecord>() {
+			new() {
+				S3 = new() {
+					Bucket = new() {
+						Name = TradieConfig.ChangeSetBucket,
+					},
+					Object = new() {
+						Key = "raw/1297364325-1302911593-1258544875-1406014261-1352585732.json.br"
+					}
 				}
 			}
 		}
-	}
-}, null);*/
+	}, null);
+}

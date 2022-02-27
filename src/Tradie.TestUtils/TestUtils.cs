@@ -60,6 +60,14 @@ public static class TestUtils {
 		return res;
 	}
 
+	/// <summary>
+	/// Returns a CancellationToken that expires in 30 seconds.
+	/// </summary>
+	public static CancellationToken CreateCancellationToken() {
+		var src = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+		return src.Token;
+	}
+
 	private static readonly ConcurrentDictionary<ulong, bool> UsedIds = new();
 	private static readonly Random Rng = new Random();
 }

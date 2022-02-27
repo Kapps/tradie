@@ -9,15 +9,15 @@ namespace Tradie.Analyzer;
 /// All methods in this class are thread-safe.
 /// </summary>
 [DataContract, MessagePackObject]
-public readonly struct ItemAnalysis {
+public struct ItemAnalysis {
 	private readonly ConcurrentDictionary<ushort, IAnalyzedProperties> _properties = new();
 
 	/// <summary>
 	/// The ID of the item this analysis is for.
 	/// </summary>
 	[DataMember, Key(0)]
-	public readonly string ItemId;
-	
+	public string ItemId { get; set; }
+
 	/// <summary>
 	/// Gets all of the properties added to this analysis.
 	/// </summary>

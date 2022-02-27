@@ -8,6 +8,8 @@ using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 
+#if false
+
 namespace Tradie.ItemLogBuilder.Postgres {
 	/// <summary>
 	/// A repository for ItemLog stash tabs.
@@ -33,16 +35,21 @@ namespace Tradie.ItemLogBuilder.Postgres {
 			//string tempTableName = $"tmp_items_{Guid.NewGuid():N}";
 			string tempTableName = "tmp_items";
 
+			Console.WriteLine("Creating item temp table");
 			await CreateTempTable(conn, tempTableName, cancellationToken);
+			Console.WriteLine("Starting copy");
 			await PerformCopy(conn, tempTableName, items, cancellationToken);
-	
+
+			Console.WriteLine("Upserting to primary");
 			var results = UpsertIntoPrimaryTable(tempTableName);
 
-			Console.WriteLine("Yielding results");
+			Console.WriteLine("Yielding items");
 			await foreach(var item in results.WithCancellation(cancellationToken)) {
 				//`Console.WriteLine($"Returning item {item}");
 				yield return item;
 			}
+
+			Console.WriteLine("Done yielding items.");
 		}
 
 		public async ValueTask DisposeAsync() {
@@ -61,6 +68,7 @@ namespace Tradie.ItemLogBuilder.Postgres {
 			IAsyncEnumerable<LoggedItem> items,
 			CancellationToken cancellationToken
 		) {
+			Console.WriteLine("Beginning binary import.");
 			await using var writer = await conn.BeginBinaryImportAsync($@"
 				COPY {tempTableName} (""RawId"", ""StashTabId"", ""Properties"")
 				FROM STDIN (FORMAT BINARY);
@@ -74,7 +82,9 @@ namespace Tradie.ItemLogBuilder.Postgres {
 				await writer.WriteAsync(item.Properties, NpgsqlDbType.Jsonb, cancellationToken);
 			}
 
+			Console.WriteLine("Completing async.");
 			await writer.CompleteAsync(cancellationToken);
+			Console.WriteLine("Completed");
 		}
 
 		private IAsyncEnumerable<LoggedItem> UpsertIntoPrimaryTable(string tempTableName) {
@@ -82,8 +92,9 @@ namespace Tradie.ItemLogBuilder.Postgres {
 				INSERT INTO ""Items"" (""RawId"", ""StashTabId"", ""Properties"")
 					SELECT ""RawId"", ""StashTabId"", ""Properties""
 					FROM {tempTableName}
-				ON CONFLICT (""RawId"") DO UPDATE
-					SET ""StashTabId"" = excluded.""StashTabId"", ""Properties"" = excluded.""Properties""
+				-- ON CONFLICT (""RawId"") DO UPDATE
+				ON CONFLICT DO NOTHING
+					--SET ""StashTabId"" = excluded.""StashTabId"", ""Properties"" = excluded.""Properties""
 				RETURNING *;
     		";
 
@@ -95,3 +106,4 @@ namespace Tradie.ItemLogBuilder.Postgres {
 		private readonly AnalysisContext _context;
 	}
 }
+#endif

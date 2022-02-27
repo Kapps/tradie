@@ -41,6 +41,8 @@ namespace Tradie.Common {
 			DbHost = System.Environment.GetEnvironmentVariable("TRADIE_DB_HOST") ?? "127.0.0.1";
 			DbUser = System.Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? "tradieadmin";
 			DbPass = System.Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? "tradie";
+			DbName = System.Environment.GetEnvironmentVariable("TRADIE_DB_NAME") ?? "tradie";
+			MongoItemLogConnectionString = System.Environment.GetEnvironmentVariable("TRADIE_MONGO_CONN") ?? "mongodb://localhost";
 		}
 		/// <summary>
 		/// Returns a TradieConfig with all properties loaded from SSM.
@@ -61,7 +63,7 @@ namespace Tradie.Common {
 			foreach(var chunk in chunks) {
 				var req = new GetParametersRequest() {
 					Names = chunk.Select(c => $"tradie-{environment}-Config.{c.Name}").ToList(),
-					WithDecryption = true,
+					WithDecryption = true
 				};
 				
 
@@ -130,6 +132,11 @@ namespace Tradie.Common {
 		/// </summary>
 		public static string? DbPass { get; set; }
 		/// <summary>
+		/// Database name for the analysis database.
+		/// </summary>
+		public static string? DbName { get; set; }
+
+		/// <summary>
 		/// Name of the Kinesis stream used for sending analyzed item data.
 		/// </summary>
 		public static string AnalyzedItemStreamName { get; set; }
@@ -157,6 +164,12 @@ namespace Tradie.Common {
 		/// </summary>
 		[DefaultValue(1000)]
 		public static int LogBuilderBatchSize { get; set; }
+
+		/// <summary>
+		/// The connection string to use for the MongoDb ItemLog database.
+		/// </summary>
+		[DefaultValue("mongodb://localhost")]
+		public static string? MongoItemLogConnectionString { get; set; }
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

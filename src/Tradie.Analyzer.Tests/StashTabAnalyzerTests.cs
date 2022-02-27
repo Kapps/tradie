@@ -30,7 +30,7 @@ public class StashTabAnalyzerTests {
 		var mockAnalyzer = new Mock<IItemAnalyzer>(MockBehavior.Strict);
 		mockAnalyzer.Setup(c => c.AnalyzeItems(
 			It.Is<AnalyzedItem[]>(c=>c.Length == 1 && c[0].RawItem == rawItems[0] && !c[0].Analysis.Properties.Any()))
-		).Returns(Task.CompletedTask);
+		).Returns(ValueTask.CompletedTask);
 
 		
 		var rawTab = new RawStashTab("foo", true, "account", "char", "stash", "standard", "Scourge", rawItems);

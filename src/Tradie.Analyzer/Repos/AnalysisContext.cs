@@ -21,22 +21,22 @@ public class AnalysisContext : DbContext {
 	/// </summary>
 	public DbSet<Modifier> Modifiers { get; set; } = null!;
 
-	/// <summary>
+	/*/// <summary>
 	/// Returns all analyzed items logged to the context.
 	/// </summary>
-	public DbSet<LoggedItem> LoggedItems { get; set; } = null!;
+	public DbSet<LoggedItem> LoggedItems { get; set; } = null!;*/
 
 	/// <summary>
 	/// Returns all stash tabs logged to the context.
 	/// </summary>
 	public DbSet<LoggedStashTab> LoggedStashTabs { get; set; } = null!;
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
-		optionsBuilder.LogTo(Console.WriteLine);
-		
-		optionsBuilder.UseNpgsql(new NpgsqlConnectionStringBuilder() {
-			Database = "tradie",
+	/// <summary>
+	/// Returns a connection string that can be used to connect to the analysis database.
+	/// </summary>
+	public static string CreateConnectionString() {
+		return new NpgsqlConnectionStringBuilder() {
+			Database = Environment.GetEnvironmentVariable("TRADIE_DB_NAME") ?? TradieConfig.DbName,
 			Timezone = "UTC",
 			Pooling = true,
 			SslMode = SslMode.Prefer,
@@ -49,13 +49,21 @@ public class AnalysisContext : DbContext {
 			CommandTimeout = 120,
 			InternalCommandTimeout = 120,
 			MaxAutoPrepare = 60,
-			MaxPoolSize = 3,
+			MaxPoolSize = 5,
 			IncludeErrorDetail = true,
 			Enlist = true,
 			TcpKeepAlive = true,
 			TcpKeepAliveTime = 10,
-			KeepAlive = 10
-		}.ToString());
+			KeepAlive = 10,
+			ConnectionIdleLifetime = 30
+		}.ToString();
+	}
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
+		//optionsBuilder.LogTo(Console.WriteLine);
+		
+		optionsBuilder.UseNpgsql(CreateConnectionString());
 
 		
 		base.OnConfiguring(optionsBuilder);
@@ -71,8 +79,11 @@ public class AnalysisContext : DbContext {
 				b.Property(c => c.Str).HasColumnName("StrRequirement").HasDefaultValue(0).IsRequired();
 				b.Property(c => c.Level).HasColumnName("LevelRequirement").HasDefaultValue(0).IsRequired();
 			});
-		modelBuilder.Entity<LoggedItem>()
+		/*modelBuilder.Entity<LoggedItem>()
 			.HasIndex(c => c.Properties, "idx_item_Properties")
+			.HasMethod("GIN");*/
+		modelBuilder.Entity<LoggedStashTab>()
+			.HasIndex(c => c.Items, "idx_tab_Items")
 			.HasMethod("GIN");
 		base.OnModelCreating(modelBuilder);
 	}

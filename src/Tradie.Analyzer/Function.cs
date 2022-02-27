@@ -2,6 +2,7 @@
 using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
 using Amazon.S3;
+using Amazon.S3.Util;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,16 +27,19 @@ public class Function {
 			var ssmClient = new AmazonSimpleSystemsManagementClient();
 			var s3Client = new AmazonS3Client();
 
-			await TradieConfig.InitializeFromEnvironment(ssmClient);
-			
 			Console.WriteLine($"Starting Analyzer with build hash {Environment.GetEnvironmentVariable("BUILD_HASH")}");
 			
-			await using(var dbContext = new AnalysisContext()) {
+			async Task Initializer() {
+				await TradieConfig.InitializeFromEnvironment(ssmClient);
+				await using var dbContext = new AnalysisContext();
+				
 				var remainingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
 				Console.WriteLine($"Found {remainingMigrations.Count()} migrations to apply.");
 				await dbContext.Database.MigrateAsync();
 				Console.WriteLine("Finished applying migrations.");
 			}
+
+			await Initializers.InitializeOnce(Initializer);
 
 			IHost host = Host.CreateDefaultBuilder()
 				.ConfigureServices(services => {
@@ -80,21 +84,28 @@ public class Function {
 
 			foreach(var record in input.Records) {
 				Console.WriteLine($"Getting record for {record.S3.Bucket.Name}:{record.S3.Object.Key}");
-				var obj = await s3Client.GetObjectAsync(record.S3.Bucket.Name, record.S3.Object.Key);
-				await using var jsonStream = obj.ResponseStream;
-				await using var decompressedStream = new BrotliStream(jsonStream, CompressionMode.Decompress);
-
-				var stashes = await SpanJson.JsonSerializer.Generic.Utf8.DeserializeAsync<RawStashTab[]>(decompressedStream);
+				var stashes = await GetStashTabsFromRecord(record, s3Client);
 				foreach(var stash in stashes) {
 					Console.WriteLine($"Found stash with id {stash.Id} containing {stash.Items.Length} items.");
 					var analyzedTab = await stashAnalyzer.AnalyzeTab(stash);
 					await dispatcher.DispatchTab(analyzedTab);
 				}
+
+				await dispatcher.Flush();
 			}
 		} catch(Exception ex) {
 			Console.WriteLine("---Exception Details---");
 			Console.WriteLine(ex.ToString());
 			throw;
 		}
+	}
+
+	private static async Task<RawStashTab[]> GetStashTabsFromRecord(S3EventNotification.S3EventNotificationRecord record, IAmazonS3 s3Client) {
+		var obj = await s3Client.GetObjectAsync(record.S3.Bucket.Name, record.S3.Object.Key);
+		await using var jsonStream = obj.ResponseStream;
+		await using var decompressedStream = new BrotliStream(jsonStream, CompressionMode.Decompress);
+
+		var stashes = await SpanJson.JsonSerializer.Generic.Utf8.DeserializeAsync<RawStashTab[]>(decompressedStream);
+		return stashes;
 	}
 }

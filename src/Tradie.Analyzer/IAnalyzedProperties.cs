@@ -7,6 +7,8 @@ namespace Tradie.Analyzer;
 /// </summary>
 [MessagePack.Union(0, typeof(ItemAffixesAnalysis))]
 [MessagePack.Union(1, typeof(ItemTypeAnalysis))]
+[MessagePack.Union(2, typeof(TradeListingAnalysis))]
+[MessagePack.Union(3, typeof(ItemDetailsAnalysis))]
 public interface IAnalyzedProperties {
 	/*/// <summary>
 	/// Serializes these properties in binary format, in such a way that a reader can retrieve them.

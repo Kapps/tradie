@@ -22,4 +22,19 @@
       <ProjectReference Include="..\Tradie.TestUtils\Tradie.TestUtils.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="SampleItems\2mod.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="SampleItems\boots.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="SampleItems\jewel.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="SampleItems\influenced.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

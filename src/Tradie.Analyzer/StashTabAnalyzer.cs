@@ -9,7 +9,7 @@ public interface IStashTabAnalyzer {
 	/// <summary>
 	/// Analyzes the given stash tab, returning a version with each item in the tab analyzed as well.
 	/// </summary>
-	Task<AnalyzedStashTab> AnalyzeTab(RawStashTab tab);
+	ValueTask<AnalyzedStashTab> AnalyzeTab(RawStashTab tab);
 }
 
 /// <summary>
@@ -20,15 +20,15 @@ public class StashTabAnalyzer : IStashTabAnalyzer {
 		this._analyzers = analyzers;
 	}
 	
-	public async Task<AnalyzedStashTab> AnalyzeTab(RawStashTab tab) {
+	public async ValueTask<AnalyzedStashTab> AnalyzeTab(RawStashTab tab) {
 		if(tab.Items.Length == 0) {
-			return new AnalyzedStashTab(tab.Id, tab.Name ?? "<removed>", tab.LastCharacterName,
+			return new AnalyzedStashTab(tab.Id, tab.Name, tab.LastCharacterName,
 				tab.AccountName, tab.League, tab.Type, Array.Empty<ItemAnalysis>());
 		}
 		
 		var items = tab.Items!.Select(c => new AnalyzedItem(c)).ToArray();
 		
-		await Parallel.ForEachAsync(this._analyzers, (c, token) => new ValueTask(c.AnalyzeItems(items)));
+		await Parallel.ForEachAsync(this._analyzers, (c, token) => c.AnalyzeItems(items));
 
 		return new AnalyzedStashTab(tab.Id, tab.Name, tab.LastCharacterName,
 			tab.AccountName, tab.League, tab.Type, items.Select(c=>c.Analysis).ToArray());

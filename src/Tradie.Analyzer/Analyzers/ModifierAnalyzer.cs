@@ -27,18 +27,19 @@ public class ModifierAnalyzer : IItemAnalyzer {
 		this._converter = converter ?? throw new ArgumentNullException(nameof(converter));
 	}
 
-	public async Task AnalyzeItems(AnalyzedItem[] items) {
+	public async ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		await this._converter.ConvertModifiers(items.Select(c => c.RawItem));
 		
 		foreach(var item in items) {
 			var affixes = this._converter.ExtractAffixes(item.RawItem);
+			//var props = new ItemAffixesAnalysis(affixes.ToDictionary(c=>new ModKey(c.Hash, c.Kind)));
 			var props = new ItemAffixesAnalysis(affixes.ToArray());
 			item.Analysis.PushAnalysis(Id, props);
 		}
 	}
 
 	public ValueTask DisposeAsync() {
-		return ValueTask.CompletedTask;
+		return this._converter.DisposeAsync();
 	}
 
 	private readonly IModConverter _converter;
@@ -53,3 +54,10 @@ public class ModifierAnalyzer : IItemAnalyzer {
 public readonly record struct ItemAffixesAnalysis(
 	[property:DataMember,Key(0)] Affix[] Affixes
 ) : IAnalyzedProperties;
+
+/// <summary>
+/// The key to identify an affix on an item; aka the mod hash and the location of the affix.
+/// </summary>
+/// <param name="ModHash">The hash of the mod, as defined on Affix.</param>
+/// <param name="Kind">The location of this affix; the same mod may be present multiple times in different locations.</param>
+public readonly record struct ModKey(ulong ModHash, ModKind Kind);

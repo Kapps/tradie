@@ -12,6 +12,7 @@ using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.ItemLogBuilder.Postgres;
 using Tradie.TestUtils;
+#if false
 
 namespace Tradie.ItemLog.Tests.Postgres {
 	[TestClass]
@@ -48,3 +49,4 @@ namespace Tradie.ItemLog.Tests.Postgres {
 		private PostgresLoggedItemRepository _repo = null!;
 	}
 }
+#endif

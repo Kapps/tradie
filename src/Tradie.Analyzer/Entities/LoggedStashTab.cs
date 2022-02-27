@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,7 +15,7 @@ namespace Tradie.Analyzer.Entities;
 [Index(nameof(League), IsUnique = false, Name = "idx_stash_League")]
 public class LoggedStashTab {
 	public LoggedStashTab(string rawId, DateTime lastModified, DateTime created, string? owner,
-		string? lastCharacterName, string? name, string? league) {
+		string? lastCharacterName, string? name, string? league, LoggedItem[] items) {
 		this.RawId = rawId ?? throw new ArgumentNullException(nameof(rawId));
 		this.LastModified = lastModified;
 		this.Created = created;
@@ -22,6 +23,7 @@ public class LoggedStashTab {
 		this.LastCharacterName = lastCharacterName;
 		this.Name = name;
 		this.League = league;
+		this.Items = items;
 	}
 
 	/// <summary>
@@ -72,8 +74,13 @@ public class LoggedStashTab {
 	public string? Name { get; set; }
 	
 	/// <summary>
-	/// Name of the league this tab is in if p
+	/// Name of the league this tab is in if public.
 	/// </summary>
 	[Column]
 	public string? League { get; set; }
+
+	[Column(TypeName = "jsonb")]
+	[Required]
+	[DefaultValue("[]")]
+	public LoggedItem[] Items { get; set; }
 }

@@ -94,6 +94,22 @@ namespace Tradie.Infrastructure.Resources {
 			})
 		};
 
+		public readonly IIamRoleInlinePolicy WriteConfigPolicy = new IamRoleInlinePolicy() {
+			Name = "write-ssm",
+			Policy = JsonSerializer.Serialize(new {
+				Version = PolicyVersion,
+				Statement = new[] {
+					new {
+						Effect = "Allow",
+						Action = new[] {
+							"ssm:PutParameter"
+						},
+						Resource = new[] {"*"},
+					}
+				}
+			})
+		};
+
 		/// <summary>
 		/// Policy string to allow assuming an ECS Task role.
 		/// </summary>

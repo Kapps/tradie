@@ -37,7 +37,7 @@ public readonly record struct Affix {
 	[JsonConstructor]
 	public Affix(ulong hash, double scalar, ModKind kind) {
 		this.Hash = hash;
-		this.Scalar = double.IsNaN(scalar) ? 0 : scalar; // JSON doesn't suppor
+		this.Scalar = double.IsNaN(scalar) ? 0 : scalar; // JSON doesn't support NaN
 		this.Kind = kind;
 	}
 }

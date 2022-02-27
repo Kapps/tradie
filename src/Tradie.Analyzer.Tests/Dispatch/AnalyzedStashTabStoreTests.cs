@@ -4,7 +4,9 @@ using DeepEqual.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Dispatch;
@@ -28,16 +30,28 @@ public class AnalyzedStashTabStoreTests {
 
 		serializer.Setup(c => c.Serialize(analyzedTab, It.IsAny<Stream>(), default))
 			.Callback((AnalyzedStashTab _, Stream stream, CancellationToken _) => recordStream = stream)
-			.Returns(Task.CompletedTask);
-		
-		kinesis.Setup(c => c.PutRecordAsync(It.Is<PutRecordRequest>(req =>
-			req.Data == (MemoryStream)recordStream! && req.PartitionKey == "default" &&
-			req.StreamName == TradieConfig.AnalyzedItemStreamName
-		), CancellationToken.None)).ReturnsAsync(new PutRecordResponse() {
-			SequenceNumber = "12"
-		});
+			.Returns(ValueTask.CompletedTask);
 
 		await dispatcher.DispatchTab(analyzedTab);
+		
+		kinesis.Setup(c => c.PutRecordsAsync(new PutRecordsRequest() {
+			StreamName = TradieConfig.AnalyzedItemStreamName,
+			Records = new() {
+				new() {
+					Data = (MemoryStream)recordStream!,
+					PartitionKey = "default"
+				}
+			}
+		}.DeepMatcher(), CancellationToken.None)).ReturnsAsync(new PutRecordsResponse() {
+			Records = new List<PutRecordsResultEntry>() {
+				new() {
+					SequenceNumber = "12"
+				}
+			}
+		});
+		
+		await dispatcher.Flush();
+		
 		
 		serializer.VerifyAll();
 		kinesis.VerifyAll();

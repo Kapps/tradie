@@ -9,12 +9,12 @@ namespace Tradie.Analyzer.Analyzers.Conversions;
 /// <summary>
 /// Allows conversion from raw modifiers on items to analyzed repository modifiers.
 /// </summary>
-public interface IModConverter {
+public interface IModConverter : IAsyncDisposable {
 	/// <summary>
 	/// Converts all raw modifiers found on each of the given items
 	/// to the appropriate entity modifier entry.
 	/// </summary>
-	Task<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items);
+	ValueTask<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items);
 
 	/// <summary>
 	/// Extracts the ModValues from each item and the original converted modifiers.
@@ -43,6 +43,10 @@ public class AnalyzingModConverter : IModConverter {
 
 		return affixes;
 	}
+	
+	public ValueTask DisposeAsync() {
+		return this._repo.DisposeAsync();
+	}
 
 	private static IEnumerable<Affix>? MapValues(string[]? itemAffixes, ModKind kind) {
 		if(itemAffixes == null || itemAffixes.Length == 0 || itemAffixes.All(String.IsNullOrWhiteSpace)) {
@@ -59,7 +63,7 @@ public class AnalyzingModConverter : IModConverter {
 			.ToArray();
 	}
 
-	public async Task<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items) {
+	public async ValueTask<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items) {
 		var modTexts = items.SelectMany(c => c.CosmeticMods.ConcatMany(
 			c.EnchantMods, c.ExplicitMods, c.FracturedMods,
 			c.ImplicitMods, c.ScourgeMods, c.UtilityMods,

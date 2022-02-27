@@ -32,7 +32,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 	
 	public async IAsyncEnumerable<Record> GetItems(KinesisStreamReference streamReference, ItemLogOffset offset, [EnumeratorCancellation] CancellationToken cancellationToken = default) {
 		var iterator = await GetStartingIterator(streamReference, offset, cancellationToken);
-		
+		int iterationCount = 0;
 		while(!cancellationToken.IsCancellationRequested) {
 			GetRecordsResponse? records;
 			try {
@@ -45,7 +45,12 @@ public class KinesisRecordReader : IKinesisRecordReader {
 				yield break;
 			}
 
-			Console.WriteLine($"Next shard iterator is {records.NextShardIterator}");
+
+			iterationCount++;
+			if(iterationCount % 50 == 0) {
+				Console.WriteLine(
+					$"Next shard iterator is {records.NextShardIterator} (roughly {records.MillisBehindLatest}ms behind latest).");
+			}
 			/*if(records.Records.Count == 0) {
 				yield break;
 			}*/

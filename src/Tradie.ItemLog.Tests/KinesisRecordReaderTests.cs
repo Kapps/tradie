@@ -44,7 +44,8 @@ public class KinesisRecordReaderTests : TestBase {
 			}
 			firstCall = false;
 			return new GetRecordsResponse() {
-				Records = records
+				Records = records,
+				NextShardIterator = "foo"
 			};
 		});
 
@@ -85,7 +86,8 @@ public class KinesisRecordReaderTests : TestBase {
 			}
 			firstCall = false;
 			return new GetRecordsResponse() {
-				Records = records
+				Records = records,
+				NextShardIterator = "foo"
 			};
 		});
 

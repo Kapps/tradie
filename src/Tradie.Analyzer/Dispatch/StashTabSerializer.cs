@@ -10,7 +10,7 @@ public interface IStashTabSerializer {
 	/// <summary>
 	/// Serializes this stash tab, streaming the serialization to the given output stream.
 	/// </summary>
-	Task Serialize(AnalyzedStashTab stashTab, Stream outputStream, CancellationToken cancellationToken = default);
+	ValueTask Serialize(AnalyzedStashTab stashTab, Stream outputStream, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deserializes a single stash tab from the input stream.
@@ -23,8 +23,8 @@ public class MessagePackedStashTabSerializer : IStashTabSerializer {
 	public static MessagePackSerializerOptions SerializationOptions => MessagePackSerializerOptions.Standard
 		.WithCompression(MessagePackCompression.Lz4BlockArray);
 	
-	public Task Serialize(AnalyzedStashTab stashTab, Stream outputStream, CancellationToken cancellationToken = default) {
-		return MessagePackSerializer.SerializeAsync(outputStream, stashTab, SerializationOptions, cancellationToken);
+	public async ValueTask Serialize(AnalyzedStashTab stashTab, Stream outputStream, CancellationToken cancellationToken = default) {
+		await MessagePackSerializer.SerializeAsync(outputStream, stashTab, SerializationOptions, cancellationToken);
 	}
 
 	public ValueTask<AnalyzedStashTab> Deserialize(Stream inputStream, CancellationToken cancellationToken = default) {

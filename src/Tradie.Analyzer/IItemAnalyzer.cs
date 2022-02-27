@@ -10,5 +10,5 @@ public interface IItemAnalyzer : IAsyncDisposable {
 	/// <summary>
     /// Analyzes the list of items, appending the analysis results to any applicable items.
     /// </summary>
-    Task AnalyzeItems(AnalyzedItem[] items);
+	ValueTask AnalyzeItems(AnalyzedItem[] items);
 }
