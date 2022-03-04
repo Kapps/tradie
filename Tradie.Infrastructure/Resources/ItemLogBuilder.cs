@@ -12,12 +12,16 @@ namespace Tradie.Infrastructure.Resources {
 	public class ItemLogBuilder {
 		public ItemLogBuilder(
 			TerraformStack stack,
-			ResourceConfig resourceConfig,
-			Permissions permissions,
-			ItemStream itemStream,
-			Network network
+			ResourceConfig resourceConfig
+			//Permissions permissions,
+			//ItemStream itemStream,
+			//Network network
 		) {
-			var dlq = new SqsQueue(stack, "logbuilder-dlq", new SqsQueueConfig() {
+			
+			var repo = new EcrProjectRepository(stack, "logbuilder", "Tradie.ItemLogBuilder", resourceConfig);
+
+			
+			/*var dlq = new SqsQueue(stack, "logbuilder-dlq", new SqsQueueConfig() {
 				Name = "logbuilder-dlq",
 			});
 			
@@ -47,7 +51,6 @@ namespace Tradie.Infrastructure.Resources {
 				AssumeRolePolicy = Permissions.LambdaAssumeRolePolicy,
 			});
 			
-			var repo = new EcrProjectRepository(stack, "logbuilder", "Tradie.ItemLogBuilder", resourceConfig);
 
 			var lambda = new LambdaFunction(stack, "logbuilder-lambda", new LambdaFunctionConfig() {
 				Architectures = new[] { "arm64" },
@@ -94,7 +97,7 @@ namespace Tradie.Infrastructure.Resources {
 				FunctionName = lambda.Arn,
 				Principal = "events.amazonaws.com",
 				SourceArn = scheduleRule.Arn
-			});
+			});*/
 		}
 	}
 }

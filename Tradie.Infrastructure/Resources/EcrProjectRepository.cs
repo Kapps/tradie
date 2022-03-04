@@ -31,9 +31,16 @@ namespace Tradie.Infrastructure.Resources {
 		/// </summary>
 		public readonly DataAwsEcrImage EcrImage;
 		/// <summary>
+		/// The platform to build the images for.
+		/// </summary>
+		public readonly string Platform;
+		/// <summary>
 		/// Full URL to the EcrImage for this build version (latest tag).
 		/// </summary>
 		public string EcrImageUri => $"{this.EcrRepo.RepositoryUrl}@{this.EcrImage.Id}";
+
+		public const string PlatformLinuxArm64 = "linux/arm64";
+		public const string PlatformLinuxAmd64 = "linux/amd64";
 
 		/// <summary>
 		/// Creates a new DotnetDockerRepository that builds the given project and pushes it to an ECR repo.
@@ -42,7 +49,13 @@ namespace Tradie.Infrastructure.Resources {
 		/// <param name="name">Short-form name of the project, used in resource names.</param>
 		/// <param name="projectFolder">The relative path to the folder from the `src` folder, excluding leading and trailing slashes.</param>
 		/// <param name="resourceConfig">Configuration settings</param>
-		public EcrProjectRepository(TerraformStack stack, string name, string projectFolder, ResourceConfig resourceConfig) {
+		public EcrProjectRepository(TerraformStack stack,
+			string name,
+			string projectFolder,
+			ResourceConfig resourceConfig,
+			string platform = PlatformLinuxArm64
+		) {
+			this.Platform = platform;
 			this.EcrRepo = new EcrRepository(stack, $"{name}-repo", new EcrRepositoryConfig() {
 				Name = $"{name}-repo",
 			});
@@ -70,7 +83,7 @@ namespace Tradie.Infrastructure.Resources {
 			});
 			this.BuildResource.AddOverride("provisioner.local-exec.command",
 				$"docker logout && docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
-				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.HashTag}\" -t \"{this.LatestTag}\" \"{_cachedSolutionAsset.Path}\" --platform linux/arm64 && " 
+				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.HashTag}\" -t \"{this.LatestTag}\" \"{_cachedSolutionAsset.Path}\" --platform {this.Platform} && " 
 				+ $"docker push \"{this.LatestTag}\"");
 
 			this.EcrImage = new DataAwsEcrImage(stack, $"{name}-ecr-image", new DataAwsEcrImageConfig() {

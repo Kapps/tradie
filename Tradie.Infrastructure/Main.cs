@@ -42,7 +42,7 @@ namespace Tradie.Infrastructure {
 
 	        var scanner = new Scanner(this, network, ecs, config, permissions);
 	        var analyzer = new Analyzer(this, config, permissions, scanner, network, itemStream);
-	        var logBuilder = new ItemLogBuilder(this, config, permissions, itemStream, network);
+	        var logBuilder = new ItemLogBuilder(this, config);
 	    }
 
         public static void Main(string[] args) {
