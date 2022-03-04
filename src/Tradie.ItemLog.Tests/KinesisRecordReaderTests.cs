@@ -39,15 +39,23 @@ public class KinesisRecordReaderTests : TestBase {
 		}.DeepMatcher(), CancellationToken.None)).ReturnsAsync(() => {
 			if(!firstCall) {
 				return new GetRecordsResponse() {
-					Records = new List<Record>()
+					Records = new List<Record>(),
+					MillisBehindLatest = 0
 				};
 			}
 			firstCall = false;
 			return new GetRecordsResponse() {
 				Records = records,
-				NextShardIterator = "foo"
+				NextShardIterator = "foo",
+				MillisBehindLatest = 4200,
 			};
 		});
+
+		this._metricPublisher.Setup(c => c.PublishMetric(It.IsAny<CustomMetric>(), new CustomMetricDimension[] {
+				new("Stream Name", TradieConfig.AnalyzedItemStreamName),
+				new("Shard Id", TradieConfig.LogBuilderShardId)
+			}.DeepMatcher(), It.IsIn(0, 4.2), CancellationToken.None))
+			.Returns(Task.CompletedTask);
 
 		var streamRef = new KinesisStreamReference(TradieConfig.LogBuilderShardId, TradieConfig.AnalyzedItemStreamName);
 
@@ -81,15 +89,23 @@ public class KinesisRecordReaderTests : TestBase {
 		}.DeepMatcher(), CancellationToken.None)).ReturnsAsync(() => {
 			if(!firstCall) {
 				return new GetRecordsResponse() {
-					Records = new List<Record>()
+					Records = new List<Record>(),
+					MillisBehindLatest = 0
 				};
 			}
 			firstCall = false;
 			return new GetRecordsResponse() {
 				Records = records,
-				NextShardIterator = "foo"
+				NextShardIterator = "foo",
+				MillisBehindLatest = 840000
 			};
 		});
+
+		this._metricPublisher.Setup(c => c.PublishMetric(It.IsAny<CustomMetric>(), new CustomMetricDimension[] {
+				new("Stream Name", TradieConfig.AnalyzedItemStreamName),
+				new("Shard Id", TradieConfig.LogBuilderShardId)
+			}.DeepMatcher(), It.IsIn(0, 840.0), CancellationToken.None))
+			.Returns(Task.CompletedTask);
 
 		var streamRef = new KinesisStreamReference(TradieConfig.LogBuilderShardId, TradieConfig.AnalyzedItemStreamName);
 
@@ -100,9 +116,10 @@ public class KinesisRecordReaderTests : TestBase {
 	}
 
 	protected override void Initialize() {
-		this._recordReader = new KinesisRecordReader(this._kinesisClient.Object);
+		this._recordReader = new KinesisRecordReader(this._kinesisClient.Object, this._metricPublisher.Object);
 	}
 
 	private Mock<IAmazonKinesis> _kinesisClient = null!;
+	private Mock<IMetricPublisher> _metricPublisher = null!;
 	private KinesisRecordReader _recordReader = null!;
 }

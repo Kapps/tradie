@@ -12,7 +12,6 @@ namespace Tradie.ItemLog.Tests;
 public class TestInitializers {
 	[AssemblyInitialize]
 	public static async Task InitializeAssemblySetup(TestContext context) {
-		Environment.SetEnvironmentVariable("TRADIE_ENV", "test");
-		await TradieConfig.InitializeFromEnvironment(null!);
+		TestUtils.TestInitializers.InitializeAssemblySetup(context);
 	}
 }	

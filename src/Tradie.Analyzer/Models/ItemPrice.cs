@@ -62,6 +62,7 @@ public readonly record struct ItemPrice(
 			{"alts", BuyoutCurrency.Alterations},
 			{"exalt", BuyoutCurrency.Exalted},
 			{"exalts", BuyoutCurrency.Exalted},
+			{"exalted", BuyoutCurrency.Exalted}
 		};
 }
 

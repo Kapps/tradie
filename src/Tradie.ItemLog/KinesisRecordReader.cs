@@ -26,8 +26,9 @@ public interface IKinesisRecordReader {
 /// Provides a wrapper around an AWS Kinesis client to allow for streaming records with throughput and retry management.
 /// </summary>
 public class KinesisRecordReader : IKinesisRecordReader {
-	public KinesisRecordReader(IAmazonKinesis kinesisClient) {
+	public KinesisRecordReader(IAmazonKinesis kinesisClient, IMetricPublisher metricPublisher) {
 		this._kinesisClient = kinesisClient;
+		this._metricPublisher = metricPublisher;
 	}
 	
 	public async IAsyncEnumerable<Record> GetItems(KinesisStreamReference streamReference, ItemLogOffset offset, [EnumeratorCancellation] CancellationToken cancellationToken = default) {
@@ -46,14 +47,16 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			}
 
 
+			await this._metricPublisher.PublishMetric(ItemLogMetrics.KinesisStreamLag, new CustomMetricDimension[] {
+				new("Stream Name", streamReference.StreamName),
+				new("Shard Id", streamReference.ShardId)
+			}, records.MillisBehindLatest / 1000.0, cancellationToken);
+			
 			iterationCount++;
 			if(iterationCount % 50 == 0) {
 				Console.WriteLine(
 					$"Next shard iterator is {records.NextShardIterator} (roughly {records.MillisBehindLatest}ms behind latest).");
 			}
-			/*if(records.Records.Count == 0) {
-				yield break;
-			}*/
 
 			foreach(var record in records.Records) {
 				yield return record;
@@ -87,13 +90,12 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			ShardId = streamReference.ShardId,
 			StreamName = streamReference.StreamName,
 			ShardIteratorType = String.IsNullOrWhiteSpace(offset.Offset) ? ShardIteratorType.TRIM_HORIZON : ShardIteratorType.AFTER_SEQUENCE_NUMBER,
-			StartingSequenceNumber = String.IsNullOrWhiteSpace(offset.Offset) ? null : offset.Offset,
-			//ShardIteratorType = ShardIteratorType.TRIM_HORIZON,
-			//StartingSequenceNumber = "49624433175630125410346380585994349795546281436103311362"
+			StartingSequenceNumber = String.IsNullOrWhiteSpace(offset.Offset) ? null : offset.Offset
 		}, cancellationToken);
 		
 		return resp.ShardIterator;
 	}
 	
 	private readonly IAmazonKinesis _kinesisClient;
+	private readonly IMetricPublisher _metricPublisher;
 }

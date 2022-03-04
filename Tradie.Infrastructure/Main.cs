@@ -34,8 +34,7 @@ namespace Tradie.Infrastructure {
 	        var permissions = new Permissions(this);
 	        var network = new Tradie.Infrastructure.Resources.Network(this, config);
 
-	        var rds = new Rds(this, network, config);
-		    
+	        var dbParams = new DbParams(this);		    
 	        var ecs = new Ecs(this, network, ssm);
 	        var routing = new Routing(this, network, ecs, ssm);
 

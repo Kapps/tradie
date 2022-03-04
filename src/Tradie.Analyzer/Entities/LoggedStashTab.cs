@@ -15,7 +15,7 @@ namespace Tradie.Analyzer.Entities;
 [Index(nameof(League), IsUnique = false, Name = "idx_stash_League")]
 public class LoggedStashTab {
 	public LoggedStashTab(string rawId, DateTime lastModified, DateTime created, string? owner,
-		string? lastCharacterName, string? name, string? league, LoggedItem[] items) {
+		string? lastCharacterName, string? name, string? league, string? kind, LoggedItem[] items) {
 		this.RawId = rawId ?? throw new ArgumentNullException(nameof(rawId));
 		this.LastModified = lastModified;
 		this.Created = created;
@@ -23,6 +23,7 @@ public class LoggedStashTab {
 		this.LastCharacterName = lastCharacterName;
 		this.Name = name;
 		this.League = league;
+		this.Kind = kind;
 		this.Items = items;
 	}
 
@@ -78,6 +79,12 @@ public class LoggedStashTab {
 	/// </summary>
 	[Column]
 	public string? League { get; set; }
+
+	/// <summary>
+	/// The type of the stash tab, such as currency.
+	/// </summary>
+	[Column]
+	public string? Kind { get; set; }
 
 	[Column(TypeName = "jsonb")]
 	[Required]

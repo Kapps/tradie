@@ -15,7 +15,7 @@ var ssm = new AmazonSimpleSystemsManagementClient();
 await TradieConfig.InitializeFromEnvironment(ssm);
 
 var context = new TestLambdaContext();
-context.RemainingTime = TimeSpan.FromSeconds(3000);
+context.RemainingTime = TimeSpan.FromDays(30); //TimeSpan.FromSeconds(3000);
 
 bool analyzer = false;
 bool builder = true;

@@ -22,6 +22,8 @@ namespace Tradie.Infrastructure.Resources {
 		/// The instance profile to use for instances within the primary ECS cluster.
 		/// </summary>
 		public readonly IamInstanceProfile EcsInstanceProfile;
+
+		public readonly DataAwsEip ElasticIp;
 		/// <summary>
 		/// The autoscaling group that launches instances for the primary cluster.
 		/// </summary>
@@ -82,7 +84,7 @@ namespace Tradie.Infrastructure.Resources {
 
 			this.LaunchTemplate = new LaunchTemplate(stack, "launch-template", new LaunchTemplateConfig() {
 				ImageId = instanceAmi,
-				InstanceType = "t4g.micro",
+				InstanceType = "t4g.small",
 				VpcSecurityGroupIds = new[] { instanceSg.Id },
 				IamInstanceProfile = new LaunchTemplateIamInstanceProfile() {
 					Arn = this.EcsInstanceProfile.Arn,

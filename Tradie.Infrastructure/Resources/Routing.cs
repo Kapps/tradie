@@ -32,7 +32,7 @@ namespace Tradie.Infrastructure.Resources {
 					network.AllOutgoingTrafficEgress,
 				},
 			});
-			
+
 			var natInstance = new Instance(stack, "nat-instance", new InstanceConfig() {
 				/*LaunchTemplate = new InstanceLaunchTemplate() {
 					Id = ecs.LaunchTemplate.Id,
@@ -43,24 +43,33 @@ namespace Tradie.Infrastructure.Resources {
 				IamInstanceProfile = ecs.EcsInstanceProfile.Name,
 				InstanceType = "t4g.micro",
 				VpcSecurityGroupIds = new[] { natSg.Id },
-				AssociatePublicIpAddress = true,
+				//AssociatePublicIpAddress = false,
 				SourceDestCheck = false,
 				SubnetId = network.PublicSubnets[0].Id,
-				UserData =
-					$"#!/bin/bash\n" +
-					$"sudo amazon-linux-extras disable docker\n" +
-					$"sudo amazon-linux-extras install -y ecs\n" +
-					$"sudo systemctl enable --now --no-block ecs\n" +
-					$"echo ECS_CLUSTER={ecs.Cluster.Name} >> /etc/ecs/ecs.config\n" +
-					$"sysctl -w net.ipv4.ip_forward=1\n" +
-					$"/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE\n" +
-					$"echo \"net.ipv4.ip_forward = 1\" >> /etc/sysctl.conf\n" +
-					$"yum install iptables-services -y\n" +
-					$"service iptables save\n" +
-					$"service iptables start\n" +
-					$"sudo chkconfig iptables on\n"
+				UserData =$@"
+#!/bin/bash
+sudo amazon-linux-extras disable docker
+sudo amazon-linux-extras install -y ecs
+sudo systemctl enable --now --no-block ecs
+echo ECS_CLUSTER={ecs.Cluster.Name} >> /etc/ecs/ecs.config
+sysctl -w net.ipv4.ip_forward=1
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+echo ""net.ipv4.ip_forward = 1"" >> /etc/sysctl.conf
+yum install iptables-services -y
+service iptables save
+service iptables start
+sudo chkconfig iptables on
+"
 			});
 			
+			var elasticIp = new Eip(stack, "eip", new EipConfig() {
+				Instance = natInstance.Id,
+				Vpc = true,
+				Lifecycle = new TerraformResourceLifecycle() {
+					PreventDestroy = true
+				}
+			});
+
 			var egressGateway = new EgressOnlyInternetGateway(stack, "egress-gateway", new EgressOnlyInternetGatewayConfig() {
 				VpcId = network.Vpc.Id,
 			});

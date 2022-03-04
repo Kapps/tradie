@@ -26,9 +26,18 @@ public class PostgresLogBuilder : IItemLogBuilder, IAsyncDisposable {
 	public string Name => "Postgres";
 
 	public async Task AppendEntries(IAsyncEnumerable<LogRecord> stashTabs, CancellationToken cancellationToken = default) {
-		var insertedCount = await this._tabRepository.LogTabs(stashTabs.Select(c=>c.StashTab), cancellationToken)
+		var visitedTabs = new HashSet<string>();
+		var dedupedTabs = stashTabs
+			.Reverse() // Take the _latest_ version of each duplicate stash tab; PG can't handle duplicates 
+			.Where(c => visitedTabs.Add(c.StashTab.StashTabId));
+		
+		await using var tx = await this._context.Database.BeginTransactionAsync(cancellationToken);
+
+		var insertedCount = await this._tabRepository.LogTabs(dedupedTabs.Select(c=>c.StashTab), cancellationToken)
 			.CountAsync(cancellationToken);
 		
+		await tx.CommitAsync(cancellationToken);
+
 		this._logger.LogInformation("Appended {InsertedTabCount} tabs to the item log", insertedCount);
 		/*var visitedTabs = new HashSet<string>();
 		var allRecords = await stashTabs

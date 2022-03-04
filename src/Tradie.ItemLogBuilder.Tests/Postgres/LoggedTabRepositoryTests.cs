@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer;
+using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.ItemLogBuilder.Postgres;
@@ -34,7 +35,7 @@ namespace Tradie.ItemLog.Tests.Postgres {
 		public async Task TestStashUpsert_InsertsOnly() {
 			var items = new ItemAnalysis[] {
 				new("itemId", new Dictionary<ushort, IAnalyzedProperties>() {
-					{12, new LogRecordUtils.AnalyzedProps(23)}
+					{1, new ItemTypeAnalysis(23)}
 				})
 			};
 
@@ -53,7 +54,7 @@ namespace Tradie.ItemLog.Tests.Postgres {
 				.ToArrayAsync(CancellationToken.None);
 
 			var inserted = insertedTabs[0];
-			inserted.WithDeepEqual(new LoggedStashTab("foo", DateTime.Now, DateTime.Now, "acc", null, "name", "league", loggedItems))
+			inserted.WithDeepEqual(new LoggedStashTab("foo", DateTime.Now, DateTime.Now, "acc", null, "name", "league", "kind", loggedItems))
 				.IgnoreSourceProperty(c=>c.Id)
 				.IgnoreSourceProperty(c=>c.Created)
 				.IgnoreSourceProperty(c=>c.LastModified)

@@ -1,4 +1,5 @@
-﻿using Amazon.Kinesis;
+﻿using Amazon.CloudWatch;
+using Amazon.Kinesis;
 using Amazon.Lambda.CloudWatchEvents.ScheduledEvents;
 using Amazon.Lambda.Core;
 using Amazon.S3;
@@ -39,8 +40,6 @@ public class Function {
 				return;
 			}
 
-			//var mongoClient = new MongoClient(TradieConfig.MongoItemLogConnectionString);
-			
 			IHost host = Host.CreateDefaultBuilder()
 				.ConfigureServices(services => {
 					services.AddLogging(builder => {
@@ -50,15 +49,15 @@ public class Function {
 							format.IncludeScopes = false;
 							format.SingleLine = true;
 						});
+						builder.SetMinimumLevel(TradieConfig.LogLevel);
 					});
 					services.AddSingleton<IParameterStore, SsmParameterStore>()
 						.AddSingleton<IAmazonKinesis, AmazonKinesisClient>()
 						.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
 						.AddSingleton<IAmazonS3>(s3Client)
+						.AddSingleton<IAmazonCloudWatch>(new AmazonCloudWatchClient())
 						.AddSingleton<IItemLogBuilder, PostgresLogBuilder>()
-						//.AddSingleton<IMongoClient>(mongoClient)
-						//.AddSingleton<IMongoDatabase>(mongoClient.GetDatabase("tradie"))
-						//.AddSingleton<IItemLogBuilder, MongoLogBuilder>()
+						.AddSingleton<IMetricPublisher, CloudWatchMetricPublisher>()
 						.AddSingleton<ILoggedTabRepository, PostgresLoggedTabRepository>()
 						.AddSingleton<ILogStreamer, LogStreamer>()
 						.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>()
@@ -84,9 +83,6 @@ public class Function {
 				
 			Console.WriteLine("Starting copy.");
 			await streamer.CopyItemsFromLog(sourceLog, logBuilder, cancellationTokenSource.Token);
-
-			//Console.WriteLine("Committing");
-			//await tx.CommitAsync(cancellationTokenSource.Token);
 
 			Console.WriteLine("Finished copy.");
 

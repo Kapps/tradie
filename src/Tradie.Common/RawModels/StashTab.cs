@@ -28,7 +28,7 @@ namespace Tradie.Common.RawModels {
 		/// The name of the last recorded character the account owning this tab was using.
 		/// Can be null, and will be if Public is false.
 		/// </summary>
-		[DataMember(Name = "lastCharacerName")]
+		[DataMember(Name = "lastCharacterName")]
 		public readonly string? LastCharacterName;
 		/// <summary>
 		/// The name of the tab.

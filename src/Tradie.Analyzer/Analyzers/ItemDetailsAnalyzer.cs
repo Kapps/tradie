@@ -1,5 +1,6 @@
 using MessagePack;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using Tradie.Common.RawModels;
 
 namespace Tradie.Analyzer.Analyzers;
@@ -87,8 +88,8 @@ public class ItemDetailsAnalyzer : IItemAnalyzer {
 [DataContract, MessagePackObject]
 public readonly record struct ItemDetailsAnalysis(
 	[property:DataMember, Key(0)] string Name,
-	[property:DataMember, Key(1)] ItemFlags Flags,
-	[property:DataMember, Key(2)] InfluenceKind Influences,
+	[property:DataMember, Key(1), JsonConverter(typeof(FlagsEnumJsonConverter<ItemFlags>))] ItemFlags Flags,
+	[property:DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<InfluenceKind>))] InfluenceKind Influences,
 	[property:DataMember, Key(3)] byte? ItemLevel
 ) : IAnalyzedProperties;
 	
@@ -97,6 +98,7 @@ public readonly record struct ItemDetailsAnalysis(
 /// </summary>
 [Flags]
 public enum ItemFlags : ushort {
+	None = 0,
 	Corrupted = 1,
 	Mirrored = 2,
 	Veiled = 4,
@@ -111,6 +113,7 @@ public enum ItemFlags : ushort {
 /// </summary>
 [Flags]
 public enum InfluenceKind : ushort {
+	None = 0,
 	Redeemer = 1,
 	Crusader = 2,
 	Warlord = 4,

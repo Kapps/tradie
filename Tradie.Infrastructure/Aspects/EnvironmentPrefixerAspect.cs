@@ -1,6 +1,7 @@
 ﻿using Amazon.JSII.Runtime.Deputy;
 using Constructs;
 using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Aws.Rds;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,16 @@ namespace Tradie.Infrastructure.Aspects {
 			var prefixedProps = new[] {"Name", "Bucket", "Family", "Identifier", "ClusterIdentifier"};
 			foreach(var prop in prefixedProps) {
 				if(prop == "Bucket" && node.GetType() != typeof(S3Bucket)) {
+					continue;
+				}
+
+				if(prop == "Name" && node.GetType() == typeof(DbInstance)) {
+					// This is weird, because it's the name of the database to create, not the instance name.
+					continue;
+				}
+
+				if(prop == "Family" && node.GetType() == typeof(DbParameterGroup)) {
+					// Really need a better way of doing this...
 					continue;
 				}
 				updated |= TryPrefix(node, prop);

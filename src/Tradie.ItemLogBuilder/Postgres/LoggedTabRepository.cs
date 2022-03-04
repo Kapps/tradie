@@ -32,21 +32,21 @@ namespace Tradie.ItemLogBuilder.Postgres {
 		public async IAsyncEnumerable<long> LogTabs(IAsyncEnumerable<AnalyzedStashTab> tabs, [EnumeratorCancellation] CancellationToken cancellationToken) {
 			var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(cancellationToken);
 
-			Console.WriteLine("Creating temp table");
+			this._logger.LogDebug("Creating stash temp table");
 			await CreateTempTable(conn, cancellationToken);
-			Console.WriteLine("Doing copy");
+			_logger.LogDebug("Doing copy");
 			await PerformCopy(conn, tabs, cancellationToken);
 
-			Console.WriteLine("Upserting");
+			_logger.LogDebug("Upserting");
 			var results = UpsertIntoPrimaryTable(conn, cancellationToken);
 
-			Console.WriteLine("Yielding results");
+			_logger.LogDebug("Yielding results");
 			await foreach(var tabId in results.WithCancellation(cancellationToken)) {
 				//Console.WriteLine($"Returning tab {tab}");
 				yield return tabId;
 			}
 
-			Console.WriteLine("Done yielding");
+			_logger.LogDebug("Done yielding");
 		}
 
 		
@@ -67,6 +67,8 @@ namespace Tradie.ItemLogBuilder.Postgres {
 				FROM STDIN (FORMAT BINARY);
 			", cancellationToken);
 
+			_logger.LogDebug("Starting to write rows");
+
 			await foreach(var tab in tabs.WithCancellation(cancellationToken)) {
 				await writer.StartRowAsync(cancellationToken);
 
@@ -81,7 +83,11 @@ namespace Tradie.ItemLogBuilder.Postgres {
 				await writer.WriteAsync(SerializeItems(tab.Items), NpgsqlDbType.Jsonb, cancellationToken);
 			}
 
+			_logger.LogDebug("Finished writing rows");
+			
 			await writer.CompleteAsync(cancellationToken);
+
+			this._logger.LogDebug("Finished completing copy.");
 		}
 
 		private byte[] SerializeItems(ItemAnalysis[] items) {
@@ -103,12 +109,19 @@ namespace Tradie.ItemLogBuilder.Postgres {
 				RETURNING ""Id""
     		";
 
+			this._logger.LogDebug("Executing reader");
+			
 			var comm = new NpgsqlCommand(query, conn);
 			await using var reader = await comm.ExecuteReaderAsync(cancellationToken);
+			
+			this._logger.LogDebug("Starting to read");
+			
 			while(await reader.ReadAsync(cancellationToken)) {
 				long id = reader.GetInt64(0);
 				yield return id;
 			}
+
+			this._logger.LogDebug("Done reading.");
 		}
 
 		private const string StashTempTableName = "tmp_stash_tabs";

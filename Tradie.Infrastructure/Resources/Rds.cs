@@ -1,4 +1,5 @@
-﻿using HashiCorp.Cdktf;
+﻿#if false
+using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Rds;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
@@ -12,7 +13,8 @@ namespace Tradie.Infrastructure.Resources {
 
 			var subnetGroup = new DbSubnetGroup(stack, "rds-subnet-group", new DbSubnetGroupConfig() {
 				Name = "rds-subnet-group",
-				SubnetIds = network.PrivateSubnets.Select(c=>c.Id).ToArray(),
+				//SubnetIds = network.PrivateSubnets.Select(c=>c.Id).ToArray(),
+				SubnetIds = network.PublicSubnets.Select(c=>c.Id).ToArray()
 			});
 			
 			var securityGroup = new SecurityGroup(stack, "rds-security-group", new SecurityGroupConfig() {
@@ -52,6 +54,17 @@ namespace Tradie.Infrastructure.Resources {
 				Special = false,
 				Upper = true,
 			});
+			
+			var paramGroup = new DbParameterGroup(stack, "rds-params", new DbParameterGroupConfig() {
+				Family = "postgres14",
+				Name = "postgres14",
+				Parameter = new[] {
+					new DbParameterGroupParameter() {
+						Name = "default_toast_compression",
+						Value = "lz4"
+					}
+				}
+			});
 
 			var rds = new DbInstance(stack, "rds", new DbInstanceConfig() {
 				Identifier = "core",
@@ -62,14 +75,16 @@ namespace Tradie.Infrastructure.Resources {
 				Password = passwordResource.Result,
 				MultiAz = false,
 				EngineVersion = "14.1",
-				InstanceClass = "t4g.small",
+				InstanceClass = "db.t4g.small",
+				//FinalSnapshotIdentifier = "core-final-snapshot",
 				VpcSecurityGroupIds = new[] { securityGroup.Id },
 				ApplyImmediately = true,
-				AllocatedStorage = 50,
+				AllocatedStorage = 200,
 				PubliclyAccessible = true,
-				SkipFinalSnapshot = true // TODO: Remove this if ever getting to for realsies.
+				ParameterGroupName = paramGroup.Name,
+				SkipFinalSnapshot = false // TODO: Remove this if ever getting to for realsies.
 			});
-			
+
 			/*var cluster = new RdsCluster(stack, "rds-cluster", new RdsClusterConfig() {
 				Engine = "aurora-postgresql",
 				ApplyImmediately = true,
@@ -121,3 +136,4 @@ namespace Tradie.Infrastructure.Resources {
 		}
 	}
 }
+#endif

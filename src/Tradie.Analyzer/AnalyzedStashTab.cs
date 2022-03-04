@@ -21,6 +21,6 @@ public record struct AnalyzedStashTab(
 	[property: DataMember, Key(2)] string? LastCharacterName,
 	[property: DataMember, Key(3)] string? AccountName,
 	[property: DataMember, Key(4)] string? League,
-	[property: DataMember, Key(5)] string Kind,
+	[property: DataMember, Key(5)] string? Kind,
 	[property: DataMember, Key(6)] ItemAnalysis[] Items
 );

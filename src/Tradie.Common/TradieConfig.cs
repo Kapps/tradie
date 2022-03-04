@@ -1,5 +1,6 @@
 ﻿using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.ComponentModel;
 using System.Runtime.Serialization;
@@ -42,7 +43,8 @@ namespace Tradie.Common {
 			DbUser = System.Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? "tradieadmin";
 			DbPass = System.Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? "tradie";
 			DbName = System.Environment.GetEnvironmentVariable("TRADIE_DB_NAME") ?? "tradie";
-			MongoItemLogConnectionString = System.Environment.GetEnvironmentVariable("TRADIE_MONGO_CONN") ?? "mongodb://localhost";
+			
+			OverrideWithEnvrionment();
 		}
 		/// <summary>
 		/// Returns a TradieConfig with all properties loaded from SSM.
@@ -84,6 +86,15 @@ namespace Tradie.Common {
 				
 				object? convertedDefault = Convert.ChangeType(defaultAttr.Value, missingProp.PropertyType);
 				missingProp.SetValue(null, convertedDefault);
+			}
+			
+			OverrideWithEnvrionment();
+		}
+
+		private static void OverrideWithEnvrionment() {
+			var logLevelEnv = System.Environment.GetEnvironmentVariable("LOG_LEVEL");
+			if(logLevelEnv != null) {
+				LogLevel = Enum.Parse<LogLevel>(logLevelEnv, true);
 			}
 		}
 
@@ -166,10 +177,11 @@ namespace Tradie.Common {
 		public static int LogBuilderBatchSize { get; set; }
 
 		/// <summary>
-		/// The connection string to use for the MongoDb ItemLog database.
+		/// The log level to use for built-in logging.
+		/// Can also be overriden with the LOG_LEVEL environment variable.
 		/// </summary>
-		[DefaultValue("mongodb://localhost")]
-		public static string? MongoItemLogConnectionString { get; set; }
+		[DefaultValue(Microsoft.Extensions.Logging.LogLevel.Information)]
+		public static LogLevel LogLevel { get; set; }
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

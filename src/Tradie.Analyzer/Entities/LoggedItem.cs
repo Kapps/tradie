@@ -4,12 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Tradie.Analyzer.Entities; 
 
 /// <summary>
 /// An analyzed item being persisted within the parent stash tab to be used as an item log entry.
 /// </summary>
+[JsonConverter(typeof(LoggedItemJsonConverter))]
 public record struct LoggedItem(string RawId, Dictionary<ushort, IAnalyzedProperties> Properties) {
 	/// <summary>
 	/// The raw Path of Exile ID of the item, as it is in the PoE API.

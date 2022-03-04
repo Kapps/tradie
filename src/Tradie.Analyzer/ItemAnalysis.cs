@@ -1,6 +1,7 @@
 using MessagePack;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Tradie.Analyzer; 
 

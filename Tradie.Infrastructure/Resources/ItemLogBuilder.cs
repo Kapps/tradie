@@ -1,4 +1,5 @@
 using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Aws.Cloudwatch;
 using HashiCorp.Cdktf.Providers.Aws.Eventbridge;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
 using HashiCorp.Cdktf.Providers.Aws.Lambdafunction;

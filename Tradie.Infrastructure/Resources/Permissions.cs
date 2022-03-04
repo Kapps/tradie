@@ -32,7 +32,7 @@ namespace Tradie.Infrastructure.Resources {
 
 		/// <summary>
 		/// Creates an inline policy for Lambda images to allow access to the DLQ, networking interfaces, and pulling images.
-		/// Does not include the InlineLogPolicy.l
+		/// Does not include the InlineLogPolicy.
 		/// </summary>
 		public IIamRoleInlinePolicy CreateBasicLambdaPolicy(string dlqArn) => new IamRoleInlinePolicy() {
 			Name = "lambda-basics",
@@ -65,6 +65,32 @@ namespace Tradie.Infrastructure.Resources {
 						Action = new[] {
 							"ecr:BatchGetImage",
 							"ecr:GetDownloadUrlForLayer"
+						},
+						Resource = new[] {"*"}
+					},
+					new {
+						Effect = "Allow",
+						Action = new[] {
+							"cloudwatch:PutMetricData"
+						},
+						Resource = new[] {"*"}
+					}
+				}
+			})
+		};
+
+		/// <summary>
+		/// An inline policy to allow publishing CloudWatch custom metrics.
+		/// </summary>
+		public readonly IIamRoleInlinePolicy PublishMetricsPolicy = new IamRoleInlinePolicy() {
+			Name = "publish-metrics",
+			Policy = JsonSerializer.Serialize(new {
+				Version = PolicyVersion,
+				Statement = new[] {
+					new {
+						Effect = "Allow",
+						Action = new[] {
+							"cloudwatch:PutMetricData"
 						},
 						Resource = new[] {"*"}
 					}
