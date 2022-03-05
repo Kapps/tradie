@@ -1,9 +1,11 @@
+using MessagePack;
 using Npgsql;
 using NpgsqlTypes;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tradie.Analyzer;
+using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
@@ -28,7 +30,7 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 		var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(cancellationToken);
 
 		var comm = new NpgsqlCommand(@"
-			SELECT ""Id"", ""RawId"", ""Name"",  ""LastCharacterName"", ""Owner"", ""League"", ""Kind"", ""Items""
+			SELECT ""PackedItems"", ""Id"", ""RawId"", ""Name"",  ""LastCharacterName"", ""Owner"", ""League"", ""Kind""
 			FROM ""StashTabs""
 			WHERE ""Id"" > $1
 		", conn) {
@@ -39,21 +41,22 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 
 		await using var reader = await comm.ExecuteReaderAsync(cancellationToken);
 		while(await reader.ReadAsync(cancellationToken)) {
-			string itemsJson = reader.GetString(7);
-			LoggedItem[] items = JsonSerializer.Deserialize<LoggedItem[]>(itemsJson, new JsonSerializerOptions(new JsonSerializerOptions() {
-				Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-			}))!;
-
+			// ReSharper disable once UseAwaitUsing
+			// ReSharper disable once MethodHasAsyncOverloadWithCancellation
+			using var dataStream = reader.IsDBNull(0) ? null : reader.GetStream(0);
+			var items = dataStream == null ? Array.Empty<ItemAnalysis>() : MessagePackSerializer.Deserialize<ItemAnalysis[]>(dataStream,
+				MessagePackedStashTabSerializer.SerializationOptions, cancellationToken);
+			
 			yield return new LogRecord(
-				new ItemLogOffset(reader.GetInt64(0).ToString()),
+				new ItemLogOffset(reader.GetInt64(1).ToString()),
 				new AnalyzedStashTab(
-					reader.GetString(1),
-					reader.IsDBNull(2) ? null : reader.GetString(2),
+					reader.GetString(2),
 					reader.IsDBNull(3) ? null : reader.GetString(3),
 					reader.IsDBNull(4) ? null : reader.GetString(4),
 					reader.IsDBNull(5) ? null : reader.GetString(5),
 					reader.IsDBNull(6) ? null : reader.GetString(6),
-					items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray()
+					reader.IsDBNull(7) ? null : reader.GetString(7),
+					items
 				)
 			);
 		}

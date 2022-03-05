@@ -14,12 +14,12 @@ public static class KnownAnalyzers {
 	/// Returns the cached type associated with a given analyzer id.
 	/// </summary>
 	public static Type GetTypeForAnalyzer(int analyzerId) {
-		if(analyzerId == 0 || analyzerId > analyzerTypes.Length)
+		if(analyzerId == 0 || analyzerId > AnalyzerTypes.Length)
 			throw new ArgumentOutOfRangeException(nameof(analyzerId));
-		return analyzerTypes[analyzerId]!;
+		return AnalyzerTypes[analyzerId]!;
 	}
 
-	private static readonly Type?[] analyzerTypes = new[] {
+	private static readonly Type?[] AnalyzerTypes = new[] {
 		null,
 		typeof(ItemTypeAnalysis),
 		typeof(ItemAffixesAnalysis),

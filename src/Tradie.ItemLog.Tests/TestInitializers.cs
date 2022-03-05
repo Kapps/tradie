@@ -11,7 +11,8 @@ namespace Tradie.ItemLog.Tests;
 [TestClass]
 public class TestInitializers {
 	[AssemblyInitialize]
-	public static async Task InitializeAssemblySetup(TestContext context) {
+	public static Task InitializeAssemblySetup(TestContext context) {
 		TestUtils.TestInitializers.InitializeAssemblySetup(context);
+		return Task.CompletedTask;
 	}
 }	

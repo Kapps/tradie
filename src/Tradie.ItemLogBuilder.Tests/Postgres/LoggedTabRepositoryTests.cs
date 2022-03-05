@@ -1,4 +1,5 @@
 using DeepEqual.Syntax;
+using MessagePack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer;
 using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.ItemLogBuilder.Postgres;
@@ -42,6 +44,8 @@ namespace Tradie.ItemLog.Tests.Postgres {
 			var loggedItems = items.Select(c =>
 					new LoggedItem(c.ItemId, new Dictionary<ushort, IAnalyzedProperties>(c.Properties)))
 				.ToArray();
+			byte[] loggedItemsPacked =
+				MessagePackSerializer.Serialize(items, MessagePackedStashTabSerializer.SerializationOptions);
 			var tabs = new[] {
 				new AnalyzedStashTab("foo", "name", null, "acc", "league", "kind", items),
 			};
@@ -54,13 +58,14 @@ namespace Tradie.ItemLog.Tests.Postgres {
 				.ToArrayAsync(CancellationToken.None);
 
 			var inserted = insertedTabs[0];
-			inserted.WithDeepEqual(new LoggedStashTab("foo", DateTime.Now, DateTime.Now, "acc", null, "name", "league", "kind", loggedItems))
+			inserted.WithDeepEqual(new LoggedStashTab("foo", DateTime.Now, DateTime.Now, "acc", null, "name", "league", "kind", loggedItems, loggedItemsPacked))
 				.IgnoreSourceProperty(c=>c.Id)
 				.IgnoreSourceProperty(c=>c.Created)
 				.IgnoreSourceProperty(c=>c.LastModified)
+				.IgnoreSourceProperty(c=>c.Items)
 				.Assert();
-			
-			
+			inserted.Items[0].Properties.WithDeepEqual(loggedItems[0].Properties)
+				.Assert();
 		}
 
 		private AnalysisContext _context = null!;
