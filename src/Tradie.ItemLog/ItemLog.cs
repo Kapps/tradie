@@ -19,7 +19,12 @@ public interface IItemLog {
 /// An offset is only valid in the type that returned it.
 /// </summary>
 /// <param name="Offset">The log-dependent formatted offset value, or null to start reading from the oldest available record.</param>
-public record struct ItemLogOffset(string? Offset);
+public record struct ItemLogOffset(string? Offset) {
+	/// <summary>
+	/// Returns an ItemLogOffset that begins from the beginning of the log.
+	/// </summary>
+	public static readonly ItemLogOffset Start = new(null);
+}
 
 /// <summary>
 /// Provides data about a single record within an ItemLog.

@@ -5,8 +5,8 @@ namespace Tradie.Analyzer;
 
 public class FlagsEnumJsonConverter<T> : JsonConverter<T> where T : struct, Enum {
 	public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
-		string str = reader.GetString();
-		if(str == "") {
+		string? str = reader.GetString();
+		if(string.IsNullOrWhiteSpace(str)) {
 			return default;
 		}
 

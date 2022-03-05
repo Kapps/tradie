@@ -1,10 +1,12 @@
 using Npgsql;
 using NpgsqlTypes;
-using RestSharp.Extensions;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Tradie.Analyzer;
+using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
-using Tradie.Common.RawModels;
 
 namespace Tradie.ItemLog;
 
@@ -20,7 +22,7 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 		await _context.DisposeAsync();
 	}
 	
-	public async IAsyncEnumerable<LogRecord> GetItems(ItemLogOffset offset, CancellationToken cancellationToken) {
+	public async IAsyncEnumerable<LogRecord> GetItems(ItemLogOffset offset, [EnumeratorCancellation] CancellationToken cancellationToken) {
 		long previousId = long.Parse(offset.Offset ?? "0");
 
 		var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(cancellationToken);
@@ -38,7 +40,9 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 		await using var reader = await comm.ExecuteReaderAsync(cancellationToken);
 		while(await reader.ReadAsync(cancellationToken)) {
 			string itemsJson = reader.GetString(7);
-			ItemAnalysis[] items = SpanJson.JsonSerializer.Generic.Utf16.Deserialize<ItemAnalysis[]>(itemsJson);
+			LoggedItem[] items = JsonSerializer.Deserialize<LoggedItem[]>(itemsJson, new JsonSerializerOptions(new JsonSerializerOptions() {
+				Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+			}))!;
 
 			yield return new LogRecord(
 				new ItemLogOffset(reader.GetInt64(0).ToString()),
@@ -49,7 +53,7 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 					reader.IsDBNull(4) ? null : reader.GetString(4),
 					reader.IsDBNull(5) ? null : reader.GetString(5),
 					reader.IsDBNull(6) ? null : reader.GetString(6),
-					items
+					items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray()
 				)
 			);
 		}

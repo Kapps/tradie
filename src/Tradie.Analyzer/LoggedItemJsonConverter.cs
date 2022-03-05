@@ -17,7 +17,7 @@ public class LoggedItemJsonConverter : JsonConverter<LoggedItem> {
 		// "12345", 
 		if(!reader.Read() || reader.TokenType != JsonTokenType.String)
 			throw new JsonException();
-		string rawId = reader.GetString();
+		string rawId = reader.GetString()!;
 		
 		// "Properties":
 		if(!reader.Read() || reader.TokenType != JsonTokenType.PropertyName || reader.GetString() != "Properties")
@@ -32,12 +32,12 @@ public class LoggedItemJsonConverter : JsonConverter<LoggedItem> {
 			// "1": 
 			if(reader.TokenType != JsonTokenType.PropertyName)
 				throw new JsonException();
-			ushort analyzerId = ushort.Parse(reader.GetString());
+			ushort analyzerId = ushort.Parse(reader.GetString()!);
 			Type analyzerType = KnownAnalyzers.GetTypeForAnalyzer(analyzerId);
 			
 			// {...}
 			IAnalyzedProperties props =
-				(IAnalyzedProperties)JsonSerializer.Deserialize(ref reader, analyzerType, options);
+				(IAnalyzedProperties)JsonSerializer.Deserialize(ref reader, analyzerType, options)!;
 			allProps.Add(analyzerId, props);
 		}
 		

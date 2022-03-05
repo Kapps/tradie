@@ -36,6 +36,16 @@ public struct ItemAnalysis {
 		}
 	}
 
+	/// <summary>
+	/// Returns the properties for the given analyzer, typed as requested.
+	/// If it is not present, a KeyNotFoundException is thrown.
+	/// </summary>
+	public T GetRequired<T>(ushort analyzerId) where T : IAnalyzedProperties {
+		if(!this._properties.TryGetValue(analyzerId, out var props))
+			throw new KeyNotFoundException(analyzerId.ToString());
+		return (T)props;
+	}
+
 	public ItemAnalysis(string itemId) {
 		this.ItemId = itemId;
 		this._properties = new ConcurrentDictionary<ushort, IAnalyzedProperties>();

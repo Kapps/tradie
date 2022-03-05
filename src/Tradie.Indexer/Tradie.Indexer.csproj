@@ -16,4 +16,8 @@
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Tradie.ItemLog\Tradie.ItemLog.csproj" />
+    </ItemGroup>
+
 </Project>

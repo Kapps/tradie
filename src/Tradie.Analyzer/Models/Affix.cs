@@ -1,5 +1,5 @@
-using SpanJson;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using Tradie.Analyzer.Entities;
 
 namespace Tradie.Analyzer.Models; 
@@ -26,14 +26,21 @@ public enum ModKind : byte {
 [DataContract]
 public readonly record struct Affix {
 	[DataMember(Name = "hash", Order = 1, IsRequired = true)]
+	[JsonInclude]
+	[JsonPropertyName("hash")]
 	public readonly ulong Hash;
 
 	[DataMember(Name = "scalar", Order = 2, IsRequired = true)]
+	[JsonInclude]
+	[JsonPropertyName("scalar")]
 	public readonly double Scalar;
 
 	[DataMember(Name = "kind", Order = 3, IsRequired = true)]
+	[JsonInclude]
+	[JsonPropertyName("kind")]
 	public readonly ModKind Kind;
 
+	[SpanJson.JsonConstructor]
 	[JsonConstructor]
 	public Affix(ulong hash, double scalar, ModKind kind) {
 		this.Hash = hash;

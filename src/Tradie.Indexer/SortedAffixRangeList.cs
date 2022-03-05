@@ -62,7 +62,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 	    this._capacity = num;
     }
 
-    public ref AffixRange GetWithAddingDefault(uint searchKey, out bool exists) {
+    public ref AffixRange GetWithAddingDefault(BlockKey searchKey, out bool exists) {
 	    var range = new AffixRange(0, 0, searchKey);
 	    int index = getIndex(searchKey);
 	    if(index >= 0) {
@@ -75,7 +75,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 
     }
 
-    public AffixRange Get(uint searchKey) {
+    public AffixRange Get(BlockKey searchKey) {
 	    int index = getIndex(searchKey);
 	    if(index > 0) {
 		    return *(((AffixRange*)(void*)this._elementsPtr) + index);
@@ -103,7 +103,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 	    ReleaseUnmanagedResources();
     }
 
-    private int getIndex(uint searchKey) {
+    private int getIndex(BlockKey searchKey) {
 	    if(this._elementsPtr == IntPtr.Zero) {
 		    return -1;
 	    }
@@ -119,7 +119,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 		    if(el.key == searchKey) {
 			    return mid;
 		    }
-		    if(el.key < searchKey) {
+		    if(el.key.ModHash < searchKey.ModHash) {
 			    lower = mid + 1;
 		    } else {
 			    upper = mid - 1;
@@ -137,6 +137,6 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 struct AffixRangeComparer : IComparer<AffixRange> {
 	public int Compare(AffixRange x, AffixRange y)
 	{
-		return x.key.CompareTo(y.key);
+		return x.key.ModHash.CompareTo(y.key.ModHash);
 	}
 }
