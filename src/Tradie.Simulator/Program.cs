@@ -5,8 +5,8 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
 using Amazon.S3.Util;
 using Amazon.SimpleSystemsManagement;
-using Tradie.ItemLogBuilder;
 using Tradie.Common;
+using Tradie.Simulator.Scripts;
 using Tradie.TestUtils;
 
 Console.WriteLine("Hello, World!");
@@ -18,12 +18,6 @@ var context = new TestLambdaContext();
 context.RemainingTime = TimeSpan.FromDays(30); //TimeSpan.FromSeconds(3000);
 
 bool analyzer = false;
-bool builder = true;
-
-if(builder) {
-	var builderFunc = new Tradie.ItemLogBuilder.Function();
-	await builderFunc.FunctionHandler(new ScheduledEvent(), context);
-}
 
 if(analyzer) {
 	var analyzerFunc = new Tradie.Analyzer.Function();
@@ -42,3 +36,9 @@ if(analyzer) {
 		}
 	}, null);
 }
+
+ScriptBase scriptToRun;
+
+scriptToRun = new MigratePackedItemsScript();
+
+await scriptToRun.Run();

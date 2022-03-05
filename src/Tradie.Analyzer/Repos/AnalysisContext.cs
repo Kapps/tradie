@@ -45,7 +45,7 @@ public class AnalysisContext : DbContext {
 			Username = Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? TradieConfig.DbUser,
 			Password = Environment.GetEnvironmentVariable("TRADIE_DB_PASSWORD") ?? TradieConfig.DbPass,
 			TrustServerCertificate = true,
-			Timeout = 120,
+			Timeout = 20,
 			CommandTimeout = 120,
 			InternalCommandTimeout = 120,
 			MaxAutoPrepare = 60,
@@ -55,7 +55,8 @@ public class AnalysisContext : DbContext {
 			TcpKeepAlive = true,
 			TcpKeepAliveTime = 10,
 			KeepAlive = 10,
-			ConnectionIdleLifetime = 30
+			ConnectionIdleLifetime = 30,
+			//Multiplexing = true
 		}.ToString();
 	}
 

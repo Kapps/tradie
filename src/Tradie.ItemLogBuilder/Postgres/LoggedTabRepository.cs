@@ -3,6 +3,7 @@ using Npgsql;
 using NpgsqlTypes;
 using System.Runtime.CompilerServices;
 using Tradie.Analyzer;
+using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
@@ -63,7 +64,7 @@ namespace Tradie.ItemLogBuilder.Postgres {
 
 		private async Task PerformCopy(NpgsqlConnection conn, IAsyncEnumerable<AnalyzedStashTab> tabs, CancellationToken cancellationToken) {
 			await using var writer = await conn.BeginBinaryImportAsync($@"
-				COPY {StashTempTableName} (""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Created"", ""LastModified"", ""Items"")
+				COPY {StashTempTableName} (""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Created"", ""LastModified"", ""Items"", ""PackedItems"")
 				FROM STDIN (FORMAT BINARY);
 			", cancellationToken);
 
@@ -81,6 +82,7 @@ namespace Tradie.ItemLogBuilder.Postgres {
 				await writer.WriteAsync(DateTime.Now, NpgsqlDbType.Timestamp, cancellationToken);
 				
 				await writer.WriteAsync(SerializeItems(tab.Items), NpgsqlDbType.Jsonb, cancellationToken);
+				await writer.WriteAsync(SerializeItemsPacked(tab.Items), NpgsqlDbType.Bytea, cancellationToken);
 			}
 
 			_logger.LogDebug("Finished writing rows");
@@ -98,14 +100,18 @@ namespace Tradie.ItemLogBuilder.Postgres {
 			return Serializer.Serialize(loggedItems);
 		}
 
+		private byte[] SerializeItemsPacked(ItemAnalysis[] items) {
+			return MessagePack.MessagePackSerializer.Serialize(items, MessagePackedStashTabSerializer.SerializationOptions);
+		}
+
 		private async IAsyncEnumerable<long> UpsertIntoPrimaryTable(NpgsqlConnection conn, CancellationToken cancellationToken) {
 			string query = $@"
-				INSERT INTO ""StashTabs"" (""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Created"", ""LastModified"", ""Items"")
+				INSERT INTO ""StashTabs"" (""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Created"", ""LastModified"", ""Items"", ""PackedItems"")
 					SELECT ""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Created"", ""LastModified"", ""Items""
 					FROM {StashTempTableName}
 				ON CONFLICT (""RawId"") DO UPDATE
 					SET ""LastModified"" = CURRENT_TIMESTAMP, ""LastCharacterName"" = excluded.""LastCharacterName"",
-					""Name"" = excluded.""Name"", ""Items"" = excluded.""Items""
+					""Name"" = excluded.""Name"", ""Items"" = excluded.""Items"", ""PackedItems"" = excluded.""PackedItems""
 				RETURNING ""Id""
     		";
 

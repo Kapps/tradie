@@ -33,7 +33,7 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 			WHERE ""Id"" > $1
 		", conn) {
 			Parameters = {
-				new() {Value = previousId, NpgsqlDbType = NpgsqlDbType.Bigint}
+				new NpgsqlParameter {Value = previousId, NpgsqlDbType = NpgsqlDbType.Bigint}
 			}
 		};
 

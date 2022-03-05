@@ -15,7 +15,6 @@ namespace Tradie.Common {
 		public static async Task<T> GetOpenedConnection<T>(this DbContext context, CancellationToken cancellationToken = default) where T : DbConnection {
 			var conn = (T)context.Database.GetDbConnection();
 			if(conn.State == ConnectionState.Closed) {
-				Console.WriteLine("Opening Async");
 				await conn.OpenAsync(cancellationToken);
 				conn.EnlistTransaction(Transaction.Current);
 			}

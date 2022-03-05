@@ -90,4 +90,10 @@ public class LoggedStashTab {
 	[Required]
 	[DefaultValue("[]")]
 	public LoggedItem[] Items { get; set; }
+	
+	/// <summary>
+	/// Optimized binary version of the items, stored with MessagePack and compressed via lz4.
+	/// </summary>
+	[Column(TypeName = "bytea")]
+	public byte[] PackedItems { get; set; }
 }

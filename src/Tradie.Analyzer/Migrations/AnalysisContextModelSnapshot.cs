@@ -91,6 +91,10 @@ namespace Tradie.Analyzer.Migrations
                     b.Property<string>("Owner")
                         .HasColumnType("text");
 
+                    b.Property<byte[]>("PackedItems")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
                     b.Property<string>("RawId")
                         .IsRequired()
                         .HasColumnType("text");
