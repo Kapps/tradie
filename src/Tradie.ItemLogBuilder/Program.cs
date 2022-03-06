@@ -2,6 +2,7 @@
 using Amazon.Kinesis;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
+using Amazon.SQS;
 using Medallion.Threading.Postgres;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -47,19 +48,24 @@ IHost host = Host.CreateDefaultBuilder()
 			.AddSingleton<IAmazonKinesis, AmazonKinesisClient>()
 			.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
 			.AddSingleton<IAmazonS3>(s3Client)
-			.AddSingleton<IAmazonCloudWatch>(new AmazonCloudWatchClient())
+			.AddSingleton<IAmazonCloudWatch, AmazonCloudWatchClient>()
+			.AddSingleton<IAmazonSQS, AmazonSQSClient>()
 			.AddSingleton<IItemLogBuilder, PostgresLogBuilder>()
 			.AddSingleton<IMetricPublisher, CloudWatchMetricPublisher>()
 			.AddSingleton<ILoggedTabRepository, PostgresLoggedTabRepository>()
 			.AddSingleton<ILogStreamer, LogStreamer>()
 			.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>()
 			.AddSingleton<IKinesisRecordReader, KinesisRecordReader>()
+			.AddSingleton<IPoisonPillReporter, SqsPoisonPillReporter>(provider => new SqsPoisonPillReporter(
+				provider.GetRequiredService<IAmazonSQS>(),
+				TradieConfig.ItemStreamPoisonPillQueueUrl,
+				provider.GetRequiredService<ILogger<SqsPoisonPillReporter>>()))
 			.AddSingleton<IItemLog, KinesisItemLog>(provider => new KinesisItemLog(
 				new KinesisStreamReference(TradieConfig.LogBuilderShardId,
 					TradieConfig.AnalyzedItemStreamName),
 				provider.GetRequiredService<IKinesisRecordReader>(),
-				provider.GetRequiredService<IStashTabSerializer>()
-			));
+				provider.GetRequiredService<IStashTabSerializer>(),
+				provider.GetRequiredService<IPoisonPillReporter>()));
 
 		services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
 

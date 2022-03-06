@@ -77,7 +77,6 @@ public class Function {
 				Console.WriteLine($"Registered analyzer {analyzer.GetType().Name}.");
 			}
 
-			Console.WriteLine("Preparing analysis");
 
 			var stashAnalyzer = new StashTabAnalyzer(itemAnalyzers); // TODO: Can this become part of services?
 			var dispatcher = host.Services.GetRequiredService<IAnalyzedStashTabDispatcher>();

@@ -17,15 +17,20 @@ public static class KnownAnalyzers {
 
 	/// <summary>
 	/// Returns the cached type associated with a given analyzer id.
+	/// If the analyzer ID is not a known analyzer, a KeyNotFoundException is thrown.
 	/// </summary>
 	public static Type GetTypeForAnalyzer(ushort analyzerId) {
 		if(analyzerId == 0 || analyzerId > AnalyzerTypes.Length)
-			throw new ArgumentOutOfRangeException(nameof(analyzerId));
+			throw new KeyNotFoundException(analyzerId.ToString());
 		return AnalyzerTypes[analyzerId]!;
 	}
 
+	/// <summary>
+	/// Returns the ID of the analyzer that creates the given type.
+	/// If the type is not the analysis of a known analyzer, a KeyNotFoundException is thrown.
+	/// </summary>
 	public static ushort GetAnalyzerIdForType(Type analyzedPropertyType) {
-		var res = typeToAnalyzerId[analyzedPropertyType];
+		var res = TypeToAnalyzerId[analyzedPropertyType];
 		if(res == 0) {
 			throw new KeyNotFoundException(analyzedPropertyType.FullName);
 		}
@@ -41,7 +46,7 @@ public static class KnownAnalyzers {
 		typeof(ItemDetailsAnalysis)
 	};
 
-	private static readonly Dictionary<Type, ushort> typeToAnalyzerId = new() {
+	private static readonly Dictionary<Type, ushort> TypeToAnalyzerId = new() {
 		{typeof(ItemTypeAnalysis), 1},
 		{typeof(ItemAffixesAnalysis), 2},
 		{typeof(TradeListingAnalysis), 3},

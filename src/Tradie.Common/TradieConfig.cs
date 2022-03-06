@@ -151,7 +151,12 @@ namespace Tradie.Common {
 		/// Name of the Kinesis stream used for sending analyzed item data.
 		/// </summary>
 		public static string AnalyzedItemStreamName { get; set; }
-		
+
+		/// <summary>
+		/// The Url to the SQS queue used for poisoned pill messages from the item stream.
+		/// </summary>
+		public static string ItemStreamPoisonPillQueueUrl { get; set; }
+
 		/// <summary>
 		/// Default amount of stash tabs to load at a time when analyzing the item stream.
 		/// </summary>

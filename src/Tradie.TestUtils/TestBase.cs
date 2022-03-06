@@ -57,7 +57,6 @@ namespace Tradie.TestUtils {
 				instance.Dispose();
 			}
 			
-			Console.WriteLine("Exiting");
 			Transaction.Current!.Rollback();
 			this.TransactionScope.Dispose();
 		}
@@ -71,7 +70,6 @@ namespace Tradie.TestUtils {
 
 		protected virtual void InstantiateContexts() {
 			this.TransactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-			Console.WriteLine("Entered");
 			foreach(var contextField in ContextFields) {
 				var ctor = contextField.FieldType.GetConstructor(new Type[] { })!;
 				var instance = (DbContext)ctor.Invoke(new object[] { });

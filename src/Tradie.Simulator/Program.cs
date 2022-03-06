@@ -9,8 +9,6 @@ using Tradie.Common;
 using Tradie.Simulator.Scripts;
 using Tradie.TestUtils;
 
-Console.WriteLine("Hello, World!");
-
 var ssm = new AmazonSimpleSystemsManagementClient();
 await TradieConfig.InitializeFromEnvironment(ssm);
 

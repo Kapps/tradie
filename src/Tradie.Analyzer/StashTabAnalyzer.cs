@@ -2,6 +2,8 @@
 
 namespace Tradie.Analyzer;
 
+// TODO: This should never have been a single tab. Currently a bottleneck for analyzing due to db RTT.
+
 /// <summary>
 /// Analyzes raw items, returning the analyzed results for all items.
 /// </summary>
@@ -19,7 +21,7 @@ public class StashTabAnalyzer : IStashTabAnalyzer {
 	public StashTabAnalyzer(IItemAnalyzer[] analyzers) {
 		this._analyzers = analyzers;
 	}
-	
+
 	public async ValueTask<AnalyzedStashTab> AnalyzeTab(RawStashTab tab) {
 		if(tab.Items.Length == 0) {
 			return new AnalyzedStashTab(tab.Id, tab.Name, tab.LastCharacterName,

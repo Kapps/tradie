@@ -60,8 +60,6 @@ public class LoggedItemJsonConverterTests : TestBase {
 			}
 		});
 
-		Console.WriteLine(json);
-
 		string expected =
 			@"{""RawId"":""abc"",""Properties"":{""4"":{""Name"":""foo"",""Flags"":""Corrupted, Fractured"",""Influences"":""None"",""ItemLevel"":86}}}";
 		Assert.AreEqual(expected, json);
