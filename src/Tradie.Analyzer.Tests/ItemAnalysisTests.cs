@@ -31,7 +31,7 @@ public class ItemAnalysisTests {
 			Assert.AreEqual(analysis[item.analyzerId], item.props);
 		}
 		
-		analysis.Properties.Select(c=>c.Value).OrderBy(c=>((TestProperties)c).Foo)
+		analysis.Properties.OrderBy(c=>((TestProperties)c).Foo)
 			.WithDeepEqual(expected.Select(c=>(TestProperties)c.props).OrderBy(c=>c.Foo).ToArray())
 			.Assert();
 	}

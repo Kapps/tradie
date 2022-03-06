@@ -11,6 +11,11 @@ public static class KnownAnalyzers {
 	public const int ItemDetails = 4;
 
 	/// <summary>
+	/// The maximum value of a known analyzer.
+	/// </summary>
+	public const int Max = ItemDetails;
+
+	/// <summary>
 	/// Returns the cached type associated with a given analyzer id.
 	/// </summary>
 	public static Type GetTypeForAnalyzer(int analyzerId) {

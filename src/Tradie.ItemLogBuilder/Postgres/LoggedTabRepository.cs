@@ -96,7 +96,7 @@ namespace Tradie.ItemLogBuilder.Postgres {
 		private byte[] SerializeItems(ItemAnalysis[] items) {
 			var loggedItems = items.Select(c => new LoggedItem(
 				c.ItemId,
-				new Dictionary<ushort, IAnalyzedProperties>(c.Properties)
+				c.ToDictionary()
 			));
 			return Serializer.Serialize(loggedItems);
 		}

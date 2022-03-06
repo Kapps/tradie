@@ -2,6 +2,7 @@ using MessagePack;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using Tradie.Analyzer.Analyzers;
 
 namespace Tradie.Analyzer; 
 
@@ -11,7 +12,8 @@ namespace Tradie.Analyzer;
 /// </summary>
 [DataContract, MessagePackObject]
 public struct ItemAnalysis {
-	private readonly ConcurrentDictionary<ushort, IAnalyzedProperties> _properties = new();
+	//private readonly ConcurrentDictionary<ushort, IAnalyzedProperties> _properties = new();
+	private readonly IAnalyzedProperties[] _properties;
 
 	/// <summary>
 	/// The ID of the item this analysis is for.
@@ -23,44 +25,62 @@ public struct ItemAnalysis {
 	/// Gets all of the properties added to this analysis.
 	/// </summary>
 	[DataMember, Key(1)]
-	public ICollection<KeyValuePair<ushort, IAnalyzedProperties>> Properties => this._properties.ToArray();
+	public IEnumerable<IAnalyzedProperties> Properties => this._properties.Where(c=>c != null);
 
 	/// <summary>
 	/// Returns the properties for this analyzer, or null if the analysis is not present.
 	/// </summary>
-	public IAnalyzedProperties? this[ushort analyzerId] {
-		get {
-			if(this._properties.TryGetValue(analyzerId, out var props))
-				return props;
-			return null;
-		}
-	}
+	public IAnalyzedProperties? this[ushort analyzerId] => this._properties[IndexForAnalyzer(analyzerId)];
 
 	/// <summary>
 	/// Returns the properties for the given analyzer, typed as requested.
 	/// If it is not present, a KeyNotFoundException is thrown.
 	/// </summary>
 	public T GetRequired<T>(ushort analyzerId) where T : IAnalyzedProperties {
-		if(!this._properties.TryGetValue(analyzerId, out var props))
-			throw new KeyNotFoundException(analyzerId.ToString());
-		return (T)props;
+		var res = (T)this._properties[IndexForAnalyzer(analyzerId)];
+		if(res == null) {
+			throw new KeyNotFoundException();
+		}
+
+		return res;
 	}
 
 	public ItemAnalysis(string itemId) {
 		this.ItemId = itemId;
-		this._properties = new ConcurrentDictionary<ushort, IAnalyzedProperties>();
+		//this._properties = new ConcurrentDictionary<ushort, IAnalyzedProperties>();
+		this._properties = new IAnalyzedProperties[KnownAnalyzers.Max];
 	}
 
-	public ItemAnalysis(string itemId, ICollection<KeyValuePair<ushort, IAnalyzedProperties>> properties) {
-		this.ItemId = itemId;
-		this._properties = new(properties);
+	public ItemAnalysis(string itemId, IEnumerable<KeyValuePair<ushort, IAnalyzedProperties>> properties) : this(itemId) {
+		foreach(var prop in properties) {
+			this._properties[IndexForAnalyzer(prop.Key)] = prop.Value;
+		}
 	}
 	
 	/// <summary>
 	/// Appends an analyzed set of properties for this item to the properties collection.
 	/// </summary>
 	public void PushAnalysis<T>(ushort analyzerId, T properties) where T : IAnalyzedProperties {
-		if(!this._properties.TryAdd(analyzerId, properties))
+		int index = IndexForAnalyzer(analyzerId);
+		if(this._properties[index] != null)
 			throw new ArgumentException($"Analysis for analyzer {analyzerId} already exists.");
+		this._properties[index] = properties;
+	}
+
+	private int IndexForAnalyzer(ushort analyzerId) => analyzerId - 1;
+
+	/// <summary>
+	/// Returns the properties of this item as a dictionary keyed by the analyzer kind.
+	/// </summary>
+	public Dictionary<ushort, IAnalyzedProperties> ToDictionary() {
+		var res = new Dictionary<ushort, IAnalyzedProperties>(this._properties.Length);
+		for(int i = 0; i < this._properties.Length; i++) {
+			var prop = this._properties[i];
+			if(prop == null)
+				continue;
+			res[(ushort)(i+1)] = prop;
+		}
+
+		return res;
 	}
 }
