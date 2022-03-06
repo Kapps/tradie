@@ -80,6 +80,11 @@ var streamer = host.Services.GetRequiredService<ILogStreamer>();
 using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(4.5));
 
 Console.WriteLine("Starting copy.");
-await streamer.CopyItemsFromLog(sourceLog, logBuilder, cancellationTokenSource.Token);
+try {
+	await streamer.CopyItemsFromLog(sourceLog, logBuilder, cancellationTokenSource.Token);
+} catch(OperationCanceledException) {
+	Console.WriteLine("Exiting cleanly due to a cancelled context.");
+	return;
+}
 
 Console.WriteLine("Finished copy.");
