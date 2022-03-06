@@ -77,7 +77,7 @@ var sourceLog = host.Services.GetRequiredService<IItemLog>();
 var streamer = host.Services.GetRequiredService<ILogStreamer>();
 
 
-using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(4.5));
 
 Console.WriteLine("Starting copy.");
 await streamer.CopyItemsFromLog(sourceLog, logBuilder, cancellationTokenSource.Token);
