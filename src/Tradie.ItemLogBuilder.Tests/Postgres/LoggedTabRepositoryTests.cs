@@ -42,7 +42,7 @@ namespace Tradie.ItemLog.Tests.Postgres {
 			};
 
 			var loggedItems = items.Select(c =>
-					new LoggedItem(c.ItemId, new Dictionary<ushort, IAnalyzedProperties>(c.Properties)))
+					new LoggedItem(c.ItemId, c.ToDictionary()))
 				.ToArray();
 			byte[] loggedItemsPacked =
 				MessagePackSerializer.Serialize(items, MessagePackedStashTabSerializer.SerializationOptions);

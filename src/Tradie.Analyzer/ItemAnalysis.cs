@@ -37,12 +37,12 @@ public struct ItemAnalysis {
 	/// If it is not present, a KeyNotFoundException is thrown.
 	/// </summary>
 	public T GetRequired<T>(ushort analyzerId) where T : IAnalyzedProperties {
-		var res = (T)this._properties[IndexForAnalyzer(analyzerId)];
+		var res = this._properties[IndexForAnalyzer(analyzerId)];
 		if(res == null) {
 			throw new KeyNotFoundException();
 		}
 
-		return res;
+		return (T)res;
 	}
 
 	public ItemAnalysis(string itemId) {
@@ -54,6 +54,12 @@ public struct ItemAnalysis {
 	public ItemAnalysis(string itemId, IEnumerable<KeyValuePair<ushort, IAnalyzedProperties>> properties) : this(itemId) {
 		foreach(var prop in properties) {
 			this._properties[IndexForAnalyzer(prop.Key)] = prop.Value;
+		}
+	}
+
+	public ItemAnalysis(string itemId, IEnumerable<IAnalyzedProperties> properties) : this(itemId) {
+		foreach(var prop in properties) {
+			this._properties[IndexForAnalyzer(KnownAnalyzers.GetAnalyzerIdForType(prop.GetType()))] = prop;
 		}
 	}
 	

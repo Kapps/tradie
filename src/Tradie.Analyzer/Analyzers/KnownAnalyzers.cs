@@ -18,10 +18,19 @@ public static class KnownAnalyzers {
 	/// <summary>
 	/// Returns the cached type associated with a given analyzer id.
 	/// </summary>
-	public static Type GetTypeForAnalyzer(int analyzerId) {
+	public static Type GetTypeForAnalyzer(ushort analyzerId) {
 		if(analyzerId == 0 || analyzerId > AnalyzerTypes.Length)
 			throw new ArgumentOutOfRangeException(nameof(analyzerId));
 		return AnalyzerTypes[analyzerId]!;
+	}
+
+	public static ushort GetAnalyzerIdForType(Type analyzedPropertyType) {
+		var res = typeToAnalyzerId[analyzedPropertyType];
+		if(res == 0) {
+			throw new KeyNotFoundException(analyzedPropertyType.FullName);
+		}
+
+		return res;
 	}
 
 	private static readonly Type?[] AnalyzerTypes = new[] {
@@ -30,5 +39,12 @@ public static class KnownAnalyzers {
 		typeof(ItemAffixesAnalysis),
 		typeof(TradeListingAnalysis),
 		typeof(ItemDetailsAnalysis)
+	};
+
+	private static readonly Dictionary<Type, ushort> typeToAnalyzerId = new() {
+		{typeof(ItemTypeAnalysis), 1},
+		{typeof(ItemAffixesAnalysis), 2},
+		{typeof(TradeListingAnalysis), 3},
+		{typeof(ItemDetailsAnalysis), 4}
 	};
 }

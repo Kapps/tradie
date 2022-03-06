@@ -105,7 +105,7 @@ namespace Tradie.ItemLogBuilder.Postgres {
 			return MessagePack.MessagePackSerializer.Serialize(items, MessagePackedStashTabSerializer.SerializationOptions);
 		}
 
-		private async IAsyncEnumerable<long> UpsertIntoPrimaryTable(NpgsqlConnection conn, CancellationToken cancellationToken) {
+		private async IAsyncEnumerable<long> UpsertIntoPrimaryTable(NpgsqlConnection conn, [EnumeratorCancellation] CancellationToken cancellationToken) {
 			string query = $@"
 				INSERT INTO ""StashTabs"" (""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Kind"", ""Created"", ""LastModified"", ""Items"", ""PackedItems"")
 					SELECT ""RawId"", ""Owner"", ""LastCharacterName"", ""Name"", ""League"", ""Kind"", ""Created"", ""LastModified"", ""Items"", ""PackedItems""

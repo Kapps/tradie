@@ -34,7 +34,7 @@ if(analyzer) {
 				}
 			}
 		}
-	}, null);
+	}, new TestLambdaContext());
 }
 
 ScriptBase scriptToRun;
