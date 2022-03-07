@@ -2,105 +2,53 @@ using System.Diagnostics;
 using System.Text.Json;
 using Tradie.Analyzer;
 using Tradie.Analyzer.Analyzers;
-using Tradie.Analyzer.Entities;
+using Tradie.Analyzer.Models;
 using Tradie.ItemLog;
 
 namespace Tradie.Indexer; 
 
 public class IndexTest {
-	public const int itemsPerBlock = 16;
-	public const int blocksPerBlock = 10;
-	public const int maxDepth = 7;
-	//public const int itemsToAllocate = 25_000_000;
-	public static readonly int itemCapacity = (int)Math.Pow(blocksPerBlock, maxDepth) * itemsPerBlock;
-
-	
 	static Random rng = new Random();
-	
-
-	//int itemsAllocated;
- 
-
-	//byte searchKind = 1;
-
-	//private ushort[] searchMods = Array.Empty<ushort>();
-	private ulong[] searchMods = Array.Empty<ulong>();
-	//HashSet<ushort> searchMods = new HashSet<ushort>();
+	private ModKey[] SearchMods = Array.Empty<ModKey>();
 	Item maxItem;
 	float maxSum;
+	private bool loadedAllItems = false;
 
 	//byte numQueries = 2;
 	//ushort numMods = 1000;
-	//int numTimesToScan = 100;
+	int numTimesToScan = 100;
 
 	ScanStats stats;
 
 	private int rowsLoaded = 0;
-	uint getBlockKey(ushort modifier, byte kind) {
-		return (uint)(modifier << 16) | kind;
-	}
 
 	private async ValueTask<Item?> GetNextItem(IAsyncEnumerator<ItemAnalysis> items) {
+		if(this.loadedAllItems) {
+			return null;
+		}
 		if(!await items.MoveNextAsync()) {
 			Console.WriteLine("Reached end of Postgres ItemLog.");
+			this.loadedAllItems = true;
 			return null;
 		}
 
 		this.rowsLoaded++;
-		if((this.rowsLoaded % 10000) == 0) {
+		if((this.rowsLoaded % 100000) == 0) {
 			Console.WriteLine("Loaded {0} rows.", this.rowsLoaded);
 		}
 		var curr = items.Current;
-		//var details = curr.GetRequired<ItemDetailsAnalysis>(KnownAnalyzers.ItemDetails);
 		var mods = curr.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
-		return new Item(curr.ItemId,
-			mods.Affixes.Select(c => new Affix(c.Hash, (float)c.Scalar, (byte)c.Kind)).ToArray());
+		var affixes = mods.Affixes.Select(c => new Affix(new ModKey(c.Hash, c.Kind), (float)c.Scalar))
+			.OrderBy(c => c.Modifier.ModHash).ThenBy(c=>(int)c.Modifier.Location)
+			.ToArray();
+		return new Item(curr.ItemId, affixes);
 	}
 
-	/*Item createItem() {
-		var affixCount = rng.Next(4, 7);
-		var id = Guid.NewGuid();
-		var affixes = new Affix[affixCount];
-		
-		for(int i = 0; i < affixCount; i++) {
-			var kind = (byte)rng.Next(1, 4);
-			do {
-				var modifier = (ushort)rng.Next(1, numMods);
-				bool next = false;
-				for(int j = 0; j < i; j++) {
-					if(affixes[j].Modifier == modifier) {
-						next = true;
-						break;
-					}
-				}
-
-				if(next) {
-					continue;
-				}
-
-				var value = (ushort)rng.Next(1, 101);
-				affixes[i] = new Affix(modifier, value, kind);
-				break;
-			} while(true);
-		}
-		
-		Array.Sort(affixes, (a, b) => a.Modifier.CompareTo(b.Modifier));
-
-		//affixes = affixes.OrderBy(c => c.modifier).ToArray();
-		return new Item(id, affixes);
-	}*/
-	
-	
-	public async Task searchByBruteForce(IItemLog itemLog) {
+	public async Task SearchByBruteForce(IItemLog itemLog) {
 		var sw = Stopwatch.StartNew();
 		var itemIterator = itemLog.GetItems(ItemLogOffset.Start, CancellationToken.None)
 			.SelectMany(c => c.StashTab.Items.ToAsyncEnumerable())
 			.GetAsyncEnumerator(CancellationToken.None);
-		//var items = new Item[count];
-
-		/*for(int i = 0; i < count; i++) {
-			items[i] = this.createItem();
-		}*/
 
 		var items = new List<Item>();
 		while(true) {
@@ -110,8 +58,7 @@ public class IndexTest {
 			}
 			items.Add(next.Value);
 		}
-
-		//Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds to generate {itemsToAllocate} items.");
+		
 		Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds to generate {items.Count} items.");
 		
 		sw.Restart();
@@ -121,7 +68,7 @@ public class IndexTest {
 			stats.itemsScanned++;
 			float sum = 0;
 			foreach(var affix in item.Affixes) {
-				if(this.searchMods.Contains(affix.Modifier)) {
+				if(this.SearchMods.Contains(affix.Modifier)) {
 					sum += affix.Value;
 				}
 			}
@@ -155,20 +102,25 @@ public class IndexTest {
 			Items Scanned: {3} ({4} blocks)
 			Items Skipped: {5}
 			Item Blocks Loaded: {6}
-		", stats.blocksScanned, stats.blocksSkipped, stats.populatedBlocks, stats.itemsScanned, stats.itemsScanned / itemsPerBlock, -1, this.stats.itemsLoaded);
+			Rows Loaded: {7}
+		", stats.blocksScanned, stats.blocksSkipped, stats.populatedBlocks, stats.itemsScanned, stats.itemsScanned / AffixBlock.ItemsPerBlock, -1, this.stats.itemsLoaded, this.rowsLoaded);
 	}
 	
-	/*public void SearchByBlocks() {
-		if(itemCapacity < itemsToAllocate) {
+	public async Task SearchByBlocks(IItemLog itemLog) {
+		/*if(itemCapacity < itemsToAllocate) {
 			throw new ArgumentOutOfRangeException("itemCapacity");
-		}
+		}*/
 		var sw = Stopwatch.StartNew();
+		
+		var itemIterator = itemLog.GetItems(ItemLogOffset.Start, CancellationToken.None)
+			.SelectMany(c => c.StashTab.Items.ToAsyncEnumerable())
+			.GetAsyncEnumerator(CancellationToken.None);
 
-	    Block root = new Block(BlockKind.node, null);
+	    var root = new AffixBlock(BlockKind.Node, null);
 	    
-	    this.PopulateBlock(ref root, null, 0);
+	    await this.PopulateBlock(root, itemIterator, 0);
 
-	    Console.WriteLine("Took {0} milliseconds to generate {1} items.", sw.ElapsedMilliseconds, itemsAllocated);
+	    Console.WriteLine("Took {0} milliseconds to generate {1} items.", sw.ElapsedMilliseconds, this.rowsLoaded);
 
 	    //auto rootSum = root.ranges.get(getBlockKey(searchMod1, searchKind), AffixRange.init).maxValue 
 	    //    + root.ranges.get(getBlockKey(searchMod2, searchKind), AffixRange.init).maxValue;
@@ -181,11 +133,11 @@ public class IndexTest {
 	        this.PrepareSearchMods();
 	        
 	        sw.Restart();
-	        searchInBlock(root);
-	        Console.WriteLine("Took {0} milliseconds to search for items for mods {1}.", sw.ElapsedMilliseconds, searchMods);
+	        this.SearchInBlock(root);
+	        Console.WriteLine("Took {0} milliseconds to search for items for mods {1}.", sw.ElapsedMilliseconds, SearchMods);
 	        totalMS += (int)sw.ElapsedMilliseconds;
 	        this.PrintResults();
-	        var rootSum = getSum(root);
+	        var rootSum = this.GetSum(root);
 	        Console.WriteLine("Max possible sum is {0}, and received sum is {1}", rootSum, maxSum);
 	        
 	        maxItem = default;
@@ -196,35 +148,34 @@ public class IndexTest {
 	    //Console.ReadLine();
 	}
 
-	int getSum(Block? block) {
+	float GetSum(AffixBlock? block) {
 		if(block == null) {
 			return 0;
 		}
-	    int sum = 0;
-	    foreach(var mod in searchMods) {
-	        var blockKey = getBlockKey(mod, searchKind);
-	        sum += block.ranges.Get(blockKey).maxValue;
+	    float sum = 0;
+	    foreach(var mod in SearchMods) {
+		    sum += block.Ranges.Get(mod).MaxValue;
 	    }
 	    return sum;
 	}
 
-	void searchInBlock(Block block) {
+	void SearchInBlock(AffixBlock block) {
 	    //auto blockSum = block.ranges.get(getBlockKey(searchMod1, searchKind), AffixRange.init).maxValue 
 	    //    + block.ranges.get(getBlockKey(searchMod2, searchKind), AffixRange.init).maxValue;
-	    int blockSum = getSum(block);
+	    float blockSum = GetSum(block);
 
 	    if(blockSum < maxSum) {
 	        stats.blocksSkipped++;
 	        return;
 		}
 	    stats.blocksScanned++;
-	    if(block.kind == BlockKind.leaf) {
+	    if(block.Kind == BlockKind.Leaf) {
 		    this.stats.itemsLoaded++;
-	        foreach(var item in block.items!) {
+	        foreach(var item in block.Items!) {
 	            stats.itemsScanned++;
-	            int sum = 0;
+	            float sum = 0;
 	            foreach(var affix in item.Affixes) {
-		            if(this.searchMods.Contains(affix.Modifier)) {
+		            if(this.SearchMods.Contains(affix.Modifier)) {
 			            sum += affix.Value;
 		            }
 	            }
@@ -235,108 +186,88 @@ public class IndexTest {
 	            }
 	        }
 		} else {
-	        foreach(var child in block.blocks!) {
-	            searchInBlock(child);
+	        foreach(var child in block.Blocks!) {
+	            this.SearchInBlock(child);
 		    }
 	    }
 	}
 
-	void PopulateBlock(ref Block block, Block? parent, int depth) {
-	    if(itemsAllocated > itemsToAllocate) {
-	        return;
+	async ValueTask PopulateBlock(AffixBlock block, IAsyncEnumerator<ItemAnalysis> items, int depth) {
+		if(this.loadedAllItems) {
+			return;
 		}
-	    if(depth == maxDepth) {
-		    block = new Block(BlockKind.leaf, parent);
+		/*if(itemsAllocated > itemsToAllocate) {
+	        return;
+		}*/
+	    if(depth == AffixBlock.MaxDepth) {
+		    if(this.loadedAllItems) {
+			    return;
+		    }
+		    for(int i = 0; i < block.Items!.Length; i++) {
+			    var nextItem = await GetNextItem(items);
+			    if(!nextItem.HasValue) {
+				    return;
+			    }
 
-		    for(int i = 0; i < block.items!.Length; i++) {
-			    block.items[i] = createItem();
+			    block.Items[i] = nextItem.Value;
 
-			    foreach(var affix in block.items[i].Affixes) {
-				    updateBlocks(block, affix);
+			    foreach(var affix in nextItem.Value.Affixes) {
+				    UpdateBlocks(block, affix);
 			    }
 		    }
 	        
 	        stats.populatedBlocks++; 
-
-	        itemsAllocated += itemsPerBlock;
-	        if((itemsAllocated % 100000) == 0) {
+	        
+	        if((this.rowsLoaded % 100000) == 0) {
 		        var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
 		        long endBytes = currentProcess.WorkingSet64;
-	            Console.WriteLine("Finished allocating {0} items using {1}MB of RAM.", itemsAllocated, endBytes / (1024 * 1024));
+	            Console.WriteLine("Finished allocating {0} items using {1}MB of RAM.", this.rowsLoaded, endBytes / (1024 * 1024));
 	        }
-		} else {
-		    block = new Block(BlockKind.node, parent);
-
-		    for(int i = 0; i < block.blocks!.Length; i++) {
-			    this.PopulateBlock(ref block.blocks![i], block, depth + 1);
+	    } else {
+		    for(int i = 0; i < block.Blocks!.Length; i++) {
+			    if(this.loadedAllItems) {
+				    return;
+			    }
+			    var child = new AffixBlock((depth + 1) == AffixBlock.MaxDepth ? BlockKind.Leaf : BlockKind.Node, block);
+			    block.Blocks[i] = child;
+			    await this.PopulateBlock(child, items, depth + 1);
 		    }
 	    }
 	}
 
-	void updateBlocks(Block? block, Affix affix) {
+	void UpdateBlocks(AffixBlock? block, Affix affix) {
 		if(block == null) return;
 
-		var key = getBlockKey(affix.Modifier, affix.Kind); 
-		ref var range = ref block.ranges.GetWithAddingDefault(key, out var exists);
+		var key = affix.Modifier; 
+		ref var range = ref block.Ranges.GetWithAddingDefault(key, out var exists);
 		if(!exists) {
-			range.minValue = range.maxValue = affix.Value;
-			range.key = key;
+			range.MinValue = range.MaxValue = affix.Value;
+			range.Key = key;
 	        
-	        updateBlocks(block.parent, affix);
+	        UpdateBlocks(block.Parent, affix);
 	    } else {
-			if(affix.Value < range.minValue) {
-	            range.minValue  = affix.Value;
-	            updateBlocks(block.parent, affix);
+			if(affix.Value < range.MinValue) {
+	            range.MinValue  = affix.Value;
+	            UpdateBlocks(block.Parent, affix);
 			}
-	        if(affix.Value > range.maxValue) {
-	            range.maxValue = affix.Value;
-	            updateBlocks(block.parent, affix);
+	        if(affix.Value > range.MaxValue) {
+	            range.MaxValue = affix.Value;
+	            UpdateBlocks(block.Parent, affix);
 			}
 		}
 	}
 	
 	void PrepareSearchMods() {
 		//searchMods.Clear();
-		this.searchMods = Array.Empty<ushort>();
+		this.SearchMods = Array.Empty<ModKey>();
 		//searchMods = [];
-		this.searchMods = Enumerable.Range(0, this.numQueries).Select(_ => (ushort)rng.Next(1, this.numMods + 1))
-			.ToArray();
-	}*/
-	
-	
-}
-
-public readonly struct Item {
-	public readonly string Id;
-	public readonly Affix[] Affixes;
-
-	public Item(string id, Affix[] affixes) {
-		this.Id = id;
-		this.Affixes = affixes;
-	}
-}
-
-public readonly struct Affix {
-	public readonly ulong Modifier;
-	public readonly float Value;
-	public readonly byte Kind;
-
-	public Affix(ulong hash, float value, byte kind) {
-		this.Modifier = hash;
-		this.Value = value;
-		this.Kind = kind;
-	}
-}
-
-public struct AffixRange {
-	public float minValue;
-	public float maxValue;
-	public BlockKey key;
-
-	public AffixRange(ushort minValue, ushort maxValue, BlockKey key) {
-		this.minValue = minValue;
-		this.maxValue = maxValue;
-		this.key = key;
+		//this.SearchMods = Enumerable.Range(0, this.numQueries).Select(_ => (ushort)rng.Next(1, this.numMods + 1))
+		//	.ToArray();
+		this.SearchMods = new ModKey[] {
+			new(9024037547368883040, ModKind.Explicit),
+			new(9119717384377170561, ModKind.Explicit),
+			new(14277321269326717293, ModKind.Explicit)
+		};
 	}
 }
 
@@ -347,33 +278,6 @@ public struct ScanStats {
 	public int populatedBlocks;
 	public int itemsLoaded;
 };
-
-public class Block {
-	public readonly Block? parent;
-	//AffixRange[BlockKey] ranges;
-	public readonly SortedAffixRangeList ranges;
-	public readonly BlockKind kind;
-	public readonly Item[]? items;
-	public readonly Block[]? blocks;
-
-	public Block(BlockKind kind, Block? parent) {
-		this.kind = kind;
-		this.ranges = SortedAffixRangeList.Empty();
-		this.parent = parent;
-		if(this.kind == BlockKind.leaf) {
-			this.items = new Item[IndexTest.itemsPerBlock];
-		} else {
-			this.blocks = new Block[IndexTest.blocksPerBlock];
-		}
-	}
-}
-
-public enum BlockKind : byte {
-	leaf = 1,
-	node = 2,
-}
-
-public record struct BlockKey(ulong ModHash, byte Kind);
 
 /*public class SortedAffixRangeList {
 	public static SortedAffixRangeList Empty() {

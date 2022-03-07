@@ -52,7 +52,8 @@ long startBytes = currentProcess.WorkingSet64;
 
 
 var test = new IndexTest();
-await test.searchByBruteForce(itemLog);
+//await test.SearchByBruteForce(itemLog);
+await test.SearchByBlocks(itemLog);
 //test.SearchByBlocks();
 
 GC.Collect();

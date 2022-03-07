@@ -13,7 +13,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     }
 
     public void Add(AffixRange value) {
-	    int index = getIndex(value.key);
+	    int index = getIndex(value.Key);
 	    if(index >= 0)
 		    throw new DuplicateNameException();
 	    this.Insert(~index, value);
@@ -62,7 +62,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 	    this._capacity = num;
     }
 
-    public ref AffixRange GetWithAddingDefault(BlockKey searchKey, out bool exists) {
+    public ref AffixRange GetWithAddingDefault(ModKey searchKey, out bool exists) {
 	    var range = new AffixRange(0, 0, searchKey);
 	    int index = getIndex(searchKey);
 	    if(index >= 0) {
@@ -75,7 +75,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 
     }
 
-    public AffixRange Get(BlockKey searchKey) {
+    public AffixRange Get(ModKey searchKey) {
 	    int index = getIndex(searchKey);
 	    if(index > 0) {
 		    return *(((AffixRange*)(void*)this._elementsPtr) + index);
@@ -103,7 +103,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 	    ReleaseUnmanagedResources();
     }
 
-    private int getIndex(BlockKey searchKey) {
+    private int getIndex(ModKey searchKey) {
 	    if(this._elementsPtr == IntPtr.Zero) {
 		    return -1;
 	    }
@@ -116,10 +116,10 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 		    int mid = lower + (upper - lower) / 2;
 
 		    var el = elements[mid];
-		    if(el.key == searchKey) {
+		    if(el.Key == searchKey) {
 			    return mid;
 		    }
-		    if(el.key.ModHash < searchKey.ModHash) {
+		    if(Compare(el.Key, searchKey) < 0) {
 			    lower = mid + 1;
 		    } else {
 			    upper = mid - 1;
@@ -127,6 +127,15 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 	    }
 
 	    return ~lower;
+    }
+
+    private int Compare(ModKey a, ModKey b) {
+	    int res = a.ModHash.CompareTo(b.ModHash);
+	    if(res == 0) {
+		    return a.Location.CompareTo(b.Location);
+	    }
+
+	    return res;
     }
 
     private IntPtr _elementsPtr;
@@ -137,6 +146,9 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 struct AffixRangeComparer : IComparer<AffixRange> {
 	public int Compare(AffixRange x, AffixRange y)
 	{
-		return x.key.ModHash.CompareTo(y.key.ModHash);
+		if(x.Key.ModHash == y.Key.ModHash) {
+			return x.Key.Location.CompareTo(y.Key.Location);
+		}
+		return x.Key.ModHash.CompareTo(y.Key.ModHash);
 	}
 }
