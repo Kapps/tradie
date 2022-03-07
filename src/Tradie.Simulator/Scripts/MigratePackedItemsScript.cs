@@ -17,7 +17,7 @@ public class MigratePackedItemsScript : ScriptBase {
 		AnalysisContext ctx = new AnalysisContext();
 		NpgsqlConnection conn = await ctx.GetOpenedConnection<NpgsqlConnection>();
 		NpgsqlCommand comm =
-			new NpgsqlCommand("SELECT \"Id\", \"Items\" FROM \"StashTabs\" WHERE \"PackedItems\" IS NULL", conn);
+			new NpgsqlCommand("SELECT \"Id\", \"Items\" FROM \"StashTabs\" WHERE \"PackedItems\" IS NULL AND \"Items\" <> '[]'", conn);
 
 		int totalProcessed = 0;
 		List<(long, byte[]?)> updates = new();
