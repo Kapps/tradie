@@ -20,12 +20,7 @@ public class AnalysisContext : DbContext {
 	/// Returns any affix modifiers that have so far been analyzed.
 	/// </summary>
 	public DbSet<Modifier> Modifiers { get; set; } = null!;
-
-	/*/// <summary>
-	/// Returns all analyzed items logged to the context.
-	/// </summary>
-	public DbSet<LoggedItem> LoggedItems { get; set; } = null!;*/
-
+	
 	/// <summary>
 	/// Returns all stash tabs logged to the context.
 	/// </summary>

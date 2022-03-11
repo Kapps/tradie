@@ -20,4 +20,8 @@
       <ProjectReference Include="..\Tradie.ItemLog\Tradie.ItemLog.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repos" />
+    </ItemGroup>
+
 </Project>

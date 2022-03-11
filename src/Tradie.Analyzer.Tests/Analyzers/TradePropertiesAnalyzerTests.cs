@@ -29,7 +29,7 @@ public class TradeAttributesAnalyzerTests : TestBase {
 
 		props.ShouldDeepEqual(new TradeListingAnalysis(
 			8, 6,
-			new ItemPrice(BuyoutCurrency.Chaos, 75, BuyoutKind.Fixed),
+			new ItemPrice(Currency.Chaos, 75, BuyoutKind.Fixed),
 			"~price 75 chaos"
 		));
 	}

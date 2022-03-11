@@ -7,14 +7,14 @@ namespace Tradie.Analyzer.Tests.Models {
 
 		[TestMethod]
 		[DataTestMethod]
-		[DataRow("~b/o 2 chaos", BuyoutCurrency.Chaos, 2, BuyoutKind.Offer)]
-		[DataRow("~price 2 chaos", BuyoutCurrency.Chaos, 2, BuyoutKind.Fixed)]
-		[DataRow("~price 4 exa", BuyoutCurrency.Exalted, 4, BuyoutKind.Fixed)]
+		[DataRow("~b/o 2 chaos", Currency.Chaos, 2, BuyoutKind.Offer)]
+		[DataRow("~price 2 chaos", Currency.Chaos, 2, BuyoutKind.Fixed)]
+		[DataRow("~price 4 exa", Currency.Exalted, 4, BuyoutKind.Fixed)]
 		[DataRow("b/o 2 chaos", default, default, default)]
 		[DataRow(null, default, default, default)]
-		public void TestParsing(string note, BuyoutCurrency expectedCurrency, float expectedAmount, BuyoutKind expectedKind) {
+		public void TestParsing(string note, Currency expectedCurrency, float expectedAmount, BuyoutKind expectedKind) {
 			bool success = ItemPrice.TryParse(note, out var parsed);
-			if(expectedCurrency == BuyoutCurrency.None) {
+			if(expectedCurrency == Currency.None) {
 				Assert.IsFalse(success);
 				return;
 			}

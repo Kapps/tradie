@@ -1,3 +1,4 @@
+using MessagePack;
 using Tradie.Analyzer.Models;
 
 namespace Tradie.Indexer;
@@ -21,6 +22,7 @@ public record struct ModKey(ulong ModHash, ModKind Location);
 /// <summary>
 /// A recursive multi-dimensional block range that can be used to efficiently look up a maximized combinations of affixes.
 /// </summary>
+[MessagePackObject]
 public class AffixBlock {
 	/// <summary>
 	/// Indicates how many items are present in a leaf block.

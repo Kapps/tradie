@@ -1,5 +1,6 @@
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
+using RateLimiter;
 using Tradie.Common;
 using Tradie.Scanner;
 
@@ -26,7 +27,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 		services.AddSingleton<IParameterStore, SsmParameterStore>()
 			.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
 			.AddSingleton<IAmazonS3>(s3Client)
-			.AddSingleton<IApiClient, ApiClient>()
+			.AddSingleton<IApiClient, PoEApiClient>()
 			.AddSingleton<IChangeSetParser, ChangeSetParser>()
 			.AddSingleton<IChangeSetStore, S3ChangeSetStore>()
 			.AddSingleton<ICompressor, BrotliCompressor>();

@@ -14,19 +14,19 @@ namespace Tradie.Common {
 	/// </summary>
 	public interface IApiClient {
 		/// <summary>
-		/// Makes a GET request to the endpoint with the given form content, returning a stream containing the body of the ersponse.
+		/// Makes a GET request to the endpoint with the given form content, returning a stream containing the body of the response.
 		/// </summary>
 		Task<string> Get(string endpoint, params (string key, string val)[] form);
 	}
-
+	
 	public class ApiClient : IApiClient {
-		public ApiClient() {
+		public ApiClient(TimeLimiter timeLimiter, string baseUrl) {
 			_httpClient = new HttpClient() {
-				BaseAddress = new Uri("https://www.pathofexile.com/api/"),
+				BaseAddress = new Uri(baseUrl),
 				Timeout = TimeSpan.FromSeconds(TradieConfig.HttpTimeout),
 			};
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", TradieConfig.UserAgent);
-			_timeLimiter = TimeLimiter.GetFromMaxCountByInterval(2, TimeSpan.FromSeconds(1));
+			_timeLimiter = timeLimiter;
 		}
 
 		public async Task<string> Get(string endpoint, params (string key, string val)[] form) {

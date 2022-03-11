@@ -13,7 +13,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     }
 
     public void Add(AffixRange value) {
-	    int index = getIndex(value.Key);
+	    int index = this.GetIndex(value.Key);
 	    if(index >= 0)
 		    throw new DuplicateNameException();
 	    this.Insert(~index, value);
@@ -64,7 +64,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 
     public ref AffixRange GetWithAddingDefault(ModKey searchKey, out bool exists) {
 	    var range = new AffixRange(0, 0, searchKey);
-	    int index = getIndex(searchKey);
+	    int index = this.GetIndex(searchKey);
 	    if(index >= 0) {
 		    exists = true;
 		    return ref ((AffixRange*)(void*)this._elementsPtr)[index];
@@ -76,7 +76,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     }
 
     public AffixRange Get(ModKey searchKey) {
-	    int index = getIndex(searchKey);
+	    int index = this.GetIndex(searchKey);
 	    if(index > 0) {
 		    return *(((AffixRange*)(void*)this._elementsPtr) + index);
 	    }
@@ -94,16 +94,16 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     /// <summary>
     /// Disposes of unmanaged memory used by this instance.
     /// </summary>
-    public void Dispose() {
-	    ReleaseUnmanagedResources();
+    public void Dispose() { 
+	    this.ReleaseUnmanagedResources();
 	    GC.SuppressFinalize(this);
     }
 
     ~SortedAffixRangeList() {
-	    ReleaseUnmanagedResources();
+		this.ReleaseUnmanagedResources();
     }
 
-    private int getIndex(ModKey searchKey) {
+    private int GetIndex(ModKey searchKey) {
 	    if(this._elementsPtr == IntPtr.Zero) {
 		    return -1;
 	    }
@@ -119,7 +119,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 		    if(el.Key == searchKey) {
 			    return mid;
 		    }
-		    if(Compare(el.Key, searchKey) < 0) {
+		    if(this.Compare(el.Key, searchKey) < 0) {
 			    lower = mid + 1;
 		    } else {
 			    upper = mid - 1;

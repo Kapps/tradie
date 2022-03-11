@@ -18,6 +18,7 @@ public static class TestInitializers {
 	public static void InitializeAssemblySetup(TestContext context) {
 		Environment.SetEnvironmentVariable("TRADIE_ENV", "test");
 		TradieConfig.InitializeWithDefaults("test");
+		TradieConfig.League = "Anarchy";
 
 		using var dbContext = new AnalysisContext();
 		Console.WriteLine(dbContext.Database.GetConnectionString());

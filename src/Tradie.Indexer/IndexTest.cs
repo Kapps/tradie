@@ -38,10 +38,11 @@ public class IndexTest {
 		}
 		var curr = items.Current;
 		var mods = curr.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
+		var price = curr.GetRequired<TradeListingAnalysis>(KnownAnalyzers.TradeAttributes);
 		var affixes = mods.Affixes.Select(c => new Affix(new ModKey(c.Hash, c.Kind), (float)c.Scalar))
 			.OrderBy(c => c.Modifier.ModHash).ThenBy(c=>(int)c.Modifier.Location)
 			.ToArray();
-		return new Item(curr.ItemId, affixes);
+		return new Item(curr.ItemId, 1, affixes);
 	}
 
 	public async Task SearchByBruteForce(IItemLog itemLog) {

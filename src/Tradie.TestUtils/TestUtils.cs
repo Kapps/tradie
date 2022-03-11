@@ -36,6 +36,8 @@ public static class TestUtils {
 		bool Validate(T actual) {
 			return actual.WithDeepEqual(expected)
 				.IgnoreProperty(reader => reader.Name == "Id")
+				.WithCustomComparison(new DateClosenessComparer())
+				.WithCustomComparison(new StreamComparer())
 				.Compare();
 		}
 

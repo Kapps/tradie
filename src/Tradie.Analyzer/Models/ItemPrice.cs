@@ -11,7 +11,7 @@ namespace Tradie.Analyzer.Models;
 /// <param name="Amount">The amount of the currency this item is listed for.</param>
 [DataContract, MessagePackObject]
 public readonly record struct ItemPrice(
-	[property: DataMember, Key(0)] BuyoutCurrency Currency,
+	[property: DataMember, Key(0)] Currency Currency,
 	[property: DataMember, Key(1)] float Amount,
 	[property: DataMember, Key(2)] BuyoutKind Kind
 ) {
@@ -50,19 +50,39 @@ public readonly record struct ItemPrice(
 		return true;
 	}
 
+	/// <summary>
+	/// Attempts to parse a currency value from a trade tag, such as "exalted" to the appropriate Currency.
+	/// </summary>
+	public static bool TryParseCurrency(string raw, out Currency parsed) {
+		return CurrencyMappings.TryGetValue(raw, out parsed);
+	}
+
 	private static readonly Regex PriceRegex = new(@"^~(b\/o|price) (\d+) (\w+?)$", RegexOptions.Compiled);
 
-	private static readonly Dictionary<string, BuyoutCurrency> CurrencyMappings =
+	private static readonly Dictionary<string, Currency> CurrencyMappings =
 		new(StringComparer.InvariantCultureIgnoreCase) {
-			{"chaos", BuyoutCurrency.Chaos},
-			{"exa", BuyoutCurrency.Exalted},
-			{"fuse", BuyoutCurrency.Fuse},
-			{"vaal", BuyoutCurrency.Vaal},
-			{"alt", BuyoutCurrency.Alterations},
-			{"alts", BuyoutCurrency.Alterations},
-			{"exalt", BuyoutCurrency.Exalted},
-			{"exalts", BuyoutCurrency.Exalted},
-			{"exalted", BuyoutCurrency.Exalted}
+			{"chaos", Currency.Chaos},
+			{"choas", Currency.Chaos},
+			{"exa", Currency.Exalted},
+			{"fuse", Currency.Fuse},
+			{"fusing", Currency.Fuse},
+			{"vaal", Currency.Vaal},
+			{"alt", Currency.Alterations},
+			{"alts", Currency.Alterations},
+			{"exalt", Currency.Exalted},
+			{"exalts", Currency.Exalted},
+			{"exalted", Currency.Exalted},
+			{"alch", Currency.Alchemy},
+			{"alchs", Currency.Alchemy},
+			{"alchemy", Currency.Alchemy},
+			{"gcp", Currency.Gemcutters},
+			{"gemc", Currency.Gemcutters},
+			{"chrom", Currency.Chromatics},
+			{"chrome", Currency.Chromatics},
+			{"mirror", Currency.Mirror},
+			{"kalandra", Currency.Mirror},
+			{"mirrors", Currency.Mirror}
+		
 		};
 }
 
@@ -81,11 +101,15 @@ public enum BuyoutKind : byte {
 	Fixed = 2
 }
 
-public enum BuyoutCurrency : byte {
+public enum Currency : byte {
 	None = 0,
 	Chaos = 1,
 	Exalted = 2,
 	Alterations = 3,
 	Vaal = 4,
 	Fuse = 5,
+	Alchemy = 6,
+	Gemcutters = 7,
+	Chromatics = 8,
+	Mirror = 9
 }

@@ -15,7 +15,7 @@ namespace Tradie.Common {
 		/// </summary>
 		public static async Task InitializeFromEnvironment(IAmazonSimpleSystemsManagement ssmClient)  {
 			string environment = System.Environment.GetEnvironmentVariable("TRADIE_ENV")
-			                     ?? throw new ArgumentNullException("TRADIE_ENV");
+			                     ?? throw new ArgumentException("TRADIE_ENV must be set.");
 			
 			if(environment == "test") {
 				InitializeWithDefaults(environment);
@@ -43,8 +43,8 @@ namespace Tradie.Common {
 			DbUser = System.Environment.GetEnvironmentVariable("TRADIE_DB_USER") ?? "tradieadmin";
 			DbPass = System.Environment.GetEnvironmentVariable("TRADIE_DB_PASS") ?? "tradie";
 			DbName = System.Environment.GetEnvironmentVariable("TRADIE_DB_NAME") ?? "tradie";
-			
-			OverrideWithEnvrionment();
+			League = System.Environment.GetEnvironmentVariable("TRADIE_LEAGUE") ?? null;
+			OverrideWithEnvironment();
 		}
 		/// <summary>
 		/// Returns a TradieConfig with all properties loaded from SSM.
@@ -52,6 +52,7 @@ namespace Tradie.Common {
 		/// </summary>
 		public static async Task InitializeFromSsm(string environment, IAmazonSimpleSystemsManagement ssmClient) {
 			Console.WriteLine($"Initializing config from SSM for environment {environment}.");
+			League = System.Environment.GetEnvironmentVariable("TRADIE_LEAGUE") ?? null;
 			Environment = environment;
 			var matchedProperties = new HashSet<PropertyInfo>();
 
@@ -72,7 +73,7 @@ namespace Tradie.Common {
 				var resp = await ssmClient.GetParametersAsync(req);
 
 				foreach(var param in resp.Parameters) {
-					string propName = param.Name.Substring(param.Name.IndexOf(".") + 1);
+					string propName = param.Name.Substring(param.Name.IndexOf(".", StringComparison.Ordinal) + 1);
 					var prop = props.Single(c => c.Name == propName);
 					object val = Convert.ChangeType(param.Value, prop.PropertyType);
 					prop.SetValue(null, val);
@@ -88,10 +89,10 @@ namespace Tradie.Common {
 				missingProp.SetValue(null, convertedDefault);
 			}
 			
-			OverrideWithEnvrionment();
+			OverrideWithEnvironment();
 		}
 
-		private static void OverrideWithEnvrionment() {
+		private static void OverrideWithEnvironment() {
 			var logLevelEnv = System.Environment.GetEnvironmentVariable("LOG_LEVEL");
 			if(logLevelEnv != null) {
 				LogLevel = Enum.Parse<LogLevel>(logLevelEnv, true);
@@ -116,6 +117,11 @@ namespace Tradie.Common {
 		/// The S3 bucket to store raw changesets in.
 		/// </summary>
 		public static string? ChangeSetBucket { get; set; }
+
+		/// <summary>
+		/// The S3 bucket to store most generic data in.
+		/// </summary>
+		public static string? StorageBucket { get; set; }
 
 		/// <summary>
 		/// Prefix, including trailing slash, for the folder to write raw changesets to.
@@ -174,6 +180,12 @@ namespace Tradie.Common {
 		/// </summary>
 		[IgnoreDataMember]
 		public static string Environment { get; private set; }
+
+		/// <summary>
+		/// For services that operate on only a specific league, the name of the league that is active.
+		/// </summary>
+		[IgnoreDataMember]
+		public static string? League { get; set; }
 
 		/// <summary>
 		/// The number of tabs to handle at a time in a batch when building an item log.
