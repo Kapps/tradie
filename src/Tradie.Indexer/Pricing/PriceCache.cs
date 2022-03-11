@@ -59,7 +59,7 @@ public class S3PriceCache : IPriceCache {
 			Key = this.GetCacheFile(),
 			BucketName = TradieConfig.StorageBucket,
 			ContentType = "application/json",
-			InputStream = ms,
+			InputStream = ms
 		};
 
 		await this._s3Client.PutObjectAsync(req, cancellationToken);
