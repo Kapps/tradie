@@ -137,6 +137,8 @@ public class IndexTest {
 		
 		var itemIterator = itemLog.GetItems(ItemLogOffset.Start, CancellationToken.None)
 			.SelectMany(c => c.StashTab.Items.ToAsyncEnumerable())
+			.SelectAwait(ConvertToIndexedItem)
+			.OrderBy(c=>c.ChaosEquivalentPrice)
 			.GetAsyncEnumerator(CancellationToken.None);
 
 	    var root = new AffixBlock(BlockKind.Node, null);
@@ -215,7 +217,7 @@ public class IndexTest {
 	    }
 	}
 
-	async ValueTask PopulateBlock(AffixBlock block, IAsyncEnumerator<ItemAnalysis> items, int depth) {
+	async ValueTask PopulateBlock(AffixBlock block, IAsyncEnumerator<Item> items, int depth) {
 		if(this.loadedAllItems) {
 			return;
 		}
@@ -237,7 +239,7 @@ public class IndexTest {
 				    Console.WriteLine("Loaded {0} rows.", this.rowsLoaded);
 			    }
 
-			    var nextItem = await ConvertToIndexedItem(items.Current);
+			    var nextItem = items.Current;
 			    block.Items[i] = nextItem;
 
 			    foreach(var affix in nextItem.Affixes) {
