@@ -8,28 +8,20 @@ namespace Tradie.Analyzer;
 /// Provides a way of storing analyzed properties about a raw item.
 /// </summary>
 [DataContract, MessagePackObject]
-public readonly record struct AnalyzedItem {
+public record struct AnalyzedItem(Item RawItem) {
 	/// <summary>
 	/// The raw item being analyzed.
 	/// </summary>
 	[IgnoreMember, IgnoreDataMember]
-	public readonly Item RawItem;
+	public readonly Item RawItem = RawItem;
 	/// <summary>
 	/// The analysis done on this item.
 	/// </summary>
 	[DataMember, Key(1)]
-	public readonly ItemAnalysis Analysis;
+	public ItemAnalysis Analysis = new(RawItem.Id);
 	/// <summary>
 	/// Unique ID of the item; consistent when being traded.
 	/// </summary>
 	[DataMember, Key(0)]
 	public string Id => this.RawItem.Id;
-
-	/// <summary>
-	/// Creates a new AnalyzedItem from the given raw item.
-	/// </summary>
-	public AnalyzedItem(Item rawItem) {
-		this.RawItem = rawItem;
-		this.Analysis = new(rawItem.Id);
-	}
 }

@@ -9,7 +9,7 @@ namespace Tradie.Common.Tests {
 	[TestClass]
 	public class ParameterStoreTest {
 
-		[Microsoft.VisualStudio.TestTools.UnitTesting.TestInitialize]
+		[TestInitialize]
 		public void TestInitialize() {
 			this._ssmClient = new(MockBehavior.Strict);
 			this._store = new(this._ssmClient.Object);
@@ -34,13 +34,12 @@ namespace Tradie.Common.Tests {
 			_ssmClient.Setup(c => c.GetParameterAsync(It.Is<GetParameterRequest>(m => m.IsDeepEqual(req)), default))
 				.ReturnsAsync(resp);
 
-			var method = _store.GetType().GetMethod("GetParameter").MakeGenericMethod(result.GetType());
+			var method = this._store.GetType().GetMethod("GetParameter")!.MakeGenericMethod(result.GetType());
 			var task = (Task)method.Invoke(this._store, new object[] { name, null });
 			await task;
+			var param = task.GetType().GetProperty("Result")!.GetValue(task)!;
 
-			var param = task.GetType().GetProperty("Result").GetValue(task);
-
-			var value = param.GetType().GetField("Value").GetValue(param);
+			var value = param.GetType().GetProperty("Value")!.GetValue(param);
 
 			Assert.AreEqual(result, value);
 

@@ -68,7 +68,6 @@ public class NinjaApiClient : ApiClient, INinjaApi {
 	
 	private record struct NinjaCurrency(string TradeId, string TypeName);
 
-	private readonly IApiClient _apiClient;
 	private readonly ILogger<NinjaApiClient> _logger;
 }
 

@@ -52,8 +52,8 @@ public class PricingServiceTests : TestBase {
 				CancellationToken.None).AsTask());
 	}
 
-	private CurrencyPrice[] _priceList;
+	private CurrencyPrice[] _priceList = null!;
 	private Mock<IPriceCache> _priceCache = null!;
 	private Mock<INinjaApi> _ninjaApi = null!;
-	private NinjaPricingService _pricingService;
+	private NinjaPricingService _pricingService = null!;
 }

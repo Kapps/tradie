@@ -36,7 +36,7 @@ public class LoggedItemJsonConverterTests : TestBase {
 			Converters = {
 				new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
 			}
-		});
+		})!;
 		Assert.AreEqual(3, items.Length);
 
 		var first = items.First();

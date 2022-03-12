@@ -1,4 +1,5 @@
 ﻿using DeepEqual.Syntax;
+using MessagePack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,12 @@ public class ItemAnalysisTests {
 	public void TestItemAnalysis() {
 		var analysis = new ItemAnalysis("foo");
 		List<dynamic> expected = new();
-		for(int i = 0; i < 10; i++) {
+		for(int i = 1; i < 4; i++) {
 			var item = new {
 				props = new TestProperties() {
 					Foo = i,
 				},
-				analyzerId =  RandomId<ushort>()
+				analyzerId = (ushort)i
 			};
 			expected.Add(item);
 			analysis.PushAnalysis(item.analyzerId, item.props);
@@ -43,15 +44,13 @@ public class ItemAnalysisTests {
 			Foo = 3,
 		};
 
-		var analyzerId = RandomId<ushort>();
+		var analyzerId = (ushort)2;
 		analysis.PushAnalysis(analyzerId, prop);
 		Assert.ThrowsException<ArgumentException>(() => analysis.PushAnalysis(analyzerId, prop));
 	}
 
-	internal struct TestProperties : IAnalyzedProperties {
-		public int Foo;
-		public void Serialize(BinaryWriter writer) {
-			writer.Write(this.Foo);
-		}
-	}
+	[MessagePackObject]
+	internal record struct TestProperties(
+		[property:Key(1)] int Foo
+	) : IAnalyzedProperties;
 }

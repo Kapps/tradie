@@ -47,7 +47,9 @@ public class PostgresLogBuilderTests : TestBase {
 	}
 
 	[TestMethod]
-	public async Task TestAppendEntries_MultiRecords_WithDups() {
+	[Ignore("Needs fixing and implementing.")]
+	public Task TestAppendEntries_MultiRecords_WithDups() {
+		return Task.CompletedTask;
 		/*var testNow = DateTime.Now;
 		var cancellationToken = TestUtils.TestUtils.CreateCancellationToken();
 		

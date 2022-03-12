@@ -12,9 +12,11 @@ public class NinjaApiClientTests : TestBase {
 	}
 
 	[TestMethod]
-	public async Task TestGetPriceListings() {
+	[Ignore("Requires refactoring to be testable.")]
+	public Task TestGetPriceListings() {
+		return Task.CompletedTask;
 		// TODO: Refactor to take in an IApiClient; not testable as is.
 	}
 
-	private NinjaApiClient _client;
+	private NinjaApiClient _client = null!;
 }
