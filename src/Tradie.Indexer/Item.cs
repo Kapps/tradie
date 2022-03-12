@@ -20,17 +20,17 @@ public readonly struct Item {
 	/// The price of this item, in chaos-equivalent orbs.
 	/// </summary>
 	[JsonInclude]
-	public readonly int ChaosEquivalent;
+	public readonly float ChaosEquivalentPrice;
 	/// <summary>
 	/// The list of affixes present on this item.
 	/// </summary>
 	[JsonInclude]
 	public readonly Affix[] Affixes;
 
-	public Item(string id, int chaosEquivalent, Affix[] affixes) {
+	public Item(string id, float chaosEquivalentPricePrice, Affix[] affixes) {
 		this.Id = id;
 		this.Affixes = affixes;
-		this.ChaosEquivalent = chaosEquivalent;
+		this.ChaosEquivalentPrice = chaosEquivalentPricePrice;
 	}
 
 	public override string ToString() {

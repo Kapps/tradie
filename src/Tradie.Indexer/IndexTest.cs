@@ -1,8 +1,11 @@
+using Amazon.S3;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Text.Json;
 using Tradie.Analyzer;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Models;
+using Tradie.Indexer.Pricing;
 using Tradie.ItemLog;
 
 namespace Tradie.Indexer; 
@@ -22,6 +25,17 @@ public class IndexTest {
 
 	private int rowsLoaded = 0;
 
+	private IPricingService _pricingService;
+
+	public IndexTest() {
+		var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+		var s3Client = new AmazonS3Client();
+		var cache = new S3PriceCache(s3Client, loggerFactory.CreateLogger<S3PriceCache>());
+		var ninjaClient = new NinjaApiClient(loggerFactory.CreateLogger<NinjaApiClient>());
+		this._pricingService =
+			new NinjaPricingService(cache, ninjaClient, loggerFactory.CreateLogger<NinjaPricingService>());
+	}
+
 	private async ValueTask<Item?> GetNextItem(IAsyncEnumerator<ItemAnalysis> items) {
 		if(this.loadedAllItems) {
 			return null;
@@ -38,11 +52,13 @@ public class IndexTest {
 		}
 		var curr = items.Current;
 		var mods = curr.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
-		var price = curr.GetRequired<TradeListingAnalysis>(KnownAnalyzers.TradeAttributes);
+		var tradeAttributes = curr.GetRequired<TradeListingAnalysis>(KnownAnalyzers.TradeAttributes);
 		var affixes = mods.Affixes.Select(c => new Affix(new ModKey(c.Hash, c.Kind), (float)c.Scalar))
 			.OrderBy(c => c.Modifier.ModHash).ThenBy(c=>(int)c.Modifier.Location)
 			.ToArray();
-		return new Item(curr.ItemId, 1, affixes);
+		var rawPrice = tradeAttributes.Price;
+		float calculatedPrice = rawPrice.HasValue ? (await this._pricingService.GetChaosEquivalentPrice(rawPrice.Value, CancellationToken.None)) : -1; 
+		return new Item(curr.ItemId, calculatedPrice, affixes);
 	}
 
 	public async Task SearchByBruteForce(IItemLog itemLog) {

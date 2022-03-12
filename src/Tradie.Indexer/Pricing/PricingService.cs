@@ -1,12 +1,5 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using Microsoft.Extensions.Logging;
-using MoreLinq;
-using RateLimiter;
-using System.Data;
-using System.Text.Json;
+﻿using Microsoft.Extensions.Logging;
 using Tradie.Analyzer.Models;
-using Tradie.Common;
 
 namespace Tradie.Indexer.Pricing;
 

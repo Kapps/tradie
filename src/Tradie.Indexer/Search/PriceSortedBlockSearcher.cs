@@ -1,10 +1,16 @@
 namespace Tradie.Indexer.Search;
 
+/// <summary>
+/// A service to search a recursive affix block for items matching a query. 
+/// </summary>
 public interface IBlockSearcher {
 	Item[] Search(AffixBlock block, SearchQuery query, int count);
 }
 
-public class BlockSearcher : IBlockSearcher {
+/// <summary>
+/// A block searcher optimized for searching through blocks that are ordered by the price of items.
+/// </summary>
+public class PriceSortedBlockSearcher : IBlockSearcher {
 	public Item[] Search(AffixBlock block, SearchQuery query, int count) {
 		if(query.Sort.Kind != SortKind.Price)
 			throw new NotImplementedException();
@@ -34,7 +40,7 @@ public class BlockSearcher : IBlockSearcher {
 		} else if(block.Kind == BlockKind.Leaf) {
 			foreach(var item in block.Items!) {
 				if(QueryMatcher.IsMatch(item, query)) {
-					var sort = GetSortPriority(item, query.Sort);
+					var sort = this.GetSortPriority(item, query.Sort);
 					results.Add(new SearchResult(item, sort));
 					if(results.Count >= count && query.Sort.Kind == SortKind.Price) {
 						return;
@@ -49,7 +55,7 @@ public class BlockSearcher : IBlockSearcher {
 	private int GetSortPriority(Item item, SortOrder order) {
 		switch(order.Kind) {
 			case SortKind.Price:
-				return (int)item.ChaosEquivalent;
+				return (int)(item.ChaosEquivalentPrice * 1000);
 			case SortKind.Modifier:
 				var affix = item.FindAffix(order.Mod!.Value);
 				if(affix == null) {
