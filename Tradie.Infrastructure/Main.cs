@@ -38,6 +38,8 @@ namespace Tradie.Infrastructure {
 	        var ecs = new Ecs(this, network, ssm);
 	        var routing = new Routing(this, network, ecs, ssm);
 
+	        var storage = new Storage(this);
+
 	        var itemStream = new ItemStream(this);
 
 	        var scanner = new Scanner(this, network, ecs, config, permissions);
