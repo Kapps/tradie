@@ -11,6 +11,7 @@ using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
+using Tradie.Common;
 using Tradie.TestUtils;
 
 namespace Tradie.ItemLog.Tests;
@@ -18,10 +19,14 @@ namespace Tradie.ItemLog.Tests;
 [TestClass]
 public class PostgresItemLogTests : TestBase {
 	protected override void Initialize() {
-		var serializer = new MessagePackedStashTabSerializer();
 		this._tabs = new LoggedStashTab[] {
-			new("public", DateTime.UtcNow, DateTime.UtcNow,  "name1", "lcn1", "an1", "league1", "kind1", Array.Empty<LoggedItem>(), MessagePackSerializer.Serialize(new ItemAnalysis[] {
+			new("public-other-league", DateTime.UtcNow, DateTime.UtcNow,  "name1", "lcn1", "an1", "league1", "kind1", Array.Empty<LoggedItem>(), MessagePackSerializer.Serialize(new ItemAnalysis[] {
 				new("itemId1", new Dictionary<ushort, IAnalyzedProperties>() {
+					{1, new ItemTypeAnalysis(34)}
+				})
+			}, MessagePackedStashTabSerializer.SerializationOptions)),
+			new("public-in-league", DateTime.UtcNow, DateTime.UtcNow,  "name2", "lcn2", "an2", TradieConfig.League, "kind2", Array.Empty<LoggedItem>(), MessagePackSerializer.Serialize(new ItemAnalysis[] {
+				new("itemId2", new Dictionary<ushort, IAnalyzedProperties>() {
 					{1, new ItemTypeAnalysis(34)}
 				})
 			}, MessagePackedStashTabSerializer.SerializationOptions)),
@@ -34,25 +39,65 @@ public class PostgresItemLogTests : TestBase {
 		this._context.SaveChanges();
 	}
 
+	[TestCleanup]
+	public void Cleanup() {
+		TradieConfig.InitializeWithDefaults(TradieConfig.Environment);
+	}
+
 	[TestMethod]
-	public async Task TestGetItems() {
+	public async Task TestGetItems_NoLeague() {
+		TradieConfig.League = null;
 		var res = this._itemLog.GetItems(new ItemLogOffset(null), CancellationToken.None);
 		var results = await res.ToArrayAsync();
 		
-		Assert.AreEqual(2, results.Length);
+		Assert.AreEqual(3, results.Length);
 		// First tab is public with items.
-		var fs = this._tabs[0];
-		var fr = results[0];
-		fr.WithDeepEqual(new LogRecord(fr.Offset, new AnalyzedStashTab(fs.RawId, fs.Name, fs.LastCharacterName, fs.Owner,
-			fs.League, fs.Kind, fs.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
+		var tab0 = this._tabs[0];
+		var res0 = results[0];
+		res0.WithDeepEqual(new LogRecord(res0.Offset, new AnalyzedStashTab(tab0.RawId, tab0.Name, tab0.LastCharacterName, tab0.Owner,
+			tab0.League, tab0.Kind, tab0.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
+			.SkipDefault<AnalyzedStashTab>()
+			.SkipDefault<LogRecord>()
+			.Assert();
+		
+		// Second tab is public with items.
+		var tab1 = this._tabs[1];
+		var res1 = results[1];
+		res1.WithDeepEqual(new LogRecord(res1.Offset, new AnalyzedStashTab(tab1.RawId, tab1.Name, tab1.LastCharacterName, tab1.Owner,
+				"Anarchy", tab1.Kind, tab1.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
 			.SkipDefault<AnalyzedStashTab>()
 			.SkipDefault<LogRecord>()
 			.Assert();
 
-		// Second is not public, no items.
-		var ss = this._tabs[1];
-		var sr = results[1];
-		sr.WithDeepEqual(new LogRecord(sr.Offset, new AnalyzedStashTab(ss.RawId, null, null, null, null, ss.Kind, Array.Empty<ItemAnalysis>())))
+		// Third is not public, no items.
+		var tab2 = this._tabs[2];
+		var res2 = results[2];
+		res2.WithDeepEqual(new LogRecord(res2.Offset, new AnalyzedStashTab(tab2.RawId, null, null, null, null, tab2.Kind, Array.Empty<ItemAnalysis>())))
+			.SkipDefault<AnalyzedStashTab>()
+			.Assert();
+	}
+	
+	[TestMethod]
+	public async Task TestGetItems_WithLeague() {
+		var res = this._itemLog.GetItems(new ItemLogOffset(null), CancellationToken.None);
+		var results = await res.ToArrayAsync();
+		
+		Assert.AreEqual(2, results.Length);
+		// First tab is missing due to being in another league.
+		
+		// Second tab is public with items.
+		var tab1 = this._tabs[1];
+		var res1 = results[0];
+		res1.WithDeepEqual(new LogRecord(res1.Offset, new AnalyzedStashTab(tab1.RawId, tab1.Name, tab1.LastCharacterName, tab1.Owner,
+				"Anarchy", tab1.Kind, tab1.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
+			.SkipDefault<AnalyzedStashTab>()
+			.SkipDefault<LogRecord>()
+			.Assert();
+
+		// Third is not public, no items.
+		var tab2 = this._tabs[2];
+		var res2 = results[1];
+		res2.WithDeepEqual(new LogRecord(res2.Offset, new AnalyzedStashTab(tab2.RawId, null, null, null, null, tab2.Kind, Array.Empty<ItemAnalysis>())))
 			.SkipDefault<AnalyzedStashTab>()
 			.Assert();
 	}
