@@ -41,7 +41,7 @@ public class PostgresItemLogTests : TestBase {
 
 	[TestCleanup]
 	public void Cleanup() {
-		TradieConfig.InitializeWithDefaults(TradieConfig.Environment);
+		TradieConfig.League = "Anarchy";
 	}
 
 	[TestMethod]

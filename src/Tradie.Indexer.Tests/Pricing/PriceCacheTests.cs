@@ -53,7 +53,7 @@ public class PriceCacheTests : TestBase {
 			Key = "Anarchy_Currency.json",
 			BucketName = TradieConfig.StorageBucket,
 			ModifiedSinceDateUtc = DateTime.Now.AddHours(-24)
-		}.DeepMatcher(), CancellationToken.None)).ThrowsAsync(new HttpRequestException());
+		}.DeepMatcher(), CancellationToken.None)).ThrowsAsync(new AmazonS3Exception("arr"));
 
 		var resp = await this._priceCache.LoadCachedValues(CancellationToken.None);
 		Assert.IsNull(resp);
