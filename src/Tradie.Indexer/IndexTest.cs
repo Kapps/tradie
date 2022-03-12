@@ -36,8 +36,8 @@ public class IndexTest {
 			new NinjaPricingService(cache, ninjaClient, loggerFactory.CreateLogger<NinjaPricingService>());
 	}
 
-	private async ValueTask<Item?> GetNextItem(IAsyncEnumerator<ItemAnalysis> items) {
-		if(this.loadedAllItems) {
+	private async ValueTask<Item> ConvertToIndexedItem(ItemAnalysis item) {
+		/*if(this.loadedAllItems) {
 			return null;
 		}
 		if(!await items.MoveNextAsync()) {
@@ -50,33 +50,39 @@ public class IndexTest {
 		if((this.rowsLoaded % 100000) == 0) {
 			Console.WriteLine("Loaded {0} rows.", this.rowsLoaded);
 		}
-		var curr = items.Current;
-		var mods = curr.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
-		var tradeAttributes = curr.GetRequired<TradeListingAnalysis>(KnownAnalyzers.TradeAttributes);
+		var curr = items.Current;*/
+		var mods = item.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
+		var tradeAttributes = item.GetRequired<TradeListingAnalysis>(KnownAnalyzers.TradeAttributes);
 		var affixes = mods.Affixes.Select(c => new Affix(new ModKey(c.Hash, c.Kind), (float)c.Scalar))
 			.OrderBy(c => c.Modifier.ModHash).ThenBy(c=>(int)c.Modifier.Location)
 			.ToArray();
-		var rawPrice = tradeAttributes.Price;
-		float calculatedPrice = rawPrice.HasValue ? (await this._pricingService.GetChaosEquivalentPrice(rawPrice.Value, CancellationToken.None)) : -1; 
-		return new Item(curr.ItemId, calculatedPrice, affixes);
+		var rawPrice = tradeAttributes.Price.GetValueOrDefault();
+		float calculatedPrice = await this._pricingService.GetChaosEquivalentPrice(rawPrice, CancellationToken.None);
+		if(calculatedPrice == 0) {
+			calculatedPrice = float.MaxValue;
+		}
+		return new Item(item.ItemId, calculatedPrice, affixes);
 	}
 
 	public async Task SearchByBruteForce(IItemLog itemLog) {
 		var sw = Stopwatch.StartNew();
-		var itemIterator = itemLog.GetItems(ItemLogOffset.Start, CancellationToken.None)
+		var items = await itemLog.GetItems(ItemLogOffset.Start, CancellationToken.None)
 			.SelectMany(c => c.StashTab.Items.ToAsyncEnumerable())
-			.GetAsyncEnumerator(CancellationToken.None);
+			.SelectAwait(ConvertToIndexedItem)
+			.ToArrayAsync();
+			//.GetAsyncEnumerator(CancellationToken.None);
 
-		var items = new List<Item>();
+			
+		/*var items = new List<Item>();
 		while(true) {
 			var next = await GetNextItem(itemIterator);
 			if(!next.HasValue) {
 				break;
 			}
 			items.Add(next.Value);
-		}
+		}*/
 		
-		Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds to generate {items.Count} items.");
+		Console.WriteLine($"Took {sw.ElapsedMilliseconds} milliseconds to generate {items.Length} items.");
 		
 		sw.Restart();
 
@@ -221,14 +227,20 @@ public class IndexTest {
 			    return;
 		    }
 		    for(int i = 0; i < block.Items!.Length; i++) {
-			    var nextItem = await GetNextItem(items);
-			    if(!nextItem.HasValue) {
+			    if(!await items.MoveNextAsync()) {
+				    Console.WriteLine("Reached end of Postgres ItemLog.");
+				    this.loadedAllItems = true;
 				    return;
 			    }
+			    this.rowsLoaded++;
+			    if(this.rowsLoaded % 100000 == 0) {
+				    Console.WriteLine("Loaded {0} rows.", this.rowsLoaded);
+			    }
 
-			    block.Items[i] = nextItem.Value;
+			    var nextItem = await ConvertToIndexedItem(items.Current);
+			    block.Items[i] = nextItem;
 
-			    foreach(var affix in nextItem.Value.Affixes) {
+			    foreach(var affix in nextItem.Affixes) {
 				    UpdateBlocks(block, affix);
 			    }
 		    }

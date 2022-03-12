@@ -44,7 +44,10 @@ IHost host = Host.CreateDefaultBuilder()
 
 var itemLog = host.Services.GetRequiredService<IItemLog>();
 
-Console.WriteLine($"Starting Indexer with build hash {Environment.GetEnvironmentVariable("BUILD_HASH")}");
+Console.WriteLine($"Starting Indexer with build hash {Environment.GetEnvironmentVariable("BUILD_HASH")} and league {TradieConfig.League}.");
+if(String.IsNullOrWhiteSpace(TradieConfig.League)) {
+	throw new ArgumentException("Indexer must be started with a league to index.");
+}
 
 Process currentProcess = System.Diagnostics.Process.GetCurrentProcess();
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Tradie.Analyzer.Models;
+using Tradie.Common;
 
 namespace Tradie.Indexer.Pricing;
 
@@ -39,19 +40,29 @@ public class NinjaPricingService : IPricingService {
 			return;
 		}
 
-		var remoteValues = await this.GetRemoteValues(cancellationToken);
+		var remoteValues = (await this.GetRemoteValues(cancellationToken)).ToArray();
 		AssignPrices(remoteValues);
 		this._logger.LogInformation("Assigned prices from remote data source");
+
+		await UpdateCache(remoteValues, cancellationToken);
+	}
+
+	private async Task UpdateCache(CurrencyPrice[] remoteValues, CancellationToken cancellationToken) {
+		await this._priceCache.UpdateCachedValues(remoteValues, cancellationToken);
+		this._logger.LogInformation("Updated cache with remote values in league {League}", TradieConfig.League);
 	}
 
 	private void AssignPrices(IEnumerable<CurrencyPrice> prices) {
 		var priceMap = prices.ToDictionary(c => c.Currency, c => c.ChaosEquivalentCost);
 		this._priceList = new float[Enum.GetValues<Currency>().Length];
 		
-		foreach(var currency in Enum.GetValues<Currency>().Where(c=>c != Currency.None)) {
+		// API doesn't include Chaos; and we hardcode those to 1 to avoid shenanigans.
+		foreach(var currency in Enum.GetValues<Currency>().Where(c=>c != Currency.None && c != Currency.Chaos)) {
 			var mapped = priceMap[currency];
 			this._priceList[(int)currency] = mapped;
 		}
+
+		this._priceList[(int)Currency.Chaos] = 1;
 	}
 
 	private async Task<IEnumerable<CurrencyPrice>> GetRemoteValues(CancellationToken cancellationToken) {
@@ -60,6 +71,8 @@ public class NinjaPricingService : IPricingService {
 		var results = new List<CurrencyPrice>();
 		var listings = await this._ninjaClient.GetPriceListings(cancellationToken);
 		foreach(var listing in listings) {
+			if(String.IsNullOrWhiteSpace(listing.TradeId))
+				continue;
 			if(ItemPrice.TryParseCurrency(listing.TradeId, out var currency)) {
 				results.Add(new CurrencyPrice(currency, listing.ChaosEquivalent));
 			}

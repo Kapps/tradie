@@ -33,7 +33,13 @@ namespace Tradie.Common {
 			var urlBuilder = new StringBuilder(endpoint);
 			if(form.Length > 0) {
 				urlBuilder.Append("?");
+				bool first = true;
 				foreach(var kvp in form) {
+					if(!first) {
+						urlBuilder.Append("&");
+					} else {
+						first = false;
+					}
 					urlBuilder.Append(UrlEncoder.Default.Encode(kvp.key));
 					urlBuilder.Append("=");
 					urlBuilder.Append(UrlEncoder.Default.Encode(kvp.val));

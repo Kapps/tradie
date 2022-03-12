@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using RateLimiter;
 using System.Data;
+using System.Dynamic;
 using System.Text.Json;
 using Tradie.Analyzer.Models;
 using Tradie.Common;
@@ -30,7 +31,8 @@ public class NinjaApiClient : ApiClient, INinjaApi {
 	public async Task<NinjaPrice[]> GetPriceListings(CancellationToken cancellationToken) {
 		string json = await GetNinjaPriceJson(cancellationToken);
 		
-		dynamic obj = JsonSerializer.Deserialize<dynamic>(json) ?? throw new NoNullAllowedException();
+		// System.Text.Json doesn't appear to support nested dynamic deserialization; fall back to Newtonsoft.
+		dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json) ?? throw new NoNullAllowedException();
 		
 		Dictionary<string, NinjaCurrency> ninjaNameToCurrency = new();
 		foreach(dynamic detail in obj.currencyDetails) {
@@ -55,7 +57,7 @@ public class NinjaApiClient : ApiClient, INinjaApi {
 		try {
 			string resp = await this.Get(
 				"data/CurrencyOverview",
-				("league", TradieConfig.League ?? throw new ArgumentNullException()),
+				("league", TradieConfig.League ?? throw new ArgumentException("No league set.")),
 				("type", "Currency"),
 				("language", "en")
 			);
@@ -73,4 +75,4 @@ public class NinjaApiClient : ApiClient, INinjaApi {
 
 
 
-public record struct NinjaPrice(string TradeId, string TypeName, float ChaosEquivalent);
+public record struct NinjaPrice(string? TradeId, string TypeName, float ChaosEquivalent);

@@ -42,7 +42,7 @@ public class S3PriceCache : IPriceCache {
 		GetObjectResponse resp;
 		try {
 			resp = await this._s3Client.GetObjectAsync(req, cancellationToken);
-		} catch(Exception ex) {
+		} catch(AmazonS3Exception ex) {
 			this._logger.LogWarning("Failed to get S3 cached contents: {Exception}", ex);
 			return null;
 		}
