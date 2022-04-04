@@ -9,6 +9,7 @@ namespace Tradie.Analyzer.Models;
 /// </summary>
 /// <param name="Currency">The name of the currency (such as exa or chaos).</param>
 /// <param name="Amount">The amount of the currency this item is listed for.</param>
+/// <param name="Kind">Whether the price allows negotiation.</param>
 [DataContract, MessagePackObject]
 public readonly record struct ItemPrice(
 	[property: DataMember, Key(0)] Currency Currency,
@@ -16,6 +17,9 @@ public readonly record struct ItemPrice(
 	[property: DataMember, Key(2)] BuyoutKind Kind
 ) {
 	
+	/// <summary>
+	/// Attempts to parse an ItemPrice from a note, such as "~b/o 3.5 exalts".
+	/// </summary>
 	public static bool TryParse(string? note, out ItemPrice itemPrice) {
 		itemPrice = default;
 		if(String.IsNullOrWhiteSpace(note)) {
@@ -34,7 +38,7 @@ public readonly record struct ItemPrice(
 		var buyoutKind = matches.Groups[1].Value switch {
 			"b/o" => BuyoutKind.Offer,
 			"price" => BuyoutKind.Fixed,
-			_ => throw new ArgumentOutOfRangeException("buyoutType", matches.Groups[0].Value),
+			_ => BuyoutKind.None,
 		};
 
 		if(!float.TryParse(matches.Groups[2].ValueSpan, out var price)) {

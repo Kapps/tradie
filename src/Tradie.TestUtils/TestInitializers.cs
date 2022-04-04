@@ -15,13 +15,15 @@ namespace Tradie.TestUtils;
 /// AssemblyInitializer of all referencing projects.
 /// </summary>
 public static class TestInitializers {
-	public static void InitializeAssemblySetup(TestContext context) {
+	public static void InitializeAssemblySetup(TestContext context, bool runMigrations = true) {
 		Environment.SetEnvironmentVariable("TRADIE_ENV", "test");
 		TradieConfig.InitializeWithDefaults("test");
 		TradieConfig.League = "Anarchy";
 
-		using var dbContext = new AnalysisContext();
-		Console.WriteLine(dbContext.Database.GetConnectionString());
-		dbContext.Database.Migrate();
+		if(runMigrations) {
+			using var dbContext = new AnalysisContext();
+			Console.WriteLine(dbContext.Database.GetConnectionString());
+			dbContext.Database.Migrate();
+		}
 	}
 }	

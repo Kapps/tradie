@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "Analysis/ModifierTypes.proto";
+
+option csharp_namespace = "Tradie.Proto.Indexer";
+
+message AffixRange {
+  ModKey Key = 1;
+  float MinValue = 2;
+  float MaxValue = 3;
+}

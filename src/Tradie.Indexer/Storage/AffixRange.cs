@@ -1,4 +1,6 @@
-namespace Tradie.Indexer;
+using Tradie.Analyzer.Analyzers;
+
+namespace Tradie.Indexer.Storage;
 
 /// <summary>
 /// A range of what values are present on a block for a given affix.
@@ -17,7 +19,7 @@ public struct AffixRange {
 	/// </summary>
 	public ModKey Key;
 
-	public AffixRange(ushort minValue, ushort maxValue, ModKey key) {
+	public AffixRange(float minValue, float maxValue, ModKey key) {
 		this.MinValue = minValue;
 		this.MaxValue = maxValue;
 		this.Key = key;

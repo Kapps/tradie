@@ -3,6 +3,7 @@
 using Amazon.CloudWatch;
 using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ var s3Client = new AmazonS3Client();
 
 await TradieConfig.InitializeFromEnvironment(ssmClient);
 
-IHost host = Host.CreateDefaultBuilder()
+Host.CreateDefaultBuilder(args)
 	.ConfigureServices(services => {
 		services.AddLogging(builder => {
 			builder.AddSimpleConsole(format => {
@@ -38,11 +39,14 @@ IHost host = Host.CreateDefaultBuilder()
 			.AddSingleton<IItemLog, PostgresItemLog>();
 
 		services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
-
 	})
-	.Build();
+	.ConfigureWebHostDefaults(webBuilder => {
+		webBuilder.UseStartup<Startup>();
+	})
+	.Build()
+	.Run();
 
-var itemLog = host.Services.GetRequiredService<IItemLog>();
+/*var itemLog = host.Services.GetRequiredService<IItemLog>();
 
 Console.WriteLine($"Starting Indexer with build hash {Environment.GetEnvironmentVariable("BUILD_HASH")} and league {TradieConfig.League}.");
 if(String.IsNullOrWhiteSpace(TradieConfig.League)) {
@@ -68,4 +72,4 @@ long endBytes = currentProcess.WorkingSet64;
 
 test.PrintResults();
 
-Console.WriteLine($"Started off with using {startBytes / (1024 * 1024)}MB, ended with {endBytes / (1024*1024)}MB.");
+Console.WriteLine($"Started off with using {startBytes / (1024 * 1024)}MB, ended with {endBytes / (1024*1024)}MB.");*/

@@ -1,9 +1,26 @@
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Tradie.Analyzer.Analyzers;
 
-namespace Tradie.Indexer; 
+namespace Tradie.Indexer.Storage;
 
 public sealed unsafe class SortedAffixRangeList : IDisposable {
+
+	// TODO: Can we replace this with something closer to a bloom filter?
+	// Just do a dictionary and accept collisions?
+	// Would need to figure out number of actual distinct elements though...
+	// but could base that off a formula based off depth or something like estimated count of a bloom filter?
+
+	/// <summary>
+	/// The number of elements this list is capable of storing before being resized.
+	/// </summary>
+	public int Capacity => this._capacity;
+	/// <summary>
+	/// The number of elements currently present in this list.
+	/// </summary>
+	public int Count => this._size;
+	
     public static SortedAffixRangeList Empty() {
 	    return new SortedAffixRangeList() {
 		    _capacity = 0,
@@ -129,10 +146,11 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 	    return ~lower;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private int Compare(ModKey a, ModKey b) {
 	    int res = a.ModHash.CompareTo(b.ModHash);
 	    if(res == 0) {
-		    return a.Location.CompareTo(b.Location);
+		    return a.Kind.CompareTo(b.Kind);
 	    }
 
 	    return res;
@@ -141,14 +159,4 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     private IntPtr _elementsPtr;
     private int _capacity;
     private int _size;
-}
-
-struct AffixRangeComparer : IComparer<AffixRange> {
-	public int Compare(AffixRange x, AffixRange y)
-	{
-		if(x.Key.ModHash == y.Key.ModHash) {
-			return x.Key.Location.CompareTo(y.Key.Location);
-		}
-		return x.Key.ModHash.CompareTo(y.Key.ModHash);
-	}
 }

@@ -1,27 +1,29 @@
+using Tradie.Indexer.Storage;
+
 namespace Tradie.Indexer.Search;
 
 /// <summary>
 /// A service to search a recursive affix block for items matching a query. 
 /// </summary>
 public interface IBlockSearcher {
-	Item[] Search(AffixBlock block, SearchQuery query, int count);
+	Item[] Search(ItemTreeNode treeNode, SearchQuery query, int count);
 }
 
 /// <summary>
 /// A block searcher optimized for searching through blocks that are ordered by the price of items.
 /// </summary>
 public class PriceSortedBlockSearcher : IBlockSearcher {
-	public Item[] Search(AffixBlock block, SearchQuery query, int count) {
+	public Item[] Search(ItemTreeNode treeNode, SearchQuery query, int count) {
 		if(query.Sort.Kind != SortKind.Price)
 			throw new NotImplementedException();
 
 		var results = new SortedSet<SearchResult>();
-		SearchBlock(block, query, results, count);
+		SearchBlock(treeNode, query, results, count);
 
 		return results.Select(c => c.Item).ToArray();
 	}
 
-	private void SearchBlock(AffixBlock block, SearchQuery query, SortedSet<SearchResult> results, int count) {
+	private void SearchBlock(ItemTreeNode treeNode, SearchQuery query, SortedSet<SearchResult> results, int count) {
 		// All blocks are sorted in order of the price of the items in them.
 		// So for the default sorting of chaos equiv, start iteration at index 0 always and do depth-first.
 		// Because we iterate in order of price, if we ever reach the desired count matching items, we know it's the count cheapest items.
@@ -29,16 +31,16 @@ public class PriceSortedBlockSearcher : IBlockSearcher {
 			return;
 		}
 
-		if(!QueryMatcher.IsMatch(block, query)) {
+		if(!QueryMatcher.IsMatch(treeNode, query)) {
 			return;
 		}
 
-		if(block.Kind == BlockKind.Node) {
-			foreach(var child in block.Blocks!) {
+		if(treeNode.Kind == NodeKind.Block) {
+			foreach(var child in treeNode.Children.Blocks) {
 				SearchBlock(child, query, results, count);
 			}
-		} else if(block.Kind == BlockKind.Leaf) {
-			foreach(var item in block.Items!) {
+		} else if(treeNode.Kind == NodeKind.Leaf) {
+			foreach(var item in treeNode.Children.Items) {
 				if(QueryMatcher.IsMatch(item, query)) {
 					var sort = this.GetSortPriority(item, query.Sort);
 					results.Add(new SearchResult(item, sort));
@@ -51,7 +53,7 @@ public class PriceSortedBlockSearcher : IBlockSearcher {
 			throw new ArgumentOutOfRangeException();
 		}
 	}
-
+																																	
 	private int GetSortPriority(Item item, SortOrder order) {
 		switch(order.Kind) {
 			case SortKind.Price:

@@ -2,13 +2,14 @@ using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Tradie.Analyzer.Analyzers;
 
-namespace Tradie.Indexer;
+namespace Tradie.Indexer.Storage;
 
 /// <summary>
 /// Compact representation of an item, containing only its id and affixes.
 /// </summary>
-public readonly struct Item {
+public readonly struct Item : IComparable<Item> {
 	// TODO: Should Id be a Guid or something at least to reduce data volume?
 	
 	/// <summary>
@@ -46,5 +47,13 @@ public readonly struct Item {
 		}
 
 		return null;
+	}
+	
+	int IComparable<Item>.CompareTo(Item other) {
+		if(Math.Abs(this.ChaosEquivalentPrice - other.ChaosEquivalentPrice) < 0.01) {
+			return String.Compare(this.Id, other.Id, StringComparison.Ordinal);
+		}
+
+		return this.ChaosEquivalentPrice.CompareTo(other.ChaosEquivalentPrice);
 	}
 }

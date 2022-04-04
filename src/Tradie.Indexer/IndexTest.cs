@@ -9,7 +9,7 @@ using Tradie.Indexer.Pricing;
 using Tradie.ItemLog;
 
 namespace Tradie.Indexer; 
-
+#if false
 public class IndexTest {
 	static Random rng = new Random();
 	private ModKey[] SearchMods = Array.Empty<ModKey>();
@@ -54,7 +54,7 @@ public class IndexTest {
 		var mods = item.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
 		var tradeAttributes = item.GetRequired<TradeListingAnalysis>(KnownAnalyzers.TradeAttributes);
 		var affixes = mods.Affixes.Select(c => new Affix(new ModKey(c.Hash, c.Kind), (float)c.Scalar))
-			.OrderBy(c => c.Modifier.ModHash).ThenBy(c=>(int)c.Modifier.Location)
+			.OrderBy(c => c.Modifier.ModHash).ThenBy(c=>(int)c.Modifier.Kind)
 			.ToArray();
 		var rawPrice = tradeAttributes.Price.GetValueOrDefault();
 		float calculatedPrice = await this._pricingService.GetChaosEquivalentPrice(rawPrice, CancellationToken.None);
@@ -330,3 +330,4 @@ public struct ScanStats {
 
 	private Dictionary<uint, AffixRange> elements = new Dictionary<uint, AffixRange>();
 }*/
+#endif

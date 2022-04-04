@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
@@ -20,4 +19,18 @@
       <ProjectReference Include="..\Tradie.ItemLog\Tradie.ItemLog.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Protobuf OutputDir="." Include="..\Tradie.Shared\proto\Indexer\*.proto" ProtoRoot="..\Tradie.Shared\proto" GrpcServices="Server" CompileOutputs="False" />
+      <Protobuf OutputDir="." Include="..\Tradie.Shared\proto\Analysis\*.proto" ProtoRoot="..\Tradie.Shared\proto" GrpcServices="Server" CompileOutputs="False" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Grpc.AspNetCore" Version="2.43.0" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Tradie.Indexer.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>

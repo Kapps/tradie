@@ -1,17 +1,25 @@
-﻿namespace Tradie.Indexer.Search;
+﻿using System.Runtime.Serialization;
+using Tradie.Analyzer.Analyzers;
+using Tradie.Indexer.Storage;
+
+namespace Tradie.Indexer.Search;
 
 /// <summary>
 /// Represents a search query that contains one or more groups to match against a block or item.
 /// </summary>
-/// <param name="Groups"></param>
-/// <param name="Sort"></param>
+[DataContract]
 public record struct SearchQuery(
+	[property:DataMember(Order = 1)]
 	SearchGroup[] Groups,
+	[property:DataMember(Order = 2)]
 	SortOrder Sort
 );
 
+[DataContract]
 public record struct SearchGroup(
+	[property:DataMember(Order = 1)]
 	GroupKind Kind,
+	[property:DataMember(Order = 2)]
 	AffixRange[] Ranges
 );
 
@@ -28,7 +36,10 @@ public enum SortKind {
 	Modifier = 2
 }
 
+[DataContract]
 public record struct SortOrder(
+	[property:DataMember(Order = 1)]
 	SortKind Kind,
+	[property:DataMember(Order = 2, IsRequired = false)]
 	ModKey? Mod
 );

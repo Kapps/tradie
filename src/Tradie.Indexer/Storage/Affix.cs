@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
+using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Models;
 
-namespace Tradie.Indexer;
+namespace Tradie.Indexer.Storage;
 
 /// <summary>
 /// A compact representation of an affix on an item, containing the hash, the value, and the location.
