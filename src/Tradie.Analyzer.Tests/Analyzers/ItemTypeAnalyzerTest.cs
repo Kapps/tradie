@@ -2,6 +2,7 @@
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Entities;
@@ -18,7 +19,7 @@ public class ItemTypeAnalyzerTest : TestBase {
 	public async Task TestMissing_NoRequirements() {
 		var item = await ItemUtils.ReadTestItem("jewel");
 		
-		this._repo.Setup(c => c.LoadByNames(item.BaseType))
+		this._repo.Setup(c => c.LoadByNames(new[] { item.BaseType }, CancellationToken.None))
 			.ReturnsAsync(new ItemType[] { });
 
 		this._repo.Setup(c => c.Insert(new[] {
@@ -30,7 +31,8 @@ public class ItemTypeAnalyzerTest : TestBase {
 				Subcategory = null,
 				Requirements = new Requirements(),
 			}
-		}.DeepMatcher<IEnumerable<ItemType>>())).Callback((IEnumerable<ItemType> args) => Task.FromResult(args.Single().Id = 36))
+		}.DeepMatcher<IEnumerable<ItemType>>(), CancellationToken.None))
+			.Callback((IEnumerable<ItemType> args, CancellationToken cancellationToken) => Task.FromResult(args.Single().Id = 36))
 			.Returns(Task.CompletedTask);
 		
 		var logger = CreateLogger<ItemTypeAnalyzer>();
@@ -47,7 +49,7 @@ public class ItemTypeAnalyzerTest : TestBase {
 	public async Task TestMissing_WithRequirements() {
 		var item = await ItemUtils.ReadTestItem("boots");
 		
-		this._repo.Setup(c => c.LoadByNames(item.BaseType))
+		this._repo.Setup(c => c.LoadByNames(new[] { item.BaseType }, CancellationToken.None))
 			.ReturnsAsync(new ItemType[] { });
 
 		this._repo.Setup(c => c.Insert(new[] {
@@ -63,7 +65,8 @@ public class ItemTypeAnalyzerTest : TestBase {
 					Dex = 56,
 				}
 			}
-		}.DeepMatcher<IEnumerable<ItemType>>())).Returns(Task.CompletedTask);
+		}.DeepMatcher<IEnumerable<ItemType>>(), CancellationToken.None))
+			.Returns(Task.CompletedTask);
 		
 		var logger = CreateLogger<ItemTypeAnalyzer>();
 		var analyzer = new ItemTypeAnalyzer(logger, this._repo.Object);
@@ -76,7 +79,7 @@ public class ItemTypeAnalyzerTest : TestBase {
 	public async Task TestExisting() {
 		var item = await ItemUtils.ReadTestItem("jewel");
 		
-		this._repo.Setup(c => c.LoadByNames(item.BaseType))
+		this._repo.Setup(c => c.LoadByNames(new[] { item.BaseType }, CancellationToken.None))
 			.ReturnsAsync(new[] {
 				new ItemType() {
 					Category = "jewels",

@@ -24,6 +24,18 @@ namespace Tradie.Infrastructure.Resources {
 				ForceDestroy = true,
 				Versioning = new S3BucketVersioning() {
 					Enabled = false,
+				},
+				LifecycleRule = new IS3BucketLifecycleRule[] {
+					new S3BucketLifecycleRule() {
+						Enabled = true,
+						Expiration = new S3BucketLifecycleRuleExpiration() {
+							Days = 30
+						},
+						AbortIncompleteMultipartUploadDays = 7,
+						NoncurrentVersionExpiration = new S3BucketLifecycleRuleNoncurrentVersionExpiration() {
+							Days = 30
+						}
+					},
 				}
 			});	
 

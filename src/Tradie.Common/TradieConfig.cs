@@ -176,6 +176,19 @@ namespace Tradie.Common {
 		public static string LogBuilderShardId { get; set; }
 
 		/// <summary>
+		/// The hostname for the Redis cache instance.
+		/// </summary>
+		public static string RedisHost { get; set; }
+		/// <summary>
+		/// The username to use for the Redis cache instance.
+		/// </summary>
+		public static string RedisUser { get; set; }
+		/// <summary>
+		/// The password for the Redis cache instance.
+		/// </summary>
+		public static string RedisPass { get; set; }
+
+		/// <summary>
 		/// Returns the environment that we're running under, such as "test" or "prod-ca".
 		/// </summary>
 		[IgnoreDataMember]

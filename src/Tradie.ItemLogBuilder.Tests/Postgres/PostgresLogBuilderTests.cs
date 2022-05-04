@@ -19,9 +19,9 @@ namespace Tradie.ItemLog.Tests.Postgres;
 [TestClass]
 public class PostgresLogBuilderTests : TestBase {
 	protected override void Initialize() {
-		var logger = TestUtils.TestUtils.CreateLogger<IItemLogBuilder>();
+		var logger = TestUtils.TestUtils.CreateLogger<PostgresLogBuilder>();
 		this._context = new();
-		this._logBuilder = new PostgresLogBuilder(logger, this._tabRepo.Object, this._context);
+		this._logBuilder = new PostgresLogBuilder(logger, this._tabRepo.Object, this._itemRepo.Object, this._context);
 	}
 
 	protected override void Cleanup() {
@@ -39,44 +39,61 @@ public class PostgresLogBuilderTests : TestBase {
 
 	[TestMethod]
 	public async Task TestAppendEntries_Empty() {
-		this._tabRepo.Setup(c =>
-				c.LogTabs(AsyncEnumerable.Empty<AnalyzedStashTab>().DeepMatcher(), CancellationToken.None))
-			.Returns(AsyncEnumerable.Empty<long>());
 		var records = Array.Empty<LogRecord>().ToAsyncEnumerable();
 		await this._logBuilder.AppendEntries(records, CancellationToken.None);
+		// No inserts, transactions, etc.
 	}
 
 	[TestMethod]
-	[Ignore("Needs fixing and implementing.")]
-	public Task TestAppendEntries_MultiRecords_WithDups() {
-		return Task.CompletedTask;
-		/*var testNow = DateTime.Now;
+	public async Task TestAppendEntries_NoItems() {
 		var cancellationToken = TestUtils.TestUtils.CreateCancellationToken();
-		
 		var records = new LogRecord[] {
-			CreateRecord("first"),
-			CreateRecord("second"),
-			CreateRecord("first")
+			new(new ItemLogOffset("a"), new AnalyzedStashTab("first", "first", null, null, null, null, Array.Empty<ItemAnalysis>())),
 		};
-		var first = records[2].StashTab;
-		var second = records[1].StashTab;
+		var mappings = new TabMapping[] {new("first", 1)};
 
-		var loggedTabs = new LoggedStashTab[] {
-			new("first", testNow, testNow, first.AccountName, first.LastCharacterName, first.Name, first.League),
-			new("second", testNow, testNow, second.AccountName, second.LastCharacterName, second.Name, second.League),
+		this._tabRepo.Setup(c => c.LogTabs(
+			new[] { records[0].StashTab}.ToAsyncEnumerable().DeepMatcher(),
+			cancellationToken)
+		).Returns(mappings.ToAsyncEnumerable());
+
+		this._itemRepo.Setup(c =>
+			c.LogItems(
+				mappings.DeepMatcher(), 
+				Array.Empty<LoggedItem>().ToAsyncEnumerable().DeepMatcher(), 
+				cancellationToken)
+			).Returns(Array.Empty<LoggedItem>().ToAsyncEnumerable());
+		await this._logBuilder.AppendEntries(records.ToAsyncEnumerable(), cancellationToken);
+	}
+	
+	[TestMethod]
+	public async Task TestAppendEntries_WithDupsAndItems() {
+		var cancellationToken = TestUtils.TestUtils.CreateCancellationToken();
+		var records = new LogRecord[] {
+			new(new ItemLogOffset("a"), new AnalyzedStashTab("first", "first", null, null, null, null, Array.Empty<ItemAnalysis>())),
+			new(new ItemLogOffset("b"), new AnalyzedStashTab("first", "first", null, null, null, null, Array.Empty<ItemAnalysis>())),
 		};
+		var mappings = new TabMapping[] {new("first", 1)};
+		var items = new LoggedItem[] {
+			new("first", 2, new AnalyzedPropertyCollection()),
+		};
+		this._tabRepo.Setup(c => c.LogTabs(
+				new[] { records[1].StashTab}.ToAsyncEnumerable().DeepMatcher(),
+				cancellationToken)
+			).Returns(mappings.ToAsyncEnumerable());
 
-		this._tabRepo.Setup(c => c.LogTabs(new[] {
-			records[2].StashTab,
-			records[1].StashTab
-		}.ToAsyncEnumerable().DeepMatcher(), cancellationToken));
-		
-		this._itemRepo.Setup(c=>c.LogItems(new LoggedItem[] {
-			new(first.Items[0].ItemId, )
-		}))*/
+		this._itemRepo.Setup(c =>
+			c.LogItems(
+				mappings.DeepMatcher(), 
+				items.ToAsyncEnumerable().DeepMatcher(), 
+				cancellationToken)
+			).Returns(Array.Empty<LoggedItem>().ToAsyncEnumerable());
+
+		await this._logBuilder.AppendEntries(records.ToAsyncEnumerable(), cancellationToken);
 	}
 
 	private PostgresLogBuilder _logBuilder = null!;
 	private Mock<ILoggedTabRepository> _tabRepo = null!;
+	private Mock<ILoggedItemRepository> _itemRepo = null!;
 	private AnalysisContext _context = null!;
 }

@@ -12,7 +12,7 @@ namespace Tradie.Analyzer.Analyzers;
 /// </summary>
 public class ItemTypeAnalyzer : IItemAnalyzer {
 	private readonly ILogger<ItemTypeAnalyzer> _logger;
-	public static ushort Id { get; } = (ushort)KnownAnalyzers.ItemType;
+	public static ushort Id { get; } = KnownAnalyzers.ItemType;
 
 	public ItemTypeAnalyzer(ILogger<ItemTypeAnalyzer> logger, IItemTypeRepository repo) {
 		this._repo = repo;
@@ -32,7 +32,7 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 			.DistinctBy(c => c.BaseType)
 			.ToArray();
 			
-		var existingTypes = (await this._repo.LoadByNames(distinctTypes.Select(c=>c.BaseType).ToArray()))
+		var existingTypes = (await this._repo.LoadByNames(distinctTypes.Select(c=>c.BaseType).ToArray(), CancellationToken.None))
 			.ToDictionary(c=>c.Name!);
 		var missingTypes = distinctTypes.Where(c => !existingTypes.ContainsKey(c.BaseType)).ToArray();
 
@@ -54,7 +54,7 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 		}
 
 		if(toInsert.Any()) {
-			await this._repo.Insert(toInsert);
+			await this._repo.Insert(toInsert, CancellationToken.None);
 		}
 
 		return existingTypes.Values.ToArray()

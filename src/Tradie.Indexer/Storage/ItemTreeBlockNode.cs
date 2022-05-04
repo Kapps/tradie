@@ -43,6 +43,7 @@ public class ItemTreeBlockNode : ItemTreeNode {
 		}
 		
 		this.RecalculateDimensions();
+		this.RecalculateAffixes();
 	}
 
 	private void Split() {
@@ -71,7 +72,7 @@ public class ItemTreeBlockNode : ItemTreeNode {
 		var blocks = this.Children.Blocks;
 		if(index < 0) {
 			// No block matched; we'll be expanding the last block.
-			return blocks[^0];
+			return blocks[^1];
 		}
 
 		return blocks[index];

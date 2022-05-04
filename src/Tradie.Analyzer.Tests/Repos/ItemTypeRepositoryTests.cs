@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
@@ -19,9 +20,9 @@ public class ItemTypeRepositoryTest : TestBase {
 
 	[TestMethod]
 	public async Task TestItemTypeRepo_EmptyDataSet() {
-		var results = await this._repo.RetrieveAll();
+		var results = await this._repo.RetrieveAll(CancellationToken.None);
 		Assert.IsTrue(results.Length == 0);
-		results = await this._repo.LoadByNames("foo", "bar");
+		results = await this._repo.LoadByNames(new[] {"foo", "bar"}, CancellationToken.None);
 		Assert.IsTrue(results.Length == 0);
 	}
 	
@@ -41,7 +42,7 @@ public class ItemTypeRepositoryTest : TestBase {
 		this._context.ItemTypes.Add(itemType);
 		await this._context.SaveChangesAsync();
 
-		var results = await this._repo.LoadByNames(itemType.Name);
+		var results = await this._repo.LoadByNames(new[] { itemType.Name }, CancellationToken.None);
 		Assert.IsTrue(results.Length == 1);
 		
 		results[0].WithDeepEqual(itemType)
@@ -63,7 +64,7 @@ public class ItemTypeRepositoryTest : TestBase {
 			},
 		};
 
-		await this._repo.Insert(new[] { itemType });
+		await this._repo.Insert(new[] { itemType }, CancellationToken.None);
 
 		var returned = await this._context.ItemTypes.SingleAsync();
 

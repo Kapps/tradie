@@ -26,6 +26,8 @@ public class AnalysisContext : DbContext {
 	/// </summary>
 	public DbSet<LoggedStashTab> LoggedStashTabs { get; set; } = null!;
 
+	public DbSet<LoggedItem> LoggedItems { get; set; } = null!;
+
 	/// <summary>
 	/// Returns a connection string that can be used to connect to the analysis database.
 	/// </summary>
@@ -60,8 +62,8 @@ public class AnalysisContext : DbContext {
 		//optionsBuilder.LogTo(Console.WriteLine);
 		
 		optionsBuilder.UseNpgsql(CreateConnectionString());
+		optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
-		
 		base.OnConfiguring(optionsBuilder);
 	}
 
@@ -75,12 +77,6 @@ public class AnalysisContext : DbContext {
 				b.Property(c => c.Str).HasColumnName("StrRequirement").HasDefaultValue(0).IsRequired();
 				b.Property(c => c.Level).HasColumnName("LevelRequirement").HasDefaultValue(0).IsRequired();
 			});
-		/*modelBuilder.Entity<LoggedItem>()
-			.HasIndex(c => c.Properties, "idx_item_Properties")
-			.HasMethod("GIN");*/
-		modelBuilder.Entity<LoggedStashTab>()
-			.HasIndex(c => c.Items, "idx_tab_Items")
-			.HasMethod("GIN");
 		base.OnModelCreating(modelBuilder);
 	}
 }

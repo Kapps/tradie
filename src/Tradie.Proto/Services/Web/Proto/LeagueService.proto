@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/League.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service LeagueService {
+  rpc ListLeagues(ListLeaguesRequest) returns(ListLeaguesResponse);
+}
+
+message ListLeaguesRequest {
+
+}
+
+message ListLeaguesResponse {
+  repeated League leagues = 1;
+}

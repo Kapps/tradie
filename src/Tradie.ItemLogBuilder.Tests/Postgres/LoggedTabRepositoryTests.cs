@@ -19,7 +19,7 @@ namespace Tradie.ItemLog.Tests.Postgres {
 	[TestClass]
 	public class LoggedTabRepositoryTests : TestBase {
 		protected override void Initialize() {
-			this._repo = new PostgresLoggedTabRepository(this._context, TestUtils.TestUtils.CreateLogger<ILoggedTabRepository>());
+			this._repo = new PostgresLoggedTabRepository(this._context, TestUtils.TestUtils.CreateLogger<PostgresLoggedTabRepository>());
 		}
 
 		protected override void Cleanup() {
@@ -40,10 +40,7 @@ namespace Tradie.ItemLog.Tests.Postgres {
 					{1, new ItemTypeAnalysis(23)}
 				})
 			};
-
-			var loggedItems = items.Select(c =>
-					new LoggedItem(c.ItemId, c.ToDictionary()))
-				.ToArray();
+			
 			byte[] loggedItemsPacked =
 				MessagePackSerializer.Serialize(items, MessagePackedStashTabSerializer.SerializationOptions);
 			var tabs = new[] {
@@ -53,18 +50,14 @@ namespace Tradie.ItemLog.Tests.Postgres {
 				.ToArrayAsync();
 
 			Assert.AreEqual(1, insertedTabIds.Length);
-			
-			var insertedTabs = await this._context.LoggedStashTabs.Where(c => insertedTabIds.Contains(c.Id))
+			var insertedTabs = await this._context.LoggedStashTabs.Where(c => insertedTabIds.Select(c=>c.StashTabId).Contains(c.Id))
 				.ToArrayAsync(CancellationToken.None);
-
+			
 			var inserted = insertedTabs[0];
-			inserted.WithDeepEqual(new LoggedStashTab("foo", DateTime.Now, DateTime.Now, "acc", null, "name", "league", "kind", loggedItems, loggedItemsPacked))
+			inserted.WithDeepEqual(new LoggedStashTab("foo", DateTime.Now, DateTime.Now, "acc", null, "name", "league", "kind", loggedItemsPacked))
 				.IgnoreSourceProperty(c=>c.Id)
 				.IgnoreSourceProperty(c=>c.Created)
 				.IgnoreSourceProperty(c=>c.LastModified)
-				.IgnoreSourceProperty(c=>c.Items)
-				.Assert();
-			inserted.Items[0].Properties.WithDeepEqual(loggedItems[0].Properties)
 				.Assert();
 		}
 

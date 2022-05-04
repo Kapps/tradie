@@ -4,6 +4,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Analyzers.Conversions;
 using Tradie.Analyzer.Entities;
@@ -55,11 +56,11 @@ public class ModConverterTests {
 		};
 		
 		this._repo.Setup(c => c.LoadByModHash(
-			It.Is<ulong[]>(hashes => hashes.IsDeepEqual(inputHashes))
+			It.Is<ulong[]>(hashes => hashes.IsDeepEqual(inputHashes)), CancellationToken.None
 		)).ReturnsAsync(existingMods);
 
 		this._repo.Setup(c => c.Insert(
-			It.Is<IEnumerable<Modifier>>(modifiers => modifiers.ToArray().IsDeepEqual(missingMods))
+			It.Is<IEnumerable<Modifier>>(modifiers => modifiers.ToArray().IsDeepEqual(missingMods)), CancellationToken.None
 		)).Returns(Task.CompletedTask);
 
 		await this._converter.ConvertModifiers(items);
@@ -86,7 +87,7 @@ public class ModConverterTests {
 		};
 		
 		this._repo.Setup(c => c.LoadByModHash(
-			It.Is<ulong[]>(hashes => hashes.IsDeepEqual(inputHashes))
+			It.Is<ulong[]>(hashes => hashes.IsDeepEqual(inputHashes)), CancellationToken.None
 		)).ReturnsAsync(existingMods);
 
 		await this._converter.ConvertModifiers(items);
@@ -110,11 +111,11 @@ public class ModConverterTests {
 		};
 		
 		this._repo.Setup(c => c.LoadByModHash(
-			It.Is<ulong[]>(hashes => hashes.IsDeepEqual(inputHashes))
+			It.Is<ulong[]>(hashes => hashes.IsDeepEqual(inputHashes)), CancellationToken.None
 		)).ReturnsAsync(existingMods);
 		
 		this._repo.Setup(c => c.Insert(
-			It.Is<IEnumerable<Modifier>>(modifiers => modifiers.ToArray().IsDeepEqual(missingMods))
+			It.Is<IEnumerable<Modifier>>(modifiers => modifiers.ToArray().IsDeepEqual(missingMods)), CancellationToken.None
 		)).Returns(Task.CompletedTask);
 
 		await this._converter.ConvertModifiers(items);

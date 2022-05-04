@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/Modifier.proto";
+import "Models/Analyzer/Proto/League.proto";
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+enum CriteriaKind {
+  UNKNOWN = 0;
+  MODIFIER = 1;
+  LEAGUE = 2;
+  CATEGORY = 3;
+  SUBCATEGORY = 4;
+  ITEM_TYPE = 5;
+  UNIQUE = 6;
+}
+
+message Criteria {
+  string id = 1;
+  string name = 2;
+  CriteriaKind kind = 3;
+  
+  oneof underlying {
+    Modifier modifier = 10;
+    League league = 11;
+    string category = 12;
+    string subcategory = 13;
+  }
+}

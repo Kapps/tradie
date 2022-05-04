@@ -1,4 +1,8 @@
+using System.Collections;
+
 namespace Tradie.Indexer.Storage;
+
+public delegate bool BlockMatcher(ItemTreeNode block);
 
 /// <summary>
 /// A tree that stores multi-dimensional block ranges that can be used to efficiently look up optimized combinations of affixes.
@@ -34,20 +38,58 @@ public class ItemTree {
 	public int Count { get; private set; }
 
 	/// <summary>
+	/// The amount of levels deep this tree goes.
+	/// An initial tree contains only a root node and starts at depth 1.
+	/// </summary>
+	public int Depth { get; private set; }
+
+	/// <summary>
+	/// Gets the current root node in the tree.
+	/// </summary>
+	public ItemTreeNode Root => this._root;
+
+	/// <summary>
 	/// Creates a new ItemTree with no items inside.
 	/// </summary>
 	public ItemTree() {
 		this._root = new ItemTreeLeafNode(null);
+		this.Depth = 1;
 	}
 	
 	/// <summary>
 	/// Inserts the given item into the tree.
 	/// </summary>
-	public void Insert(Item item) {
+	public void Add(Item item) {
 		var node = this._root.FindLeafForItem(item);
 		node.Add(item);
 		if(this._root.Parent != null) {
 			this._root = this._root.Parent;
+			this.Depth++;
+		}
+
+		this.Count++;
+	}
+
+	/// <summary>
+	/// Lazily finds and returns all nodes that match the given predicate.
+	/// </summary>
+	/// <param name="matcher"></param>
+	/// <returns></returns>
+	public IEnumerable<ItemTreeLeafNode> Find(BlockMatcher matcher) {
+		return Find(_root, matcher);
+	}
+
+	private IEnumerable<ItemTreeLeafNode> Find(ItemTreeNode current, BlockMatcher matcher) {
+		if(current.Kind == NodeKind.Leaf) {
+			yield return (ItemTreeLeafNode)current;
+		} else {
+			foreach(var node in current.Children.BlocksSegment) {
+				if(matcher(node)) {
+					foreach(var sub in Find(node, matcher)) {
+						yield return sub;
+					}
+				}
+			}
 		}
 	}
 

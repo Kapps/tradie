@@ -1,4 +1,4 @@
-using System.Text.Json;
+/*using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Entities;
@@ -60,4 +60,4 @@ public class LoggedItemJsonConverter : JsonConverter<LoggedItem> {
 		writer.WriteEndObject();
 		writer.WriteEndObject();
 	}
-}
+}*/

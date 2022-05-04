@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-option csharp_namespace = "Tradie.Proto.Analysis";
-
-message ModKey {
-  int64 Modifier = 1;
-  int32 Location = 2;  
-}

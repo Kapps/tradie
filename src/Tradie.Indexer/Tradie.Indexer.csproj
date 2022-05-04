@@ -20,12 +20,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Protobuf OutputDir="." Include="..\Tradie.Shared\proto\Indexer\*.proto" ProtoRoot="..\Tradie.Shared\proto" GrpcServices="Server" CompileOutputs="False" />
-      <Protobuf OutputDir="." Include="..\Tradie.Shared\proto\Analysis\*.proto" ProtoRoot="..\Tradie.Shared\proto" GrpcServices="Server" CompileOutputs="False" />
+      <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Models\Indexer\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="None" CompileOutputs="False" />
+      <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Services\Indexer\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="Server" CompileOutputs="False" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Grpc.AspNetCore" Version="2.43.0" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.44.0" />
+      <PackageReference Include="Grpc.AspNetCore.Web" Version="2.45.0" />
     </ItemGroup>
     
     <ItemGroup>

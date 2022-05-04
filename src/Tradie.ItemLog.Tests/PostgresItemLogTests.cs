@@ -20,17 +20,17 @@ namespace Tradie.ItemLog.Tests;
 public class PostgresItemLogTests : TestBase {
 	protected override void Initialize() {
 		this._tabs = new LoggedStashTab[] {
-			new("public-other-league", DateTime.UtcNow, DateTime.UtcNow,  "name1", "lcn1", "an1", "league1", "kind1", Array.Empty<LoggedItem>(), MessagePackSerializer.Serialize(new ItemAnalysis[] {
+			new("public-other-league", DateTime.UtcNow, DateTime.UtcNow,  "name1", "lcn1", "an1", "league1", "kind1", MessagePackSerializer.Serialize(new ItemAnalysis[] {
 				new("itemId1", new Dictionary<ushort, IAnalyzedProperties>() {
 					{1, new ItemTypeAnalysis(34)}
 				})
 			}, MessagePackedStashTabSerializer.SerializationOptions)),
-			new("public-in-league", DateTime.UtcNow, DateTime.UtcNow,  "name2", "lcn2", "an2", TradieConfig.League, "kind2", Array.Empty<LoggedItem>(), MessagePackSerializer.Serialize(new ItemAnalysis[] {
+			new("public-in-league", DateTime.UtcNow, DateTime.UtcNow,  "name2", "lcn2", "an2", TradieConfig.League, "kind2", MessagePackSerializer.Serialize(new ItemAnalysis[] {
 				new("itemId2", new Dictionary<ushort, IAnalyzedProperties>() {
 					{1, new ItemTypeAnalysis(34)}
 				})
 			}, MessagePackedStashTabSerializer.SerializationOptions)),
-			new("id2", DateTime.UtcNow, DateTime.UtcNow, null, null, null, null, "kind2", Array.Empty<LoggedItem>(), null)
+			new("id2", DateTime.UtcNow, DateTime.UtcNow, null, null, null, null, "kind2", null)
 		};
 		
 		this._itemLog = new(this._context);
@@ -39,8 +39,7 @@ public class PostgresItemLogTests : TestBase {
 		this._context.SaveChanges();
 	}
 
-	[TestCleanup]
-	public void Cleanup() {
+	protected override void Cleanup() {
 		TradieConfig.League = "Anarchy";
 	}
 
@@ -54,8 +53,10 @@ public class PostgresItemLogTests : TestBase {
 		// First tab is public with items.
 		var tab0 = this._tabs[0];
 		var res0 = results[0];
+		var tab0Items =
+			MessagePackSerializer.Deserialize<ItemAnalysis[]>(tab0.PackedItems, MessagePackedStashTabSerializer.SerializationOptions);
 		res0.WithDeepEqual(new LogRecord(res0.Offset, new AnalyzedStashTab(tab0.RawId, tab0.Name, tab0.LastCharacterName, tab0.Owner,
-			tab0.League, tab0.Kind, tab0.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
+			tab0.League, tab0.Kind, tab0Items)))
 			.SkipDefault<AnalyzedStashTab>()
 			.SkipDefault<LogRecord>()
 			.Assert();
@@ -63,8 +64,10 @@ public class PostgresItemLogTests : TestBase {
 		// Second tab is public with items.
 		var tab1 = this._tabs[1];
 		var res1 = results[1];
+		var tab1Items =
+			MessagePackSerializer.Deserialize<ItemAnalysis[]>(tab1.PackedItems, MessagePackedStashTabSerializer.SerializationOptions);
 		res1.WithDeepEqual(new LogRecord(res1.Offset, new AnalyzedStashTab(tab1.RawId, tab1.Name, tab1.LastCharacterName, tab1.Owner,
-				"Anarchy", tab1.Kind, tab1.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
+				"Anarchy", tab1.Kind, tab1Items)))
 			.SkipDefault<AnalyzedStashTab>()
 			.SkipDefault<LogRecord>()
 			.Assert();
@@ -88,8 +91,11 @@ public class PostgresItemLogTests : TestBase {
 		// Second tab is public with items.
 		var tab1 = this._tabs[1];
 		var res1 = results[0];
+		var tab1Items =
+			MessagePackSerializer.Deserialize<ItemAnalysis[]>(tab1.PackedItems, MessagePackedStashTabSerializer.SerializationOptions);
+		
 		res1.WithDeepEqual(new LogRecord(res1.Offset, new AnalyzedStashTab(tab1.RawId, tab1.Name, tab1.LastCharacterName, tab1.Owner,
-				"Anarchy", tab1.Kind, tab1.Items.Select(c=>new ItemAnalysis(c.RawId, c.Properties)).ToArray())))
+				"Anarchy", tab1.Kind, tab1Items)))
 			.SkipDefault<AnalyzedStashTab>()
 			.SkipDefault<LogRecord>()
 			.Assert();

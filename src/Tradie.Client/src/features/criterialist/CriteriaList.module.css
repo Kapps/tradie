@@ -1,0 +1,58 @@
+.filterBar {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.filterBarInput {
+    width: 100%;
+}
+
+.filterBarResults {
+    animation: growDown 100ms ease-in-out forwards;
+    transform-origin: top center;
+    margin-top: 0;
+}
+
+@keyframes growDown {
+    0% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.modDetails {
+  margin-right: 7px;
+}
+
+.modBadge {
+  padding-right: 5px;
+  margin: 5px 0px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  cursor: pointer;
+  /*background-color: rgb(153, 88, 8);*/
+}
+
+.entryItemContainer {
+}
+
+.entryItemKind {
+  display: inline;
+  color: orange;
+  vertical-align: middle;
+  font-weight: 600;
+  margin-right: 10px;
+  font-size: 10px;
+  transform: scaleX(0.2);
+  -webkit-transform: scaleX(0.2);
+}
+
+.entryItemText {
+  display: inline;
+}

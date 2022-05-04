@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "Models/Indexer/Proto/Criteria.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service CriteriaService {
+  rpc ListCriteria(ListCriteriaRequest) returns(ListCriteriaResponse);
+}
+
+message ListCriteriaRequest {
+
+}
+
+message ListCriteriaResponse {
+  repeated Criteria criterias = 1;
+}

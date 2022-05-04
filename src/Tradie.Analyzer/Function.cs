@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System.IO.Compression;
+using System.Net;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Analyzers.Conversions;
 using Tradie.Analyzer.Dispatch;
@@ -65,6 +67,17 @@ public class Function {
 						.AddSingleton<IAnalyzedStashTabDispatcher, AnalyzedStashTabKinesisDispatcher>()
 						.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>();
 
+					services.AddStackExchangeRedisCache(opts => {
+						opts.ConfigurationOptions = new ConfigurationOptions() {
+							User = TradieConfig.RedisUser,
+							Password = TradieConfig.RedisPass,
+							EndPoints = {
+								new DnsEndPoint(TradieConfig.RedisHost, 6379)
+							},
+							ClientName = "Tradie Analyzer"
+						};
+					});
+					
 					services.AddDbContext<AnalysisContext>(ServiceLifetime.Transient);
 				})
 				.Build();

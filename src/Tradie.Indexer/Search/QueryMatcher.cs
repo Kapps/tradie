@@ -47,7 +47,7 @@ internal static class QueryMatcher {
 			switch(group.Kind) {
 				case GroupKind.And:
 					foreach(var searchRange in group.Ranges) {
-						var range = treeNode.Ranges.Get(searchRange.Key);
+						var range = treeNode.Affixes.Get(searchRange.Key);
 						if(searchRange.MinValue > range.MaxValue || searchRange.MaxValue < range.MinValue)
 							return false;
 					}
@@ -56,7 +56,7 @@ internal static class QueryMatcher {
 					// For sums, we'll consider it a match if we have any mod being searched for.
 					bool any = false;
 					foreach(var searchRange in group.Ranges) {
-						var range = treeNode.Ranges.Get(searchRange.Key);
+						var range = treeNode.Affixes.Get(searchRange.Key);
 						if(range.Key != default) {
 							any = true;
 							break;

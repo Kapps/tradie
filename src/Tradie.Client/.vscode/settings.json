@@ -1,0 +1,4 @@
+{
+    "editor.formatOnType": true,
+    "prettier.jsxSingleQuote": false
+}

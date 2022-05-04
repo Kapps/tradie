@@ -20,7 +20,7 @@ public class ModifierRepositoryTest : TestBase {
 		var results = await this._repo.RetrieveAll();
 		Assert.IsTrue(results.Length == 0);
 
-		results = await this._repo.LoadByModHash(123UL, 456UL);
+		results = await this._repo.LoadByModHash(new[] { 123UL, 456UL });
 		Assert.IsTrue(results.Length == 0);
 	}
 	
@@ -34,7 +34,7 @@ public class ModifierRepositoryTest : TestBase {
 		this._context.Modifiers.Add(mod);
 		await this._context.SaveChangesAsync();
 
-		var results = await this._repo.LoadByModHash(mod.ModHash);
+		var results = await this._repo.LoadByModHash(new[] { mod.ModHash });
 		Assert.IsTrue(results.Length == 1);
 		
 		results[0].WithDeepEqual(mod)

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -29,11 +30,26 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
         };
     }
 
+    /// <summary>
+    /// Returns the element at the zero-based index (which must be less than Count and greater than zero).
+    /// </summary>
+    public AffixRange this[int index] {
+	    get {
+		    if((uint)index >= this._size)
+			    throw new ArgumentOutOfRangeException(nameof(index));
+		    return ((AffixRange*)(void*)this._elementsPtr)[index];
+	    }
+    }
+
     public void Add(AffixRange value) {
 	    int index = this.GetIndex(value.Key);
 	    if(index >= 0)
 		    throw new DuplicateNameException();
 	    this.Insert(~index, value);
+    }
+
+    public void Clear() {
+	    this._size = 0;
     }
 
     private ref AffixRange Insert(int index, AffixRange val) {
@@ -94,7 +110,7 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 
     public AffixRange Get(ModKey searchKey) {
 	    int index = this.GetIndex(searchKey);
-	    if(index > 0) {
+	    if(index >= 0) {
 		    return *(((AffixRange*)(void*)this._elementsPtr) + index);
 	    }
 
@@ -114,6 +130,16 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     public void Dispose() { 
 	    this.ReleaseUnmanagedResources();
 	    GC.SuppressFinalize(this);
+    }
+
+    public AffixRange[] ToArray() {
+	    var results = new AffixRange[this._size];
+	    var ptr = (AffixRange*)(void*)this._elementsPtr;
+	    for(int i = 0; i < this._size; i++) {
+		    results[i] = ptr[i];
+	    }
+
+	    return results;
     }
 
     ~SortedAffixRangeList() {

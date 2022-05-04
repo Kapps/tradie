@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/Modifier.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service ModifierService {
+  rpc ListModifiers(ListModifiersRequest) returns(ListModifiersResponse);
+}
+
+message ListModifiersRequest {
+  
+}
+
+message ListModifiersResponse {
+  repeated Modifier Modifiers = 1;
+}

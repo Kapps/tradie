@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+import "Models/Analyzer/Proto/ModifierTypes.proto";
+
+option csharp_namespace = "Tradie.Indexer.Proto";
+
+message SearchQuery {
+  repeated SearchGroup Groups = 1;
+  SortOrder Sort = 2;
+}
+
+message SearchGroup {
+  int32 GroupKind = 1;
+  repeated AffixRange Ranges = 2;
+}
+
+message SortOrder {
+  int32 SortKind = 1;
+  ModKey Modifier = 2;
+}
+
+message AffixRange {
+  ModKey Key = 1;
+  float MinValue = 2;
+  float MaxValue = 3;
+}

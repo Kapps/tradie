@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message League {
+  string id = 1;
+}

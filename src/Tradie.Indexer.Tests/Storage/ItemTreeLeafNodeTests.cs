@@ -3,8 +3,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Models;
 using Tradie.Indexer.Storage;
 using Tradie.TestUtils;
+using Affix = Tradie.Indexer.Storage.Affix;
 
 namespace Tradie.Indexer.Tests.Storage;
 
@@ -18,7 +21,7 @@ public class ItemTreeLeafNodeTests : TestBase {
 		Assert.AreEqual(rootLeaf, rootLeaf.FindLeafForItem(item));
 		
 		Assert.AreEqual(0, rootLeaf.Children.Count);
-		Assert.AreEqual(0, rootLeaf.Ranges.Count);
+		Assert.AreEqual(0, rootLeaf.Affixes.Count);
 		Assert.AreEqual(NodeKind.Leaf, rootLeaf.Kind);
 		Assert.AreEqual(null, rootLeaf.Parent);
 	}
@@ -63,6 +66,7 @@ public class ItemTreeLeafNodeTests : TestBase {
 	}
 
 	[TestMethod]
+	[Ignore("Borrowing not yet implemented.")]	
 	public void TestAdd_BorrowFromRightSibling() {
 		var root = new ItemTreeBlockNode();
 		var left = new ItemTreeLeafNode();
@@ -118,5 +122,26 @@ public class ItemTreeLeafNodeTests : TestBase {
 		
 		leafBlocks[1].Children.Items.ToArray().Select(c=>c.Id)
 			.ShouldDeepEqual(Enumerable.Range(NodeList.ItemsPerBlock / 2, NodeList.ItemsPerBlock / 2).Select(c=>$"{c}"));
+	}
+
+	[TestMethod]
+	public void TestAffixCalculation() {
+		var node = new ItemTreeLeafNode();
+		node.Add(new Item("a", 1, new[] {
+			new Affix(new ModKey(12, ModKind.Explicit), 12),
+			new Affix(new ModKey(16, ModKind.Explicit), 16)
+		}));
+		node.Add(new Item("b", 2, new[] {
+			new Affix(new ModKey(12, ModKind.Explicit), 32),
+			new Affix(new ModKey(16, ModKind.Implicit), 100)
+		}));
+
+		var affixes = node.Affixes.ToArray().OrderBy(c=>c.Key.ModHash).ThenBy(c=>c.Key.Kind).ToArray();
+		Console.WriteLine(affixes);
+		affixes.ShouldDeepEqual(new AffixRange[] {
+			new(12, 32, new ModKey(12, ModKind.Explicit)),
+			new(100, 100, new ModKey(16, ModKind.Implicit)),
+			new(16, 16, new ModKey(16, ModKind.Explicit))
+		});
 	}
 }

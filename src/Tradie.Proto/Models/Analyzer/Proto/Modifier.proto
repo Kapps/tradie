@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message Modifier {
+  int32 Id = 1;
+  int64 Hash = 2 [jstype=JS_STRING];
+  string Text = 3;
+}

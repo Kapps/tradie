@@ -22,9 +22,15 @@ public abstract class ItemTreeNode {
 	public ItemTreeBlockNode? Parent { get; protected internal set; }
 
 	/// <summary>
-	/// The (affix) range values contained within this block.
+	/// The affix range values contained within this block.
+	/// This reference should never be modified.
 	/// </summary>
-	public SortedAffixRangeList Ranges { get; private set; }
+	public ref SortedAffixRangeList Affixes => ref this._affixes;
+
+	/*/// <summary>
+	/// Returns a copy of the affix ranges present in this node.
+	/// </summary>
+	public IEnumerable<AffixRange> Affixes => this._affixes.GetAffixes();*/
 
 	/// <summary>
 	/// Returns a reference to the children of this node.
@@ -44,14 +50,15 @@ public abstract class ItemTreeNode {
 	/// The maximum price of any item in this block.
 	/// </summary>
 	public float MaxPrice { get; internal set; }
-
+	
 	/// <summary>
 	/// Creates a new block of the given kind, with a parent (or null if this is the root block). 
 	/// </summary>
 	protected ItemTreeNode(NodeKind kind, NodeList? children = null) {
 		this.Kind = kind;
-		this.Ranges = SortedAffixRangeList.Empty();
+		this.Affixes = SortedAffixRangeList.Empty();
 		this._children = children ?? new NodeList(kind);
+		this._affixes = new();
 
 		if(this.Kind == NodeKind.Block) {
 			foreach(var child in this._children.Blocks) {
@@ -64,7 +71,56 @@ public abstract class ItemTreeNode {
 
 	protected internal void RecalculateDimensions() {
 		this.RecalculatePrices();
+		this.RecalculateAffixes();
 	}
+
+	protected void RecalculateAffixes() {
+		this._affixes.Clear();
+		if(this._children.Count == 0) {
+			return;
+		}
+
+		if(this.Kind == NodeKind.Leaf) {
+			foreach(ref var item in this._children.Items) {
+				foreach(var affix in item.Affixes) {
+					UpdateAffixIfNeeded(affix);
+				}
+			}
+		} else {
+			foreach(var block in this._children.Blocks) {
+				var affixes = block._affixes;
+				for(int i = 0; i < affixes.Count; i++) {
+					var affix = affixes[i];
+					ref var ours = ref this._affixes.GetWithAddingDefault(affix.Key, out _);
+					if(affix.MinValue < ours.MinValue) {
+						UpdateAffixIfNeeded(new Affix(affix.Key, affix.MinValue));
+					}
+
+					if(affix.MaxValue > ours.MaxValue) {
+						UpdateAffixIfNeeded(new Affix(affix.Key, affix.MaxValue));
+					}
+				}
+			}
+		}
+	}
+
+	protected void UpdateAffixIfNeeded(Affix affix) {
+		ref var range = ref this._affixes.GetWithAddingDefault(affix.Modifier, out var exists);
+		if(!exists || range.MinValue > affix.Value) {
+			range.MinValue = affix.Value;
+			if(Parent != null) {
+				Parent.UpdateAffixIfNeeded(affix);
+			}
+		}
+
+		if(!exists || range.MaxValue < affix.Value) {
+			range.MaxValue = affix.Value;
+			if(Parent != null) {
+				Parent.UpdateAffixIfNeeded(affix);
+			}
+		}
+	}
+
 
 	private void RecalculatePrices() {
 		if(this._children.Count == 0) {
@@ -111,4 +167,5 @@ public abstract class ItemTreeNode {
 	// protected internal abstract ItemTreeLeafNode Add(Item item);
 
 	private NodeList _children;
+	private SortedAffixRangeList _affixes;
 }

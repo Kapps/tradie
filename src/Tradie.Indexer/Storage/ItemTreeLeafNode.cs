@@ -40,8 +40,8 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		}
 		
 		// Otherwise, if we are full, let's try to offload something to a sibling.
-
-		if(this._rightSibling?.Children is {HasSpaceBeforeSplit: true} && this._rightSibling.Parent == this.Parent) {
+		// Eventually...
+		/*if(this._rightSibling?.Children is {HasSpaceBeforeSplit: true} && this._rightSibling.Parent == this.Parent) {
 			// We don't have room, but our right sibling can take over our maximum item.
 			throw new NotImplementedException("take max item not item");
 			this._rightSibling.Insert(0, item);
@@ -52,7 +52,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 			// We don't have room, but our left sibling can take over our smallest item.
 			this._leftSibling.Insert(ls.Count, item);
 			return;
-		}
+		}*/
 		
 		// And if that doesn't work, we're going to have to split this node.
 		// The resulting node gets added to this parent.
@@ -71,6 +71,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		Debug.Assert(this.Children.Count < NodeList.ItemsPerBlock);
 		this.Children.Insert(index, item);
 		this.UpdatePrices(item);
+		this.UpdateAffixes(item);
 	}
 
 	private void Split() {
@@ -116,6 +117,12 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 			}
 
 			break;
+		}
+	}
+
+	private void UpdateAffixes(Item item) {
+		foreach(var affix in item.Affixes) {
+			UpdateAffixIfNeeded(affix);
 		}
 	}
 
