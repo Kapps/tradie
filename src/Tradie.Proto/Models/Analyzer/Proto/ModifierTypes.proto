@@ -3,6 +3,6 @@ syntax = "proto3";
 option csharp_namespace = "Tradie.Analyzer.Proto";
 
 message ModKey {
-  int64 Modifier = 1 [jstype=JS_STRING];
-  int32 Location = 2;  
+  int64 modifier = 1 [jstype=JS_STRING];
+  int32 location = 2;  
 }

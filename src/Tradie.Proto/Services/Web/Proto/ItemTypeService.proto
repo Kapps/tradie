@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/ItemType.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service ItemTypeService {
+  rpc ListItemTypes(ListItemTypesRequest) returns(ListItemTypesResponse);
+}
+
+message ListItemTypesRequest {
+
+}
+
+message ListItemTypesResponse {
+  repeated ItemType itemTypes = 1;
+}

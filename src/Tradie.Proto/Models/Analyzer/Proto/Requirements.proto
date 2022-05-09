@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message Requirements {
+  int32 dex = 1;
+  int32 str = 2;
+  int32 int = 3;
+  int32 level = 4;
+}

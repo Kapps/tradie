@@ -15,6 +15,8 @@ protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Web/Proto/SearchService.proto" --j
 # Models
 ## Analyzer
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Models/Analyzer/Proto/Item.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
+protoc -I="$PROTO_BASE" "$PROTO_BASE/Models/Analyzer/Proto/ItemType.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
+protoc -I="$PROTO_BASE" "$PROTO_BASE/Models/Analyzer/Proto/Requirements.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Models/Analyzer/Proto/ItemAnalysis.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Models/Analyzer/Proto/Properties/ItemAffixProperties.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Models/Analyzer/Proto/Properties/ItemDetailProperties.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.

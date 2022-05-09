@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import criteriaReducer from '../features/criteria/criteriaSlice';
 import criteriaGroupsReducer from '../features/criteriagroups/criteriaGroupsSlice';
 import criteriaValuesReducer from '../features/criterialist/criteriaValueSlice';
@@ -8,7 +7,6 @@ import searchReducer from '../features/search/searchSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     criteria: criteriaReducer,
     criteriaGroups: criteriaGroupsReducer,
     criteriaValues: criteriaValuesReducer,

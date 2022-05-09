@@ -10,7 +10,6 @@
     <ItemGroup>
         <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Models\Web\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="None" CompileOutputs="False" />
         <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Services\Web\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="Server" CompileOutputs="False" />
-        <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Services\Indexer\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="Client" CompileOutputs="False" />
     </ItemGroup>
     
     <ItemGroup>

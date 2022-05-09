@@ -25,7 +25,7 @@ namespace Tradie.Analyzer.Proto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CilNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vTW9kaWZpZXJUeXBlcy5wcm90byIw",
-            "CgZNb2RLZXkSFAoITW9kaWZpZXIYASABKANCAjABEhAKCExvY2F0aW9uGAIg",
+            "CgZNb2RLZXkSFAoIbW9kaWZpZXIYASABKANCAjABEhAKCGxvY2F0aW9uGAIg",
             "ASgFQhiqAhVUcmFkaWUuQW5hbHl6ZXIuUHJvdG9iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
@@ -82,7 +82,7 @@ namespace Tradie.Analyzer.Proto {
       return new ModKey(this);
     }
 
-    /// <summary>Field number for the "Modifier" field.</summary>
+    /// <summary>Field number for the "modifier" field.</summary>
     public const int ModifierFieldNumber = 1;
     private long modifier_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -94,7 +94,7 @@ namespace Tradie.Analyzer.Proto {
       }
     }
 
-    /// <summary>Field number for the "Location" field.</summary>
+    /// <summary>Field number for the "location" field.</summary>
     public const int LocationFieldNumber = 2;
     private int location_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

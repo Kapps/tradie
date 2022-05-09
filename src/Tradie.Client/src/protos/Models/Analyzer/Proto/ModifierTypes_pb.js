@@ -168,7 +168,7 @@ proto.ModKey.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional int64 Modifier = 1;
+ * optional int64 modifier = 1;
  * @return {string}
  */
 proto.ModKey.prototype.getModifier = function() {
@@ -186,7 +186,7 @@ proto.ModKey.prototype.setModifier = function(value) {
 
 
 /**
- * optional int32 Location = 2;
+ * optional int32 location = 2;
  * @return {number}
  */
 proto.ModKey.prototype.getLocation = function() {

@@ -1,4 +1,3 @@
-import { Counter } from './features/counter/Counter';
 import './App.css';
 import useDarkMode from 'use-dark-mode';
 import { ImSun, ImIcoMoon, ImPencil, ImPlus, ImFloppyDisk } from 'react-icons/im';
