@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message ItemPrice {
+  uint32 currency = 1;
+  float amount = 2;
+  uint32 buyoutKind = 3;
+}
+
+message ItemListingProperties {
+  uint32 x = 1;
+  uint32 y = 2;
+  ItemPrice price = 3;
+  string note = 4;
+}

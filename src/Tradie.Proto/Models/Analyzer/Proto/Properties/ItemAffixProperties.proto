@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/ModifierTypes.proto";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message Affix {
+  ModKey key = 1;
+  float value = 2;
+}
+
+message ItemAffixProperties {
+   repeated Affix affixes = 1;
+}

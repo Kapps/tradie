@@ -13,7 +13,7 @@
 
 import * as grpcWeb from 'grpc-web';
 
-import * as Services_Indexer_Proto_SearchController_pb from '../../../Services/Indexer/Proto/SearchController_pb';
+import * as Services_Web_Proto_SearchService_pb from '../../../Services/Web/Proto/SearchService_pb';
 
 
 export class SearchServiceClient {
@@ -38,29 +38,29 @@ export class SearchServiceClient {
   methodDescriptorSearchGear = new grpcWeb.MethodDescriptor(
     '/SearchService/SearchGear',
     grpcWeb.MethodType.UNARY,
-    Services_Indexer_Proto_SearchController_pb.SearchRequest,
-    Services_Indexer_Proto_SearchController_pb.SearchResponse,
-    (request: Services_Indexer_Proto_SearchController_pb.SearchRequest) => {
+    Services_Web_Proto_SearchService_pb.SearchRequest,
+    Services_Web_Proto_SearchService_pb.SearchResponse,
+    (request: Services_Web_Proto_SearchService_pb.SearchRequest) => {
       return request.serializeBinary();
     },
-    Services_Indexer_Proto_SearchController_pb.SearchResponse.deserializeBinary
+    Services_Web_Proto_SearchService_pb.SearchResponse.deserializeBinary
   );
 
   searchGear(
-    request: Services_Indexer_Proto_SearchController_pb.SearchRequest,
-    metadata: grpcWeb.Metadata | null): Promise<Services_Indexer_Proto_SearchController_pb.SearchResponse>;
+    request: Services_Web_Proto_SearchService_pb.SearchRequest,
+    metadata: grpcWeb.Metadata | null): Promise<Services_Web_Proto_SearchService_pb.SearchResponse>;
 
   searchGear(
-    request: Services_Indexer_Proto_SearchController_pb.SearchRequest,
+    request: Services_Web_Proto_SearchService_pb.SearchRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: Services_Indexer_Proto_SearchController_pb.SearchResponse) => void): grpcWeb.ClientReadableStream<Services_Indexer_Proto_SearchController_pb.SearchResponse>;
+               response: Services_Web_Proto_SearchService_pb.SearchResponse) => void): grpcWeb.ClientReadableStream<Services_Web_Proto_SearchService_pb.SearchResponse>;
 
   searchGear(
-    request: Services_Indexer_Proto_SearchController_pb.SearchRequest,
+    request: Services_Web_Proto_SearchService_pb.SearchRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: Services_Indexer_Proto_SearchController_pb.SearchResponse) => void) {
+               response: Services_Web_Proto_SearchService_pb.SearchResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +

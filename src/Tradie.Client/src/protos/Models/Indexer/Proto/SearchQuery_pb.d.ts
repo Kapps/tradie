@@ -3,46 +3,6 @@ import * as jspb from 'google-protobuf'
 import * as Models_Analyzer_Proto_ModifierTypes_pb from '../../../Models/Analyzer/Proto/ModifierTypes_pb';
 
 
-export class SearchRequest extends jspb.Message {
-  getQuery(): SearchQuery | undefined;
-  setQuery(value?: SearchQuery): SearchRequest;
-  hasQuery(): boolean;
-  clearQuery(): SearchRequest;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): SearchRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: SearchRequest): SearchRequest.AsObject;
-  static serializeBinaryToWriter(message: SearchRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): SearchRequest;
-  static deserializeBinaryFromReader(message: SearchRequest, reader: jspb.BinaryReader): SearchRequest;
-}
-
-export namespace SearchRequest {
-  export type AsObject = {
-    query?: SearchQuery.AsObject,
-  }
-}
-
-export class SearchResponse extends jspb.Message {
-  getIdsList(): Array<string>;
-  setIdsList(value: Array<string>): SearchResponse;
-  clearIdsList(): SearchResponse;
-  addIds(value: string, index?: number): SearchResponse;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): SearchResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: SearchResponse): SearchResponse.AsObject;
-  static serializeBinaryToWriter(message: SearchResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): SearchResponse;
-  static deserializeBinaryFromReader(message: SearchResponse, reader: jspb.BinaryReader): SearchResponse;
-}
-
-export namespace SearchResponse {
-  export type AsObject = {
-    idsList: Array<string>,
-  }
-}
-
 export class SearchQuery extends jspb.Message {
   getGroupsList(): Array<SearchGroup>;
   setGroupsList(value: Array<SearchGroup>): SearchQuery;

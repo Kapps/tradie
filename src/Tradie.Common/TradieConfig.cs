@@ -176,6 +176,12 @@ namespace Tradie.Common {
 		public static string LogBuilderShardId { get; set; }
 
 		/// <summary>
+		/// The address, including hostname and port, for the GRPC service running the indexer.
+		/// </summary>
+		[DefaultValue("http://localhost:5000")]
+		public static string IndexerGrpcAddress { get; set; }
+
+		/// <summary>
 		/// The hostname for the Redis cache instance.
 		/// </summary>
 		public static string RedisHost { get; set; }

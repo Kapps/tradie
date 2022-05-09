@@ -1,5 +1,6 @@
 using MessagePack;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Tradie.Analyzer.Models;
@@ -12,9 +13,9 @@ namespace Tradie.Analyzer.Models;
 /// <param name="Kind">Whether the price allows negotiation.</param>
 [DataContract, MessagePackObject]
 public readonly record struct ItemPrice(
-	[property: DataMember, Key(0)] Currency Currency,
+	[property: DataMember, Key(0), JsonConverter(typeof(FlagsEnumJsonConverter<Currency>))] Currency Currency,
 	[property: DataMember, Key(1)] float Amount,
-	[property: DataMember, Key(2)] BuyoutKind Kind
+	[property: DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<BuyoutKind>))] BuyoutKind Kind
 ) {
 	
 	/// <summary>

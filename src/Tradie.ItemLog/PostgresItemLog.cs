@@ -27,12 +27,12 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 	public async IAsyncEnumerable<LogRecord> GetItems(ItemLogOffset offset, [EnumeratorCancellation] CancellationToken cancellationToken) {
 		long previousId = long.Parse(offset.Offset ?? "0");
 
-		var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(cancellationToken);
+		var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(CancellationToken.None);
 
 		var comm = new NpgsqlCommand(@"
 			SELECT ""PackedItems"", ""Id"", ""RawId"", ""Name"",  ""LastCharacterName"", ""Owner"", ""League"", ""Kind""
 			FROM ""StashTabs""
-			WHERE ""Id"" > $1 AND ($2 IS NULL OR ""League"" = $2 OR ""League"" IS NULL)
+			WHERE ""Id"" > $1 AND ($2 IS NULL OR ""League"" = $2 OR ""League"" IS NULL) LIMIT 100000
 		", conn) {
 			Parameters = {
 				new NpgsqlParameter {Value = previousId, NpgsqlDbType = NpgsqlDbType.Bigint},
@@ -40,13 +40,11 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 			}
 		};
 
-		await using var reader = await comm.ExecuteReaderAsync(cancellationToken);
-		while(await reader.ReadAsync(cancellationToken)) {
-			// ReSharper disable once UseAwaitUsing
-			// ReSharper disable once MethodHasAsyncOverloadWithCancellation
-			using var dataStream = reader.IsDBNull(0) ? null : reader.GetStream(0);
+		await using var reader = await comm.ExecuteReaderAsync(CancellationToken.None);
+		while(await reader.ReadAsync(CancellationToken.None)) {
+			await using var dataStream = reader.IsDBNull(0) ? null : await reader.GetStreamAsync(0, CancellationToken.None);
 			var items = dataStream == null ? Array.Empty<ItemAnalysis>() : MessagePackSerializer.Deserialize<ItemAnalysis[]>(dataStream,
-				MessagePackedStashTabSerializer.SerializationOptions, cancellationToken);
+				MessagePackedStashTabSerializer.SerializationOptions, CancellationToken.None);
 			
 			yield return new LogRecord(
 				new ItemLogOffset(reader.GetInt64(1).ToString()),
@@ -60,6 +58,10 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 					items
 				)
 			);
+			
+			if(cancellationToken.IsCancellationRequested) {
+				break;
+			}
 		}
 	}
 

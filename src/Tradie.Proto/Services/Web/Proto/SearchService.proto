@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "Models/Indexer/Proto/SearchQuery.proto";
+import "Models/Analyzer/Proto/Item.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service SearchService {
+  rpc SearchGear(SearchRequest) returns(SearchResponse);
+}
+
+message SearchRequest {
+  SearchQuery Query = 1;
+}
+
+message SearchResponse {
+  repeated Item items = 1;
+}

@@ -1,9 +1,9 @@
 import { appConfig } from '../../app/config';
 import { CriteriaServiceClient } from '../../protos/Services/Web/Proto/CriteriaServiceServiceClientPb';
 import { ListCriteriaRequest } from '../../protos/Services/Web/Proto/CriteriaService_pb';
-import { ModifierServiceClient } from '../../protos/Services/Web/Proto/ModifierServiceServiceClientPb';
-import { ListModifiersRequest } from '../../protos/Services/Web/Proto/ModifierService_pb';
 import { getNRandomElements, getRandomElement } from '../../utils/arrayRandom';
+import { memoizeLocalStorage } from '../../utils/cachedResource';
+import { Criteria } from './criteria';
 
 const placeholderHints = [
   { hint: 'life > 80' },
@@ -15,7 +15,7 @@ const placeholderHints = [
   { hint: 'crit mult' },
   { hint: '6S' },
   { hint: '6L' },
-  { hint: '2R2G2B}' },
+  { hint: '2R2G2B' },
 ];
 
 const descriptionHints = [
@@ -43,10 +43,15 @@ export function getRandomDescriptionHint() {
 /**
  * Returns all available filter criteria.
  */
-export const getAllCriteria = async () => {
-  const service = new CriteriaServiceClient(appConfig.apiBaseUrl);
-  const request = new ListCriteriaRequest();
-  const response = await service.listCriteria(request, null);
-  const criteria = await response.getCriteriasList().map(c => c.toObject());
-  return criteria;
+export const getAllCriteria = (): Promise<Criteria[]> => {
+  return memoizeLocalStorage('criteria', async () => {
+    const service = new CriteriaServiceClient(appConfig.apiBaseUrl);
+    const request = new ListCriteriaRequest();
+    const response = await service.listCriteria(request, null);
+    const protos = await response.getCriteriasList();
+    console.log('protos');
+    console.log(protos);
+    const criteria = await response.getCriteriasList().map(c => <Criteria>c.toObject());
+    return criteria;
+  });
 };

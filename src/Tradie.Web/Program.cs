@@ -30,7 +30,7 @@ builder.Services.AddStackExchangeRedisCache(options => {
 		ResolveDns = true,
 		Ssl = false,
 		AbortOnConnectFail = true,
-		ClientName = "Tradie Cache",
+		ClientName = "Tradie Web Cache",
 		EndPoints = {
 			new DnsEndPoint(TradieConfig.RedisHost, 6379)
 		}
@@ -50,6 +50,16 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder => {
 		.WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
 }));
 
+builder.Services.AddLogging(builder => {
+	builder.AddSimpleConsole(format => {
+		format.TimestampFormat = "[yyyy-MM-dd HH:mm:ss.mmm] ";
+		format.UseUtcTimestamp = true;
+		format.IncludeScopes = false;
+		format.SingleLine = true;
+	});
+	builder.SetMinimumLevel(TradieConfig.LogLevel);
+});
+
 var app = builder.Build();
 
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
@@ -58,6 +68,8 @@ app.UseCors();
 app.MapGrpcService<ModifierService>().RequireCors("AllowAll");
 app.MapGrpcService<LeagueService>().RequireCors("AllowAll");
 app.MapGrpcService<CriteriaService>().RequireCors("AllowAll");
+app.MapGrpcService<SearchService>().RequireCors("AllowAll");
+
 app.MapGet("/",
 	() =>
 		"Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");

@@ -70,12 +70,6 @@ public class ItemDetailsAnalyzer : IItemAnalyzer {
 
 		return influences;
 	}
-
-	private void AppendConditional(ref ItemFlags flags, ItemFlags toAppend, bool shouldAppend) {
-		if(shouldAppend) {
-			flags |= toAppend;
-		}
-	}
 }
 
 /// <summary>

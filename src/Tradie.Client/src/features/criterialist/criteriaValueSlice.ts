@@ -6,16 +6,6 @@ export interface CriteriaValueState {
   selectedValues: CriteriaValue[]
 }
 
-export enum CriteriaKind {
-  Modifier = 0,
-  League = 1
-}
-
-export interface Criteria {
-  id: string;
-  kind: CriteriaKind;
-}
-
 const initialState: CriteriaValueState = {
   selectedValues: []
 };
@@ -56,7 +46,7 @@ export const criteriaValueSlice = createSlice({
   },
 });
 
-export const selectCriteria = (groupId: string, criteriaId: number) => (state: RootState) =>
+export const selectCriteriaForGroup = (groupId: string, criteriaId: number) => (state: RootState) =>
   state.criteriaValues.selectedValues.find(
     (value) => value.groupId === groupId && value.criteriaId === criteriaId.toString()
   );

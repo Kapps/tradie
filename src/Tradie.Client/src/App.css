@@ -1,8 +1,11 @@
 @import url('https://rsms.me/inter/inter.css');
 
-html, body, #root, .mantine-AppShell-root, .mantine-AppShell-body {
+html,
+body,
+#root,
+.mantine-AppShell-root,
+.mantine-AppShell-body {
   min-height: 100%;
-  height: 100%;
 }
 
 .App-logo {
@@ -35,17 +38,17 @@ html, body, #root, .mantine-AppShell-root, .mantine-AppShell-body {
 }
 
 .dark-mode .header {
-  background-color: #000710  ;
+  background-color: #000710;
   /*background-image: url('https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png');*/
   background-image: url('https://www.transparenttextures.com/patterns/brilliant.png');
 }
 
-.dark-mode .mantine-AppShell-main {
+body.dark-mode {
   background-color: #07090c;
   background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
 }
 
-.mantine-AppShell-main {
+body {
   background-color: #fafaf3;
   background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
   /*background-image: url('https://www.transparenttextures.com/patterns/brilliant.png');*/
@@ -79,13 +82,34 @@ html, body, #root, .mantine-AppShell-root, .mantine-AppShell-body {
   background-color: var(--mantine-color-dark-7);
 }
 
+.searchResultCard {
+  margin-top: 0;
+  border-bottom: 1px solid var(--mantine-color-dark-5);
+}
+
+:not(.dark-mode) .searchResultCard.odd {
+  background-color: var(--mantine-color-gray-2);
+}
+
+:not(.dark-mode) .searchResultCard.even {
+  background-color: var(--mantine-color-gray-1);
+}
+
+.dark-mode .searchResultCard.odd {
+  background-color: var(--mantine-color-dark-8);
+}
+
+.dark-mode .searchResultCard.even {
+  background-color: var(--mantine-color-dark-7);
+}
+
 .headerRight {
   display: flex;
   height: 100%;
   width: 100%;
 }
 
-.headerRight > * {
+.headerRight>* {
   height: 100%;
   column-gap: 0.5em;
 }
@@ -96,29 +120,4 @@ html, body, #root, .mantine-AppShell-root, .mantine-AppShell-body {
   margin-block-end: 0%;
   height: 100%;
   line-height: unset;
-}
-
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-}
-
-.App-link {
-  color: rgb(112, 76, 182);
-}
-
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
 }

@@ -19,6 +19,7 @@ rules:
   indent:
     - error
     - 2
+    - SwitchCase: 0
   linebreak-style:
     - error
     - unix

@@ -2,38 +2,26 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import * as criteriaApi from './criteriaApi';
 import memoize from 'memoizee';
-import { Criteria } from '../../protos/Models/Indexer/Proto/Criteria_pb';
+import { Criteria } from './criteria';
 
 
 const CACHE_KEY = 'CACHED_CRITERIA';
 
 export interface CriteriaState {
-  criteria: Array<Criteria.AsObject>;
+  criteria: Array<Criteria>;
 }
 
 const initialState: CriteriaState = {
   criteria: [],
 };
 
-export const loadCriteria = createAsyncThunk('criteria/loadCriteria', memoize(async () => {
-  const cachedItems = JSON.parse(window.localStorage.getItem(CACHE_KEY) ?? 'null');
-  if (cachedItems) {
-    if (cachedItems.criteria && cachedItems.timestamp && Date.now() - cachedItems.timestamp < 1000 * 60 * 60 * 24) {
-      return cachedItems.criteria;
-    }
-  }
-
-  const response = await criteriaApi.getAllCriteria();
-  const serialized = JSON.stringify({
-    criteria: response,
-    timestamp: Date.now(),
-  });
-  window.localStorage.setItem(CACHE_KEY, serialized);
-
-  return response;
-}));
+export const loadCriteria = createAsyncThunk('criteria/loadCriteria', async () => {
+  return criteriaApi.getAllCriteria();
+});
 
 export const selectAvailableCriteria = (state: RootState) => state.criteria.criteria;
+
+export const selectCriteria = (id: string) => (state: RootState) => state.criteria.criteria.find(c => c.id === id);
 
 export const criteriaSlice = createSlice({
   name: 'criteria',

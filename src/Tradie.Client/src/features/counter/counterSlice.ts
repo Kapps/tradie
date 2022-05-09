@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
-import { doTestSearch } from '../search/searchApi';
+import { AffixRange, ModKey, ModKind, SearchGroup, SearchGroupKind, SearchQuery, SortKind, SortOrder } from '../search/search';
+import { search } from '../search/searchApi';
 import { fetchCountFaster } from './counterAPI';
 
 export interface CounterState {
@@ -19,9 +20,15 @@ const initialState: CounterState = {
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
 export const incrementAsync = createAsyncThunk('counter/fetchCountFaster', async (amount: number) => {
-  const response = await doTestSearch();
+  /*const response = await search(new SearchQuery([
+    new SearchGroup(SearchGroupKind.And, [
+      new AffixRange(new ModKey('9024037547368883040', ModKind.Explicit)),
+    ])
+  ], new SortOrder(SortKind.Price)));
+  console.log(JSON.stringify(response));
   // The value we return becomes the `fulfilled` action payload
-  return response;
+  return response;*/
+  return amount;
 });
 
 export const counterSlice = createSlice({

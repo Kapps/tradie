@@ -26,6 +26,7 @@ import {
 import CriteriaList from './features/criterialist/CriteriaList';
 import { CriteriaGroupCard } from './features/criteriagroups/CriteriaGroupCard';
 import { FilterPanel } from './features/filterpanel/FilterPanel';
+import { SearchResultList } from './features/search/SearchResultList';
 
 const lightTheme: MantineThemeOverride = {
   colorScheme: 'light',
@@ -96,13 +97,12 @@ function App() {
       >
         <Container fluid m={0}>
           <Grid>
-            <Grid.Col span={6}>
+            <Grid.Col span={5}>
               <FilterPanel />
             </Grid.Col>
-            <Grid.Col span={6}>
+            <Grid.Col span={7}>
               <Card>
-                <Title align="center">Displaying first 100 results</Title>
-                <Counter></Counter>
+                <SearchResultList />
               </Card>
             </Grid.Col>
           </Grid>

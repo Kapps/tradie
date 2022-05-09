@@ -77,6 +77,10 @@ public class AnalysisContext : DbContext {
 				b.Property(c => c.Str).HasColumnName("StrRequirement").HasDefaultValue(0).IsRequired();
 				b.Property(c => c.Level).HasColumnName("LevelRequirement").HasDefaultValue(0).IsRequired();
 			});
+		modelBuilder.Entity<LoggedItem>()
+			.HasIndex(c => c.Properties)
+			.HasMethod("GIN")
+			.IsCreatedConcurrently();
 		base.OnModelCreating(modelBuilder);
 	}
 }

@@ -38,6 +38,7 @@ public readonly record struct Affix {
 	[DataMember(Name = "kind", Order = 3, IsRequired = true)]
 	[JsonInclude]
 	[JsonPropertyName("kind")]
+	[JsonConverter(typeof(FlagsEnumJsonConverter<ModKind>))]
 	public readonly ModKind Kind;
 
 	[SpanJson.JsonConstructor]

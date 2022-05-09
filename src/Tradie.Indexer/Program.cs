@@ -5,6 +5,7 @@ using Amazon.S3;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -49,7 +50,7 @@ services.AddStackExchangeRedisCache(options => {
 		ResolveDns = true,
 		Ssl = false,
 		AbortOnConnectFail = true,
-		ClientName = "Tradie Cache",
+		ClientName = "Tradie Indexer Cache",
 		EndPoints = {
 			new DnsEndPoint(TradieConfig.RedisHost, 6379)
 		}
@@ -80,7 +81,12 @@ services.AddSingleton<IParameterStore, SsmParameterStore>()
 	.AddHostedService<ItemTreeLoaderService>();
 
 services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
-
+builder.WebHost.ConfigureKestrel(options =>
+{
+	// Setup a HTTP/2 endpoint without TLS.
+	options.ListenLocalhost(5000, o => o.Protocols =
+		HttpProtocols.Http2);
+});
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder => {
 	builder.AllowAnyOrigin()
 		.AllowAnyMethod()
@@ -90,7 +96,7 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder => {
 
 var app = builder.Build();
 
-app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
+//app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.UseCors();
 // Configure the HTTP request pipeline.
 app.MapGrpcService<SearchController>().RequireCors("AllowAll");

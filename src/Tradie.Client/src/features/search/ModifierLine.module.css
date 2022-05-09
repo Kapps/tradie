@@ -1,0 +1,69 @@
+.normal {
+  font-weight: 400;
+  color: #C8C8C8;
+}
+
+.magic, .modified {
+  color: #8787FE;
+  font-weight: 600;
+}
+
+.rare {
+  color: #ff7;
+  font-weight: 800;
+}
+
+.unique {
+  color: #AF5F1C;
+  font-weight: 800;
+}
+
+.normal  {
+  color: #fff;
+}
+
+.corrupted {
+  color: #d20000;
+}
+
+.value {
+  color: #fff;
+}
+
+.fire {
+  color: #960000;
+}
+
+.cold {
+  color: #326292;
+}
+
+.lightning {
+  color: #FEFE76;
+}
+
+.chaos {
+  color: #d02090;
+}
+
+.enchant, .crafted {
+  color: #B8DAF1;
+}
+
+.default {
+  background-color: red;
+  color: white;
+  font-weight: 900;
+}
+
+.currency {
+  color: #aa9e82;
+}
+
+.property {
+  color: #7f7f7f;
+}
+
+.gem {
+  color: #0DA29B;
+}

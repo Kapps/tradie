@@ -17,13 +17,13 @@ public class PriceSortedBlockSearcher : IBlockSearcher {
 		if(query.Sort.Kind != SortKind.Price)
 			throw new NotImplementedException();
 
-		var results = new SortedSet<SearchResult>();
+		var results = new List<SearchResult>();
 		SearchBlock(treeNode, query, results, count);
 
 		return results.Select(c => c.Item).ToArray();
 	}
 
-	private void SearchBlock(ItemTreeNode treeNode, SearchQuery query, SortedSet<SearchResult> results, int count) {
+	private void SearchBlock(ItemTreeNode treeNode, SearchQuery query, List<SearchResult> results, int count) {
 		// All blocks are sorted in order of the price of the items in them.
 		// So for the default sorting of chaos equiv, start iteration at index 0 always and do depth-first.
 		// Because we iterate in order of price, if we ever reach the desired count matching items, we know it's the count cheapest items.

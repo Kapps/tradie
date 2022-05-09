@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+import "Models/Analyzer/Proto/Properties/ItemDetailProperties.proto";
+import "Models/Analyzer/Proto/Properties/ItemAffixProperties.proto";
+import "Models/Analyzer/Proto/Properties/ItemListingProperties.proto";
+import "Models/Analyzer/Proto/Properties/ItemTypeProperties.proto";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message ItemAnalysis {
+  int32 analyzerId = 1;
+  oneof analyzer {
+    ItemDetailProperties basicProperties = 2;
+    ItemAffixProperties affixProperties = 3;
+    ItemListingProperties tradeProperties = 4;
+    ItemTypeProperties typeProperties = 5;
+  }
+}

@@ -3,8 +3,13 @@ import { Button, Card, Grid, Group, Space, Tabs, Text } from '@mantine/core';
 import { ImFloppyDisk, ImPencil, ImPlus } from 'react-icons/im';
 import useDarkMode from 'use-dark-mode';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectCriteria } from '../criteria/criteriaSlice';
 import { CriteriaGroupCard } from '../criteriagroups/CriteriaGroupCard';
 import { clearCriteriaGroups, selectCriteriaGroups } from '../criteriagroups/criteriaGroupsSlice';
+import { selectCriteriaValues } from '../criterialist/criteriaValueSlice';
+import { AffixRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from '../search/search';
+import { search } from '../search/searchApi';
+import { performSearch } from '../search/searchSlice';
 
 export function FilterPanel() {
   const darkMode = useDarkMode();
@@ -15,6 +20,10 @@ export function FilterPanel() {
 
   const clearFilterGroups = () => {
     dispatch(clearCriteriaGroups());
+  };
+
+  const doSearch = () => {
+    dispatch(performSearch());
   };
 
   return (
@@ -45,7 +54,7 @@ export function FilterPanel() {
           </Grid.Col>
           <Grid.Col span={6}>
             <Group position="right">
-              <Button color="primary" style={{ width: '200px' }}>
+              <Button onClick={doSearch} color="primary" style={{ width: '200px' }}>
                 Search
               </Button>
             </Group>

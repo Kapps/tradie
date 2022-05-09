@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import { CriteriaKind } from '../criteria/criteria';
+import { SearchGroupKind } from '../search/search';
 
 export interface CriteriaGroup {
   id: string;
+  kind: SearchGroupKind;
 }
 
 export interface CritieriaGroupsState {
@@ -13,6 +16,7 @@ const initialState: CritieriaGroupsState = {
   criteriaGroups: [
     {
       id: 'default',
+      kind: SearchGroupKind.And,
     },
   ],
 };
@@ -35,6 +39,7 @@ export const criteriaGroupsSlice = createSlice({
     updateCriteriaGroup: (state, action: PayloadAction<CriteriaGroup>) => {
       const { payload: criteria } = action;
       const index = state.criteriaGroups.findIndex((criteriaGroup) => criteriaGroup.id === criteria.id);
+      console.log(criteria);
       state.criteriaGroups[index] = criteria;
     },
     clearCriteriaGroups: (state) => {

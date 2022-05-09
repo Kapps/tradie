@@ -22,5 +22,5 @@ public class ModifierService : Proto.ModifierService.ModifierServiceBase {
 		return response;
 	}
 
-	private IModifierRepository _repository;
+	private readonly IModifierRepository _repository;
 }

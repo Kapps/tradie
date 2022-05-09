@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/ItemAnalysis.proto";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message Item {
+  string rawId = 1;
+  repeated ItemAnalysis properties = 2;
+}

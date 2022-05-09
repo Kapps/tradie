@@ -24,22 +24,17 @@ public class ItemTreeLoaderService : IHostedService {
 		int numPopulated = 0;
 
 		var cts = new CancellationTokenSource();
-		await foreach(var record in this._itemLog.GetItems(ItemLogOffset.Start, cts.Token).WithCancellation(cancellationToken)) {
+		await foreach(var record in this._itemLog.GetItems(ItemLogOffset.Start, cts.Token).WithCancellation(cts.Token)) {
 			foreach(var analyzedItem in record.StashTab.Items) {
 				var converted = await ConvertToIndexedItem(analyzedItem);
 				this._itemTree.Add(converted);
 				numPopulated++;
-				if((numPopulated % 1000) == 0) {
+				if(numPopulated % 1000 == 0) {
 					Console.WriteLine($"Finished populating {numPopulated} entries.");
 				}
 			}
-
-			if(numPopulated > 10000) {
-				cts.Cancel();
-				break;
-			}
 		}
-		Console.WriteLine($"Took {sw.Elapsed} to populate the item tree.");
+		Console.WriteLine($"Took {sw.Elapsed} to populate the item tree with {this._itemTree.Count} entries.");
 	}
 
 	public Task StopAsync(CancellationToken cancellationToken) {

@@ -1,7 +1,6 @@
 import { Highlight, MultiSelect, Text } from '@mantine/core';
 import { ComponentPropsWithoutRef, forwardRef, useEffect, useRef, useState, useTransition } from 'react';
 import { useDispatch } from 'react-redux';
-import { Modifier } from '../../protos/Models/Analyzer/Proto/Modifier_pb';
 import styles from './CriteriaList.module.css';
 import { getRandomDescriptionHint, getRandomPlaceholderHints } from '../criteria/criteriaApi';
 import { SelectedCriteria } from './SelectedCriteria';
@@ -11,16 +10,16 @@ import { CriteriaGroup } from '../criteriagroups/criteriaGroupsSlice';
 import { useClickOutside } from '@mantine/hooks';
 import { addCriteriaValue, removeCriteriaValue, selectCriteriaValues } from './criteriaValueSlice';
 import uuid from '../../utils/uuid';
-import { Criteria, CriteriaKind } from '../../protos/Models/Indexer/Proto/Criteria_pb';
 import { $enum } from 'ts-enum-util';
+import { Criteria, CriteriaKind } from '../criteria/criteria';
 
 export interface CriteriaListProps {
   group: CriteriaGroup;
 }
 
-const getMatchedCriteria = (criteria: Criteria.AsObject[], searchText: string) => {
+const getMatchedCriteria = (criteria: Criteria[], searchText: string) => {
   const searchLowerified = searchText.toLowerCase();
-  const results = new Array<Criteria.AsObject>();
+  const results = new Array<Criteria>();
   for (const crit of criteria) {
     if (crit.name.toLowerCase().includes(searchLowerified)) {
       results.push(crit);
@@ -35,7 +34,7 @@ const getMatchedCriteria = (criteria: Criteria.AsObject[], searchText: string) =
 const criteriaKindEnum = $enum(CriteriaKind);
 
 type CriteriaListEntry = ComponentPropsWithoutRef<'div'> &
-  Criteria.AsObject & {
+  Criteria & {
     label: string;
     value: string;
     kindLabel: string;
@@ -43,14 +42,12 @@ type CriteriaListEntry = ComponentPropsWithoutRef<'div'> &
   };
 
 export default function CriteriaList({ group }: CriteriaListProps) {
-  console.time('CriteriaList');
   const [placeholderHints] = useState(getRandomPlaceholderHints(3));
   const [descriptionHint] = useState(getRandomDescriptionHint());
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [isPending, startTransition] = useTransition();
 
-  console.log('rerender');
   useClickOutside(() => setIsOpen(false));
 
   const dispatch = useDispatch();
@@ -60,6 +57,7 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   const selectedCriteria = useAppSelector(selectCriteriaValues(group.id));
   const selectedValues = selectedCriteria?.map((c) => c.id.toString());
   //const availableCriteria = getMatchedCriteria(allCriteria, searchText).map((c) => ({
+  console.log('allCriteria', allCriteria);
   const availableCriteria = allCriteria.map((c) => ({
     label: c.name,
     value: c.id.toString(),
@@ -94,7 +92,6 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   };
 
   useEffect(() => {
-    console.log('loading criteria');
     dispatch(loadCriteria());
   }, []);
 
@@ -113,7 +110,6 @@ export default function CriteriaList({ group }: CriteriaListProps) {
 
   EntryItem.displayName = 'EntryItem';
 
-  console.timeEnd('CriteriaList');
 
   return (
     <div className={styles.filterBar}>

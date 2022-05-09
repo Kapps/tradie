@@ -4,6 +4,7 @@ import criteriaReducer from '../features/criteria/criteriaSlice';
 import criteriaGroupsReducer from '../features/criteriagroups/criteriaGroupsSlice';
 import criteriaValuesReducer from '../features/criterialist/criteriaValueSlice';
 import leaguesReducer from '../features/leagues/leaguesSlice';
+import searchReducer from '../features/search/searchSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     criteriaGroups: criteriaGroupsReducer,
     criteriaValues: criteriaValuesReducer,
     leagues: leaguesReducer,
+    search: searchReducer,
   },
 });
 

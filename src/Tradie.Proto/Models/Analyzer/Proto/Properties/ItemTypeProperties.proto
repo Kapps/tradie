@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message ItemTypeProperties {
+  int32 itemTypeId = 1;
+}
