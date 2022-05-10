@@ -32,11 +32,12 @@ public class ItemTypeRepositoryTest : TestBase {
 			Category = "my category",
 			Height = 3,
 			Name = "foo",
-			Subcategory = "bar",
+			Subcategories = new[] { "bar" },
 			Width = 4,
 			Requirements = new Requirements() {
 				Dex = 1, Int = 2, Str = 3, Level = 4
 			},
+			IconUrl = "about:blank"
 		};
 
 		this._context.ItemTypes.Add(itemType);
@@ -57,11 +58,12 @@ public class ItemTypeRepositoryTest : TestBase {
 			Category = "my category",
 			Height = 3,
 			Name = "foo",
-			Subcategory = "bar",
+			Subcategories = new[] { "bar" },
 			Width = 4,
 			Requirements = new Requirements() {
 				Dex = 1, Int = 2, Str = 3, Level = 4
 			},
+			IconUrl = "about:blank"
 		};
 
 		await this._repo.Insert(new[] { itemType }, CancellationToken.None);
@@ -74,6 +76,32 @@ public class ItemTypeRepositoryTest : TestBase {
 			.Assert();
 		
 		Assert.AreNotEqual(0, itemType.Id);
+	}
+	
+	[TestMethod]
+	public async Task TestItemTypeRepo_Updates() {
+		var itemType = new ItemType() {
+			Category = "my category",
+			Height = 3,
+			Name = "foo",
+			Subcategories = new[] { "bar" },
+			Width = 4,
+			Requirements = new Requirements() {
+				Dex = 1, Int = 2, Str = 3, Level = 4
+			},
+			IconUrl = "about:blank"
+		};
+
+		this._context.ItemTypes.Add(itemType);
+		await this._context.SaveChangesAsync();
+
+		itemType.IconUrl = "updated";
+			
+		await this._repo.Update(new[] { itemType }, CancellationToken.None);
+
+		var fromDb = await this._context.ItemTypes.SingleAsync(c => c.Id == itemType.Id);
+		
+		Assert.AreEqual("updated", fromDb!.IconUrl);
 	}
 
 	private ItemTypeDbRepository _repo = null!;

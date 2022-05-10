@@ -19,9 +19,6 @@ export const search = async (query: SearchQuery): Promise<SearchResponse> => {
   const protoQuery = query.toProto();
   request.setQuery(protoQuery);
 
-  console.log('query');
-  console.log(query);
-
   const response = await service.searchGear(request, null);
 
   return {

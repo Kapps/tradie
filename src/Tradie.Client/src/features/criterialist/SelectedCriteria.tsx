@@ -60,7 +60,6 @@ export function ValueTextComponent({
   minValue?: number;
   maxValue?: number;
 }) {
-  console.log('ValueTextComponent', { text, minValue, maxValue });
   const helpText = getRangeDescription(text, minValue, maxValue);
   return (
     <div {...others}>

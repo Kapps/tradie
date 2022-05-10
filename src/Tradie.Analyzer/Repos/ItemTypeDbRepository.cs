@@ -23,6 +23,10 @@ public interface IItemTypeRepository : IAsyncDisposable {
 	/// If a type already exists, an exception is thrown.
 	/// </summary>
 	Task Insert(IEnumerable<ItemType> baseTypes, CancellationToken cancellationToken);
+	/// <summary>
+	/// Updates all of the given base types with new properties.
+	/// </summary>
+	Task Update(IEnumerable<ItemType> baseTypes, CancellationToken cancellationToken);
 }
 
 public class ItemTypeDbRepository : IItemTypeRepository {
@@ -40,6 +44,11 @@ public class ItemTypeDbRepository : IItemTypeRepository {
 
 	public Task Insert(IEnumerable<ItemType> baseTypes, CancellationToken cancellationToken) {
 		this._context.ItemTypes.AddRange(baseTypes);
+		return this._context.SaveChangesAsync(cancellationToken);
+	}
+	
+	public Task Update(IEnumerable<ItemType> baseTypes, CancellationToken cancellationToken) {
+		this._context.ItemTypes.UpdateRange(baseTypes);
 		return this._context.SaveChangesAsync(cancellationToken);
 	}
 	

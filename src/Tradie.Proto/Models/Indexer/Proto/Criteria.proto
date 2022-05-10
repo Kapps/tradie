@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "Models/Analyzer/Proto/Modifier.proto";
 import "Models/Analyzer/Proto/League.proto";
+import "Models/Analyzer/Proto/ItemType.proto";
 option csharp_namespace = "Tradie.Analyzer.Proto";
 
 enum CriteriaKind {
@@ -24,5 +25,6 @@ message Criteria {
     League league = 11;
     string category = 12;
     string subcategory = 13;
+    ItemType itemType = 14;
   }
 }

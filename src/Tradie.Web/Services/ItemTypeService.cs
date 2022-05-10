@@ -16,24 +16,26 @@ public class ItemTypeService : Proto.ItemTypeService.ItemTypeServiceBase {
 		var itemTypes = await this._context.ItemTypes.ToArrayAsync();
 		return new ListItemTypesResponse() {
 			ItemTypes = {
-				itemTypes.Select(c=>new ItemType() {
+				itemTypes.Select(c => new ItemType() {
 					Category = c.Category,
 					Height = c.Height,
 					Id = c.Id,
 					Width = c.Width,
 					Name = c.Name,
-					Requirements = c.Requirements == null ? null : new Requirements() {
-						Dex	= c.Requirements.Dex,
-						Int = c.Requirements.Int,
-						Str = c.Requirements.Str,
-						Level = c.Requirements.Level,
-					},
+					Requirements = c.Requirements == null
+						? null
+						: new Requirements() {
+							Dex = c.Requirements.Dex,
+							Int = c.Requirements.Int,
+							Str = c.Requirements.Str,
+							Level = c.Requirements.Level,
+						},
 					Subcategories = {
-						c.Subcategory
+						c.Subcategories
 					}
 				})
 			}
-		}
+		};
 	}
 	
 	private readonly AnalysisContext _context;

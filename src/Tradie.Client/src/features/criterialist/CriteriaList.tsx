@@ -57,7 +57,6 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   const selectedCriteria = useAppSelector(selectCriteriaValues(group.id));
   const selectedValues = selectedCriteria?.map((c) => c.id.toString());
   //const availableCriteria = getMatchedCriteria(allCriteria, searchText).map((c) => ({
-  console.log('allCriteria', allCriteria);
   const availableCriteria = allCriteria.map((c) => ({
     label: c.name,
     value: c.id.toString(),

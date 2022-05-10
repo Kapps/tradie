@@ -1,8 +1,10 @@
 ﻿using MessagePack;
 using Microsoft.Extensions.Logging;
 using System.Runtime.Serialization;
+using Tradie.Analyzer.Analyzers.Conversions;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
+using Tradie.Common;
 using Tradie.Common.RawModels;
 
 namespace Tradie.Analyzer.Analyzers; 
@@ -14,91 +16,52 @@ public class ItemTypeAnalyzer : IItemAnalyzer {
 	private readonly ILogger<ItemTypeAnalyzer> _logger;
 	public static ushort Id { get; } = KnownAnalyzers.ItemType;
 
-	public ItemTypeAnalyzer(ILogger<ItemTypeAnalyzer> logger, IItemTypeRepository repo) {
+	public ItemTypeAnalyzer(ILogger<ItemTypeAnalyzer> logger, IItemTypeRepository repo, IPersistentEntityConverter<ItemType> converter) {
 		this._repo = repo;
 		this._logger = logger;
+		this._converter = converter;
 	}
 
 	public async ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		var mappedTypes = await this.MapTypesWithRepo(items);
 		foreach(var item in items) {
 			var mappedType = mappedTypes[item.RawItem.BaseType];
+			// ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
 			item.Analysis.PushAnalysis(Id, new ItemTypeAnalysis(mappedType.Id));
 		}
 	}
 
 	private async Task<Dictionary<string, ItemType>> MapTypesWithRepo(AnalyzedItem[] items) {
-		var distinctTypes = items.Select(c => c.RawItem)
+		var parsedTypes = items.Select(c => c.RawItem)
 			.DistinctBy(c => c.BaseType)
-			.ToArray();
-			
-		var existingTypes = (await this._repo.LoadByNames(distinctTypes.Select(c=>c.BaseType).ToArray(), CancellationToken.None))
+			.Select(c=> this._converter.ConvertFromRaw(c))
 			.ToDictionary(c=>c.Name!);
-		var missingTypes = distinctTypes.Where(c => !existingTypes.ContainsKey(c.BaseType)).ToArray();
+			
+		var existingTypes = (await this._repo.LoadByNames(parsedTypes.Keys.ToArray(), CancellationToken.None))
+			.ToDictionary(c=>c.Name!);
+		
+		var missingTypes = parsedTypes.Where(c => !existingTypes.ContainsKey(c.Key)).Select(c=>c.Value)
+			.ToArray();
+		var typesToUpdate = existingTypes.Where(c => this._converter.RequiresUpdate(c.Value, parsedTypes[c.Value.Name!]))
+			.Select(c=>this._converter.MergeFrom(c.Value, parsedTypes[c.Value.Name!]))
+			.ToArray();
 
-		var toInsert = new List<ItemType>();
-		foreach(Item missing in missingTypes) {
-			if(missing.ExtendedProperties?.Subcategories?.Length > 1) {
-				this._logger.LogWarning("Item with ID {ID} had subcategories {Subcategories}, which is more than 1",
-					missing.Id, missing.ExtendedProperties?.Subcategories);
-			}
-			var converted = new ItemType() {
-				Category = missing.ExtendedProperties?.Category,
-				Subcategory = missing.ExtendedProperties?.Subcategories?[0],
-				Height = missing.Height,
-				Width = missing.Width,
-				Name = missing.BaseType,
-				Requirements = this.MapRequirements(missing),
-			};
-			toInsert.Add(converted);
+		if(missingTypes.Any()) {
+			await this._repo.Insert(missingTypes, CancellationToken.None);
 		}
 
-		if(toInsert.Any()) {
-			await this._repo.Insert(toInsert, CancellationToken.None);
+		if(typesToUpdate.Any()) {
+			await this._repo.Update(typesToUpdate, CancellationToken.None);
 		}
 
 		return existingTypes.Values.ToArray()
-			.Concat(toInsert)
+			.Concat(missingTypes)
 			.ToDictionary(c => c.Name!);
 	}
 
-	private Requirements MapRequirements(Item item) {
-		if(item.Requirements == null) {
-			return new Requirements();
-		}
-		
-		var res = new Requirements();
-		foreach(var prop in item.Requirements) {
-			if(prop.Values[0].DisplayType != 0) {
-				// TODO: This is going to result in base types having the wrong requirements.
-				// Because they're based off item not type.
-				// We need to check for DisplayType 0 and only set requirements there.
-				// And then for missing requirements, update them with future items.
-				// We can do this in the future though.
-				this._logger.LogWarning("Inserting item type {Type} with property {Prop} being modified", item.BaseType, prop.Name);
-			}
-			switch(prop.Name) {
-				case "Level":
-					res.Level = int.Parse(prop.Values[0].Value);
-					break;
-				case "Int":
-					res.Int = int.Parse(prop.Values[0].Value);
-					break;
-				case "Dex":
-					res.Dex = int.Parse(prop.Values[0].Value);
-					break;
-				case "Str":
-					res.Str = int.Parse(prop.Values[0].Value);
-					break;
-				default:
-					this._logger.LogWarning("Unknown stat {Stat} on item {Id}", prop.Name, item.Id);
-					break;
-			}
-		}
-		return res;
-	}
-
 	private readonly IItemTypeRepository _repo;
+	private readonly IPersistentEntityConverter<ItemType> _converter;
+
 	public async ValueTask DisposeAsync() {
 		await this._repo.DisposeAsync();
 	}

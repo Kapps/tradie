@@ -37,8 +37,6 @@ export const criteriaValueSlice = createSlice({
       const index = state.selectedValues.findIndex(
         (value) => value.id === action.payload.id
       );
-      console.log('index: ', index);
-      console.log(action.payload);
       if (index !== -1) {
         state.selectedValues[index] = action.payload;
       }

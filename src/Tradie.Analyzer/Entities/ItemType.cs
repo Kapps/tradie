@@ -10,8 +10,20 @@ namespace Tradie.Analyzer.Entities;
 [Table("ItemTypes")]
 [Index(nameof(Name), IsUnique = true, Name = "idx_itemtype_name")]
 [Index(nameof(Category), Name = "idx_itemtype_category")]
-[Index(nameof(Subcategory), Name = "idx_itemtype_subcategory")]
 public class ItemType {
+	public ItemType() { }
+
+	public ItemType(int id, string? name, string? category, string[] subcategories, Requirements? requirements, string iconUrl, int width, int height) {
+		this.Id = id;
+		this.Name = name;
+		this.Category = category;
+		this.Subcategories = subcategories;
+		this.Requirements = requirements;
+		this.Width = width;
+		this.Height = height;
+		this.IconUrl = iconUrl;
+	}
+
 	/// <summary>
 	/// Unique ID for the item type.
 	/// </summary>
@@ -33,12 +45,11 @@ public class ItemType {
 	/// Subcategory, such as Claw or Abyss Jewel.
 	/// </summary>
 	[Column]
-	public string? Subcategory { get; set; }
+	public string[]? Subcategories { get; set; }
 	/// <summary>
 	/// Requirements to be able to use this item.
 	/// </summary>
 	[Column]
-	[Required]
 	public Requirements? Requirements { get; set; }
 	/// <summary>
 	/// Amount of inventory slots items of this type take up horizontally.
@@ -50,5 +61,9 @@ public class ItemType {
 	/// </summary>
 	[Column]
 	public int Height { get; set; }
-
+	/// <summary>
+	/// The absolute web URL to an icon for this item type. 
+	/// </summary>
+	[Column]
+	public string? IconUrl { get; set; }
 }

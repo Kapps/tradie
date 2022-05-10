@@ -18,6 +18,7 @@ export enum PropertyDisplay {
   Rare,
   Unique,
   Currency,
+  Corrupted,
 }
 
 export type ModifierPart = {
@@ -59,6 +60,8 @@ const getClassForDisplay = (display: PropertyDisplay) => {
     return styles.currency;
   case PropertyDisplay.Property:
     return styles.property;
+  case PropertyDisplay.Corrupted:
+    return styles.corrupted;
   default:
     return styles.default;
   }
@@ -68,7 +71,7 @@ export function ModifierLine({ parts }: ModifierLineProps) {
   return (
     <div>
       {parts.map((part, index) => (
-        <Text className={getClassForDisplay(part.display)} key={index}>
+        <Text align="center" className={getClassForDisplay(part.display)} key={index}>
           {part.text}
         </Text>
       ))}

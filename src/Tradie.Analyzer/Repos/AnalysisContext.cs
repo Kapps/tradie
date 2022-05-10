@@ -5,7 +5,7 @@ using Npgsql;
 using Tradie.Analyzer.Entities;
 using Tradie.Common;
 
-namespace Tradie.Analyzer.Repos; 
+namespace Tradie.Analyzer.Repos;
 
 /// <summary>
 /// DataContext for entities resulting from analysis of raw items.
@@ -20,7 +20,7 @@ public class AnalysisContext : DbContext {
 	/// Returns any affix modifiers that have so far been analyzed.
 	/// </summary>
 	public DbSet<Modifier> Modifiers { get; set; } = null!;
-	
+
 	/// <summary>
 	/// Returns all stash tabs logged to the context.
 	/// </summary>
@@ -31,7 +31,7 @@ public class AnalysisContext : DbContext {
 	/// <summary>
 	/// Returns a connection string that can be used to connect to the analysis database.
 	/// </summary>
-	public static string CreateConnectionString() {
+	public static NpgsqlConnectionStringBuilder CreateConnectionStringBuilder() {
 		return new NpgsqlConnectionStringBuilder() {
 			Database = Environment.GetEnvironmentVariable("TRADIE_DB_NAME") ?? TradieConfig.DbName,
 			Timezone = "UTC",
@@ -54,14 +54,18 @@ public class AnalysisContext : DbContext {
 			KeepAlive = 10,
 			ConnectionIdleLifetime = 30,
 			//Multiplexing = true
-		}.ToString();
+		};
 	}
+
+	public AnalysisContext() { }
+
+	public AnalysisContext(DbContextOptions options) : base(options) { }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
 		//optionsBuilder.LogTo(Console.WriteLine);
 		
-		optionsBuilder.UseNpgsql(CreateConnectionString());
+		optionsBuilder.UseNpgsql(CreateConnectionStringBuilder().ToString());
 		optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
 		base.OnConfiguring(optionsBuilder);
@@ -81,6 +85,9 @@ public class AnalysisContext : DbContext {
 			.HasIndex(c => c.Properties)
 			.HasMethod("GIN")
 			.IsCreatedConcurrently();
+		modelBuilder.Entity<ItemType>()
+			.HasIndex(c => c.Subcategories)
+			.HasMethod("GIN");
 		base.OnModelCreating(modelBuilder);
 	}
 }

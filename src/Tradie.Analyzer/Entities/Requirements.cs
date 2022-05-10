@@ -10,7 +10,7 @@ namespace Tradie.Analyzer.Entities;
 /// </summary>
 [Owned]
 [DataContract, MessagePackObject]
-public class Requirements {
+public record Requirements {
 	[Column]
 	[DataMember, Key(0)]
 	public int Dex;
@@ -23,4 +23,13 @@ public class Requirements {
 	[Column]
 	[DataMember, Key(3)]
 	public int Level;
+
+	public Requirements() { }
+
+	public Requirements(int dex, int str, int @int, int level) {
+		this.Dex = dex;
+		this.Str = str;
+		this.Int = @int;
+		this.Level = level;
+	}
 }

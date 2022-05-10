@@ -93,8 +93,6 @@ export class AffixRange {
   }
 
   toProto(): ProtoAffixRange {
-    console.log('--------');
-    console.log(this);
     const proto = new ProtoAffixRange();
     proto.setKey(this.modifier.toProto());
     proto.setMinvalue(this.minValue ?? -Infinity);
@@ -121,8 +119,6 @@ export class SearchGroup {
   }
 
   toProto(): ProtoSearchGroup {
-    console.log('toProto');
-    console.log(this);
     const proto = new ProtoSearchGroup();
     proto.setGroupkind(this.kind);
     this.ranges.forEach(range => proto.addRanges(range.toProto()));

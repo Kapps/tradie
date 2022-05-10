@@ -24,7 +24,7 @@ Console.WriteLine($"Starting ItemLogBuilder with build hash {Environment.GetEnvi
 
 var distributedLock = new PostgresDistributedLock(
 	new PostgresAdvisoryLockKey("ItemLogBuilder", true),
-	AnalysisContext.CreateConnectionString()
+	AnalysisContext.CreateConnectionStringBuilder().ToString()
 );
 
 await using var lockHandle = await distributedLock.TryAcquireAsync();

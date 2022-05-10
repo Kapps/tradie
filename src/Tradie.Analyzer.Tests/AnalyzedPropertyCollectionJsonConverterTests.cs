@@ -17,7 +17,7 @@ public class AnalyzedPropertyCollectionJsonConverterTests : TestBase {
 	[TestMethod]
 	public void TestDeserialization_FullObject() {
 		string json =
-			@"{""1"": {""ItemTypeId"": 159}, ""2"": {""Affixes"": []}, ""3"": {""X"": 0, ""Y"": 2, ""Price"": {""Kind"": ""None"", ""Amount"": 0, ""Currency"": ""None""}}, ""4"": {""Name"": """", ""Flags"": ""Corrupted, Fractured"", ""ItemLevel"": 86, ""Influences"": """"} }";
+			@"{""1"": {""ItemTypeId"": 159}, ""2"": {""Affixes"": []}, ""3"": {""X"": 0, ""Y"": 2, ""Price"": {""Kind"": ""None"", ""Amount"": 0, ""Currency"": ""None""}}, ""4"": {""Name"": """", ""Flags"": 65, ""ItemLevel"": 86, ""Influences"": """"} }";
 		var props = JsonSerializer.Deserialize<AnalyzedPropertyCollection>(json, new JsonSerializerOptions() {
 			Converters = {
 				new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, false)
@@ -43,7 +43,7 @@ public class AnalyzedPropertyCollectionJsonConverterTests : TestBase {
 		});
 
 		string expected =
-			@"{""4"":{""Name"":""foo"",""Flags"":""Corrupted, Fractured"",""Influences"":""None"",""ItemLevel"":86}}";
+			@"{""4"":{""Name"":""foo"",""Flags"":65,""Influences"":0,""ItemLevel"":86}}";
 		Assert.AreEqual(expected, json);
 	}
 }

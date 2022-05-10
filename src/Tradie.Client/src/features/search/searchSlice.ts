@@ -28,9 +28,6 @@ export const performSearch = createAsyncThunk('search/performSearch', async (_, 
     const criteriaValues = selectCriteriaValues(group.id)(state);
     const criteria = criteriaValues.map((c) => ({ value: c, criteria: selectCriteria(c.id)(state) }));
 
-    console.log('cv');
-    console.log(criteriaValues);
-    console.log(criteria);
     return new SearchGroup(
       group.kind,
       criteria

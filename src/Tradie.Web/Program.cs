@@ -1,11 +1,13 @@
 
 using Amazon.SimpleSystemsManagement;
+using Microsoft.AspNetCore.ResponseCompression;
 using StackExchange.Redis;
 using System.IO.Compression;
 using System.Net;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Web.Services;
+using ICompressionProvider = Grpc.Net.Compression.ICompressionProvider;
 
 
 var ssm = new AmazonSimpleSystemsManagementClient();
@@ -19,8 +21,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc(options => {
 	options.EnableDetailedErrors = true;
+	//options.CompressionProviders = new List<ICompressionProvider>();
+	//options.CompressionProviders.Add(new BrotliCompressionProvider(new BrotliCompressionProviderOptions()));
+	//options.ResponseCompressionAlgorithm = "br";
 	options.ResponseCompressionAlgorithm = "gzip";
-	options.ResponseCompressionLevel = CompressionLevel.Fastest;
+	options.ResponseCompressionLevel = (CompressionLevel)6;
+	
 });
 
 builder.Services.AddStackExchangeRedisCache(options => {
@@ -35,7 +41,7 @@ builder.Services.AddStackExchangeRedisCache(options => {
 			new DnsEndPoint(TradieConfig.RedisHost, 6379)
 		}
 	};
-});
+});	
 
 builder.Services.AddScoped<IModifierRepository, ModifierDbRepository>()
 	.AddScoped<ILeagueRepository, LeagueRepository>()
@@ -60,15 +66,31 @@ builder.Services.AddLogging(builder => {
 	builder.SetMinimumLevel(TradieConfig.LogLevel);
 });
 
+builder.Services.AddResponseCompression(opts => {
+	opts.EnableForHttps = true;
+	opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+		new[] { "application/octet-stream", "application/grpc-web", "application/grpc-web+proto" }
+	);
+});
+
 var app = builder.Build();
 
 app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.UseCors();
+
 // Configure the HTTP request pipeline.
 app.MapGrpcService<ModifierService>().RequireCors("AllowAll");
 app.MapGrpcService<LeagueService>().RequireCors("AllowAll");
 app.MapGrpcService<CriteriaService>().RequireCors("AllowAll");
 app.MapGrpcService<SearchService>().RequireCors("AllowAll");
+app.MapGrpcService<ItemTypeService>().RequireCors("AllowAll");
+
+//app.UseResponseCompression();
+
+/*app.Use(async (context, next) => {
+	context.Response.Headers.Add();
+	await next();
+});*/
 
 app.MapGet("/",
 	() =>

@@ -35,7 +35,6 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 	}
 
 	private async Task<Criteria[]> GenerateCriteria(CancellationToken token) {
-		
 		var leagues = await this._leagueRepository.GetAll(token);
 		var mods = await this._modifierRepository.RetrieveAll(token);
 		var itemTypes = await this._itemTypeRepository.RetrieveAll(token);
@@ -52,11 +51,31 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 			Name = c,
 			Kind = CriteriaKind.Category,
 			Category = c
-		})).Union(itemTypes.Select(c=>c.Subcategory).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
+		})).Union(itemTypes.SelectMany(c=>c.Subcategories).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
 			Id = $"subcat-{c}",
 			Name = c,
 			Kind = CriteriaKind.Subcategory,
 			Subcategory = c
+		})).Union(itemTypes.Select(c=>new Criteria() {
+			Id = $"it-{c}",
+			Name = c.Name,
+			Kind = CriteriaKind.ItemType,
+			ItemType = new ItemType() {
+				Id = c.Id,
+				Category = c.Category,
+				Height = c.Height,
+				Width = c.Width,
+				Name = c.Name,
+				Requirements = c.Requirements == null ? null : new Requirements() {
+					Dex = c.Requirements.Dex,
+					Int = c.Requirements.Int,
+					Str = c.Requirements.Str,
+					Level = c.Requirements.Level
+				},
+				Subcategories = {
+					c.Subcategories
+				}
+			}
 		})).Union(mods.Select(c => new Criteria() {
 			Id = $"mod-{c.Id}",
 			Name = c.ModifierText,

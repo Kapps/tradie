@@ -39,7 +39,6 @@ export const criteriaGroupsSlice = createSlice({
     updateCriteriaGroup: (state, action: PayloadAction<CriteriaGroup>) => {
       const { payload: criteria } = action;
       const index = state.criteriaGroups.findIndex((criteriaGroup) => criteriaGroup.id === criteria.id);
-      console.log(criteria);
       state.criteriaGroups[index] = criteria;
     },
     clearCriteriaGroups: (state) => {

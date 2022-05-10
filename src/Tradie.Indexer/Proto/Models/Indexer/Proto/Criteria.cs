@@ -26,18 +26,20 @@ namespace Tradie.Analyzer.Proto {
           string.Concat(
             "CiNNb2RlbHMvSW5kZXhlci9Qcm90by9Dcml0ZXJpYS5wcm90bxokTW9kZWxz",
             "L0FuYWx5emVyL1Byb3RvL01vZGlmaWVyLnByb3RvGiJNb2RlbHMvQW5hbHl6",
-            "ZXIvUHJvdG8vTGVhZ3VlLnByb3RvIrQBCghDcml0ZXJpYRIKCgJpZBgBIAEo",
-            "CRIMCgRuYW1lGAIgASgJEhsKBGtpbmQYAyABKA4yDS5Dcml0ZXJpYUtpbmQS",
-            "HQoIbW9kaWZpZXIYCiABKAsyCS5Nb2RpZmllckgAEhkKBmxlYWd1ZRgLIAEo",
-            "CzIHLkxlYWd1ZUgAEhIKCGNhdGVnb3J5GAwgASgJSAASFQoLc3ViY2F0ZWdv",
-            "cnkYDSABKAlIAEIMCgp1bmRlcmx5aW5nKm8KDENyaXRlcmlhS2luZBILCgdV",
-            "TktOT1dOEAASDAoITU9ESUZJRVIQARIKCgZMRUFHVUUQAhIMCghDQVRFR09S",
-            "WRADEg8KC1NVQkNBVEVHT1JZEAQSDQoJSVRFTV9UWVBFEAUSCgoGVU5JUVVF",
-            "EAZCGKoCFVRyYWRpZS5BbmFseXplci5Qcm90b2IGcHJvdG8z"));
+            "ZXIvUHJvdG8vTGVhZ3VlLnByb3RvGiRNb2RlbHMvQW5hbHl6ZXIvUHJvdG8v",
+            "SXRlbVR5cGUucHJvdG8i0wEKCENyaXRlcmlhEgoKAmlkGAEgASgJEgwKBG5h",
+            "bWUYAiABKAkSGwoEa2luZBgDIAEoDjINLkNyaXRlcmlhS2luZBIdCghtb2Rp",
+            "ZmllchgKIAEoCzIJLk1vZGlmaWVySAASGQoGbGVhZ3VlGAsgASgLMgcuTGVh",
+            "Z3VlSAASEgoIY2F0ZWdvcnkYDCABKAlIABIVCgtzdWJjYXRlZ29yeRgNIAEo",
+            "CUgAEh0KCGl0ZW1UeXBlGA4gASgLMgkuSXRlbVR5cGVIAEIMCgp1bmRlcmx5",
+            "aW5nKm8KDENyaXRlcmlhS2luZBILCgdVTktOT1dOEAASDAoITU9ESUZJRVIQ",
+            "ARIKCgZMRUFHVUUQAhIMCghDQVRFR09SWRADEg8KC1NVQkNBVEVHT1JZEAQS",
+            "DQoJSVRFTV9UWVBFEAUSCgoGVU5JUVVFEAZCGKoCFVRyYWRpZS5BbmFseXpl",
+            "ci5Qcm90b2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Tradie.Analyzer.Proto.ModifierReflection.Descriptor, global::Tradie.Analyzer.Proto.LeagueReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Tradie.Analyzer.Proto.ModifierReflection.Descriptor, global::Tradie.Analyzer.Proto.LeagueReflection.Descriptor, global::Tradie.Analyzer.Proto.ItemTypeReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Tradie.Analyzer.Proto.CriteriaKind), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Criteria), global::Tradie.Analyzer.Proto.Criteria.Parser, new[]{ "Id", "Name", "Kind", "Modifier", "League", "Category", "Subcategory" }, new[]{ "Underlying" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Criteria), global::Tradie.Analyzer.Proto.Criteria.Parser, new[]{ "Id", "Name", "Kind", "Modifier", "League", "Category", "Subcategory", "ItemType" }, new[]{ "Underlying" }, null, null, null)
           }));
     }
     #endregion
@@ -106,6 +108,9 @@ namespace Tradie.Analyzer.Proto {
           break;
         case UnderlyingOneofCase.Subcategory:
           Subcategory = other.Subcategory;
+          break;
+        case UnderlyingOneofCase.ItemType:
+          ItemType = other.ItemType.Clone();
           break;
       }
 
@@ -202,6 +207,18 @@ namespace Tradie.Analyzer.Proto {
       }
     }
 
+    /// <summary>Field number for the "itemType" field.</summary>
+    public const int ItemTypeFieldNumber = 14;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Tradie.Analyzer.Proto.ItemType ItemType {
+      get { return underlyingCase_ == UnderlyingOneofCase.ItemType ? (global::Tradie.Analyzer.Proto.ItemType) underlying_ : null; }
+      set {
+        underlying_ = value;
+        underlyingCase_ = value == null ? UnderlyingOneofCase.None : UnderlyingOneofCase.ItemType;
+      }
+    }
+
     private object underlying_;
     /// <summary>Enum of possible cases for the "underlying" oneof.</summary>
     public enum UnderlyingOneofCase {
@@ -210,6 +227,7 @@ namespace Tradie.Analyzer.Proto {
       League = 11,
       Category = 12,
       Subcategory = 13,
+      ItemType = 14,
     }
     private UnderlyingOneofCase underlyingCase_ = UnderlyingOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -247,6 +265,7 @@ namespace Tradie.Analyzer.Proto {
       if (!object.Equals(League, other.League)) return false;
       if (Category != other.Category) return false;
       if (Subcategory != other.Subcategory) return false;
+      if (!object.Equals(ItemType, other.ItemType)) return false;
       if (UnderlyingCase != other.UnderlyingCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -262,6 +281,7 @@ namespace Tradie.Analyzer.Proto {
       if (underlyingCase_ == UnderlyingOneofCase.League) hash ^= League.GetHashCode();
       if (underlyingCase_ == UnderlyingOneofCase.Category) hash ^= Category.GetHashCode();
       if (underlyingCase_ == UnderlyingOneofCase.Subcategory) hash ^= Subcategory.GetHashCode();
+      if (underlyingCase_ == UnderlyingOneofCase.ItemType) hash ^= ItemType.GetHashCode();
       hash ^= (int) underlyingCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -309,6 +329,10 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(106);
         output.WriteString(Subcategory);
       }
+      if (underlyingCase_ == UnderlyingOneofCase.ItemType) {
+        output.WriteRawTag(114);
+        output.WriteMessage(ItemType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -347,6 +371,10 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(106);
         output.WriteString(Subcategory);
       }
+      if (underlyingCase_ == UnderlyingOneofCase.ItemType) {
+        output.WriteRawTag(114);
+        output.WriteMessage(ItemType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -377,6 +405,9 @@ namespace Tradie.Analyzer.Proto {
       }
       if (underlyingCase_ == UnderlyingOneofCase.Subcategory) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Subcategory);
+      }
+      if (underlyingCase_ == UnderlyingOneofCase.ItemType) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ItemType);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -417,6 +448,12 @@ namespace Tradie.Analyzer.Proto {
           break;
         case UnderlyingOneofCase.Subcategory:
           Subcategory = other.Subcategory;
+          break;
+        case UnderlyingOneofCase.ItemType:
+          if (ItemType == null) {
+            ItemType = new global::Tradie.Analyzer.Proto.ItemType();
+          }
+          ItemType.MergeFrom(other.ItemType);
           break;
       }
 
@@ -473,6 +510,15 @@ namespace Tradie.Analyzer.Proto {
             Subcategory = input.ReadString();
             break;
           }
+          case 114: {
+            global::Tradie.Analyzer.Proto.ItemType subBuilder = new global::Tradie.Analyzer.Proto.ItemType();
+            if (underlyingCase_ == UnderlyingOneofCase.ItemType) {
+              subBuilder.MergeFrom(ItemType);
+            }
+            input.ReadMessage(subBuilder);
+            ItemType = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -524,6 +570,15 @@ namespace Tradie.Analyzer.Proto {
           }
           case 106: {
             Subcategory = input.ReadString();
+            break;
+          }
+          case 114: {
+            global::Tradie.Analyzer.Proto.ItemType subBuilder = new global::Tradie.Analyzer.Proto.ItemType();
+            if (underlyingCase_ == UnderlyingOneofCase.ItemType) {
+              subBuilder.MergeFrom(ItemType);
+            }
+            input.ReadMessage(subBuilder);
+            ItemType = subBuilder;
             break;
           }
         }

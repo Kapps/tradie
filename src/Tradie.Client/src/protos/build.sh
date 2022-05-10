@@ -9,6 +9,7 @@ protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Web/Proto/LeagueService.proto" --j
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Web/Proto/ModifierService.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Web/Proto/CriteriaService.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Web/Proto/SearchService.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
+protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Web/Proto/ItemTypeService.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 ## Indexer
 # protoc -I="$PROTO_BASE" "$PROTO_BASE/Services/Indexer/Proto/SearchController.proto" --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcweb:.
 

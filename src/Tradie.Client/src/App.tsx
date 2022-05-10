@@ -26,6 +26,11 @@ import CriteriaList from './features/criterialist/CriteriaList';
 import { CriteriaGroupCard } from './features/criteriagroups/CriteriaGroupCard';
 import { FilterPanel } from './features/filterpanel/FilterPanel';
 import { SearchResultList } from './features/search/SearchResultList';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { loadCriteria } from './features/criteria/criteriaSlice';
+import { loadActiveLeagues } from './features/leagues/leaguesSlice';
+import { loadItemTypes } from './features/itemTypes/itemTypesSlice';
 
 const lightTheme: MantineThemeOverride = {
   colorScheme: 'light',
@@ -52,10 +57,14 @@ const darkTheme: MantineThemeOverride = {
 });*/
 
 function App() {
-  console.log(process.env);
   const darkMode = useDarkMode();
   const theme = darkMode.value ? darkTheme : lightTheme;
-  console.log(theme);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadCriteria());
+    dispatch(loadActiveLeagues());
+    dispatch(loadItemTypes());
+  }, []);
   return (
     <MantineProvider theme={theme} withCSSVariables>
       <AppShell

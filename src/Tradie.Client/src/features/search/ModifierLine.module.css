@@ -3,7 +3,8 @@
   color: #C8C8C8;
 }
 
-.magic, .modified {
+.magic,
+.modified {
   color: #8787FE;
   font-weight: 600;
 }
@@ -18,12 +19,13 @@
   font-weight: 800;
 }
 
-.normal  {
+.normal {
   color: #fff;
 }
 
 .corrupted {
   color: #d20000;
+  font-weight: 800;
 }
 
 .value {
@@ -46,7 +48,8 @@
   color: #d02090;
 }
 
-.enchant, .crafted {
+.enchant,
+.crafted {
   color: #B8DAF1;
 }
 

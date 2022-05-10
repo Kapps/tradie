@@ -2,11 +2,8 @@ using MessagePack;
 using Npgsql;
 using NpgsqlTypes;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Tradie.Analyzer;
 using Tradie.Analyzer.Dispatch;
-using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 
@@ -32,7 +29,7 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 		var comm = new NpgsqlCommand(@"
 			SELECT ""PackedItems"", ""Id"", ""RawId"", ""Name"",  ""LastCharacterName"", ""Owner"", ""League"", ""Kind""
 			FROM ""StashTabs""
-			WHERE ""Id"" > $1 AND ($2 IS NULL OR ""League"" = $2 OR ""League"" IS NULL) LIMIT 100000
+			WHERE ""Id"" > $1 AND ($2 IS NULL OR ""League"" = $2 OR ""League"" IS NULL) LIMIT 10000
 		", conn) {
 			Parameters = {
 				new NpgsqlParameter {Value = previousId, NpgsqlDbType = NpgsqlDbType.Bigint},

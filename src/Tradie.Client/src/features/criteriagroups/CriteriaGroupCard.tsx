@@ -30,7 +30,6 @@ export function CriteriaGroupCard({ group }: CriteriaGroupProps) {
 
   const updateCriteriaKind = (val: string) => {
     const kind = val === 'Sum' ? SearchGroupKind.Sum : SearchGroupKind.And;
-    console.log(kind);
     dispatch(
       updateCriteriaGroup({
         id: group.id,

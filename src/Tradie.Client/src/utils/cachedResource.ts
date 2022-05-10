@@ -1,4 +1,5 @@
 const cachedResources = new Map<string, unknown>();
+const loadPromises = new Map<string, unknown>();
 
 /**
  * Returns a cached version of the resource with the given key.
@@ -8,32 +9,43 @@ const cachedResources = new Map<string, unknown>();
  * @returns
  */
 export const memoizeLocalStorage = async <T>(key: string, fn: () => Promise<T>) => {
-  if (cachedResources.has(key)) {
-    console.log(`Returning memory cached resource ${key}`);
-    return <T>cachedResources.get(key);
+  if (loadPromises.has(key)) {
+    return loadPromises.get(key);
   }
 
-  const CACHE_KEY = `CACHED_${key.toUpperCase()}`;
-  const CACHE_TTL = 1000 * 60 * 60 * 24;
-
-  const cachedItems = JSON.parse(window.localStorage.getItem(CACHE_KEY) ?? 'null');
-  if (cachedItems) {
-    if (cachedItems.timestamp && Date.now() - cachedItems.timestamp < CACHE_TTL) {
-      console.log(`Returning cached resource ${key}`);
-      return cachedItems.data;
+  const executor = async () => {
+    if (cachedResources.has(key)) {
+      console.log(`Returning memory cached resource ${key}`);
+      return <T>cachedResources.get(key);
     }
-  }
 
-  console.log(`Skiping cache for ${key}`);
+    const CACHE_KEY = `CACHED_${key.toUpperCase()}`;
+    const CACHE_TTL = 1000 * 60 * 60 * 24;
 
-  const data = await fn();
-  const serialized = JSON.stringify({
-    data,
-    timestamp: Date.now(),
-  });
+    const cachedItems = JSON.parse(window.localStorage.getItem(CACHE_KEY) ?? 'null');
+    if (cachedItems) {
+      if (cachedItems.timestamp && Date.now() - cachedItems.timestamp < CACHE_TTL) {
+        console.log(`Returning cached resource ${key}`);
+        return cachedItems.data;
+      }
+    }
 
-  window.localStorage.setItem(CACHE_KEY, serialized);
-  cachedResources.set(key, data);
+    console.log(`Skiping cache for ${key}`);
 
-  return data;
+    const data = await fn();
+    const serialized = JSON.stringify({
+      data,
+      timestamp: Date.now(),
+    });
+
+    window.localStorage.setItem(CACHE_KEY, serialized);
+    cachedResources.set(key, data);
+
+    return data;
+  };
+
+  console.log('executing promise');
+  const promise = executor();
+  loadPromises.set(key, promise);
+  return await promise;
 };

@@ -12,4 +12,5 @@ message ItemType {
   Requirements requirements = 5;
   int32 width = 6;
   int32 height = 7;
+  string iconUrl = 8; 
 }

@@ -24,4 +24,18 @@ public static class LinqExtensions {
 			}
 		}
 	}
+
+	/// <summary>
+	/// Returns whether the elements of the two enumerables are equal to one another using the default equality comparer.
+	/// Null and empty enumerables are considered to be equal to one another.
+	/// </summary>
+	public static bool UnorderedSequenceEquals<T>(this IEnumerable<T>? first, IEnumerable<T>? second) where T : IComparable<T> {
+		var fa = first?.ToArray() ?? Array.Empty<T>();
+		var sa = second?.ToArray() ?? Array.Empty<T>();
+		
+		if(fa.Length != sa.Length)
+			return false;
+
+		return fa.OrderBy(c => c).SequenceEqual(sa.OrderBy(c => c));
+	}
 }
