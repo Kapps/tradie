@@ -41,7 +41,7 @@ namespace Tradie.Infrastructure.Resources {
 				},*/
 				Ami = natAmi,
 				IamInstanceProfile = ecs.EcsInstanceProfile.Name,
-				InstanceType = "t4g.micro",
+				InstanceType = "t4g.small",
 				VpcSecurityGroupIds = new[] { natSg.Id },
 				//AssociatePublicIpAddress = false,
 				SourceDestCheck = false,

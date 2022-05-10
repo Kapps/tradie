@@ -14,6 +14,7 @@ using System.Net;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Analyzers.Conversions;
 using Tradie.Analyzer.Dispatch;
+using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.RawModels;
@@ -62,6 +63,7 @@ public class Function {
 						.AddSingleton<IModConverter, AnalyzingModConverter>()
 						.AddSingleton<IModifierRepository, ModifierDbRepository>()
 						.AddSingleton<IItemAnalyzer, ItemDetailsAnalyzer>()
+						.AddSingleton<IPersistentEntityConverter<ItemType>, ItemTypeConverter>()
 						.AddSingleton<IItemAnalyzer, TradePropertiesAnalyzer>()
 						.AddSingleton<IItemTypeRepository, ItemTypeDbRepository>()
 						.AddSingleton<IAnalyzedStashTabDispatcher, AnalyzedStashTabKinesisDispatcher>()

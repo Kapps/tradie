@@ -84,8 +84,8 @@ namespace Tradie.Infrastructure.Resources {
 
 			this.LaunchTemplate = new LaunchTemplate(stack, "launch-template", new LaunchTemplateConfig() {
 				ImageId = instanceAmi,
-				// InstanceType = "t4g.small",
-				InstanceType = "t4g.micro",
+				InstanceType = "t4g.small",
+				// InstanceType = "t4g.micro",
 				VpcSecurityGroupIds = new[] { instanceSg.Id },
 				IamInstanceProfile = new LaunchTemplateIamInstanceProfile() {
 					Arn = this.EcsInstanceProfile.Arn,
