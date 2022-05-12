@@ -87,12 +87,13 @@ namespace Tradie.ItemLogBuilder.Postgres {
 			IAsyncEnumerable<LoggedItem> items,
 			CancellationToken cancellationToken
 		) {
+			var uniqified = (await items.ToArrayAsync(cancellationToken)).Reverse().DistinctBy(c => c.RawId);
 			await using var writer = await conn.BeginBinaryImportAsync($@"
 				COPY {tempTableName} (""RawId"", ""IdHash"", ""StashTabId"", ""Properties"")
 				FROM STDIN (FORMAT BINARY);
 			", cancellationToken);
 
-			await foreach(var item in items.WithCancellation(cancellationToken)) {
+			foreach(var item in uniqified) {
 				await writer.StartRowAsync(cancellationToken);
 
 				await writer.WriteAsync(item.RawId, NpgsqlDbType.Text, cancellationToken);

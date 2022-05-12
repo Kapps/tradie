@@ -33,6 +33,12 @@ export class ItemAffixProperties extends jspb.Message {
   clearAffixesList(): ItemAffixProperties;
   addAffixes(value?: Affix, index?: number): Affix;
 
+  getPrefixcount(): number;
+  setPrefixcount(value: number): ItemAffixProperties;
+
+  getSuffixcount(): number;
+  setSuffixcount(value: number): ItemAffixProperties;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ItemAffixProperties.AsObject;
   static toObject(includeInstance: boolean, msg: ItemAffixProperties): ItemAffixProperties.AsObject;
@@ -44,6 +50,8 @@ export class ItemAffixProperties extends jspb.Message {
 export namespace ItemAffixProperties {
   export type AsObject = {
     affixesList: Array<Affix.AsObject>,
+    prefixcount: number,
+    suffixcount: number,
   }
 }
 

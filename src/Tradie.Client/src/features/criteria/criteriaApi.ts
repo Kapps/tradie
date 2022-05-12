@@ -48,8 +48,7 @@ export const getAllCriteria = (): Promise<Criteria[]> => {
     const service = new CriteriaServiceClient(appConfig.apiBaseUrl);
     const request = new ListCriteriaRequest();
     const response = await service.listCriteria(request, null);
-    const protos = await response.getCriteriasList();
-    const criteria = await response.getCriteriasList().map(c => <Criteria>c.toObject());
+    const criteria = await response.getCriteriasList().map(c => Criteria.fromProto(c));
     return criteria;
   });
 };

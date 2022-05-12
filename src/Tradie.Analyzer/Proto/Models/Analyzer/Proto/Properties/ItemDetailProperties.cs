@@ -25,14 +25,16 @@ namespace Tradie.Analyzer.Proto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CjtNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vUHJvcGVydGllcy9JdGVtRGV0YWls",
-            "UHJvcGVydGllcy5wcm90byJaChRJdGVtRGV0YWlsUHJvcGVydGllcxIMCgRu",
-            "YW1lGAEgASgJEg0KBWZsYWdzGAIgASgNEhIKCmluZmx1ZW5jZXMYAyABKA0S",
-            "EQoJaXRlbUxldmVsGAQgASgNQhiqAhVUcmFkaWUuQW5hbHl6ZXIuUHJvdG9i",
-            "BnByb3RvMw=="));
+            "UHJvcGVydGllcy5wcm90bxooTW9kZWxzL0FuYWx5emVyL1Byb3RvL1JlcXVp",
+            "cmVtZW50cy5wcm90byKRAQoUSXRlbURldGFpbFByb3BlcnRpZXMSDAoEbmFt",
+            "ZRgBIAEoCRINCgVmbGFncxgCIAEoDRISCgppbmZsdWVuY2VzGAMgASgNEhEK",
+            "CWl0ZW1MZXZlbBgEIAEoDRIQCghpY29uUGF0aBgFIAEoCRIjCgxyZXF1aXJl",
+            "bWVudHMYBiABKAsyDS5SZXF1aXJlbWVudHNCGKoCFVRyYWRpZS5BbmFseXpl",
+            "ci5Qcm90b2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::Tradie.Analyzer.Proto.RequirementsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.ItemDetailProperties), global::Tradie.Analyzer.Proto.ItemDetailProperties.Parser, new[]{ "Name", "Flags", "Influences", "ItemLevel" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.ItemDetailProperties), global::Tradie.Analyzer.Proto.ItemDetailProperties.Parser, new[]{ "Name", "Flags", "Influences", "ItemLevel", "IconPath", "Requirements" }, null, null, null, null)
           }));
     }
     #endregion
@@ -77,6 +79,8 @@ namespace Tradie.Analyzer.Proto {
       flags_ = other.flags_;
       influences_ = other.influences_;
       itemLevel_ = other.itemLevel_;
+      iconPath_ = other.iconPath_;
+      requirements_ = other.requirements_ != null ? other.requirements_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -134,6 +138,30 @@ namespace Tradie.Analyzer.Proto {
       }
     }
 
+    /// <summary>Field number for the "iconPath" field.</summary>
+    public const int IconPathFieldNumber = 5;
+    private string iconPath_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string IconPath {
+      get { return iconPath_; }
+      set {
+        iconPath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "requirements" field.</summary>
+    public const int RequirementsFieldNumber = 6;
+    private global::Tradie.Analyzer.Proto.Requirements requirements_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Tradie.Analyzer.Proto.Requirements Requirements {
+      get { return requirements_; }
+      set {
+        requirements_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -153,6 +181,8 @@ namespace Tradie.Analyzer.Proto {
       if (Flags != other.Flags) return false;
       if (Influences != other.Influences) return false;
       if (ItemLevel != other.ItemLevel) return false;
+      if (IconPath != other.IconPath) return false;
+      if (!object.Equals(Requirements, other.Requirements)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -164,6 +194,8 @@ namespace Tradie.Analyzer.Proto {
       if (Flags != 0) hash ^= Flags.GetHashCode();
       if (Influences != 0) hash ^= Influences.GetHashCode();
       if (ItemLevel != 0) hash ^= ItemLevel.GetHashCode();
+      if (IconPath.Length != 0) hash ^= IconPath.GetHashCode();
+      if (requirements_ != null) hash ^= Requirements.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -198,6 +230,14 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(32);
         output.WriteUInt32(ItemLevel);
       }
+      if (IconPath.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(IconPath);
+      }
+      if (requirements_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(Requirements);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -224,6 +264,14 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(32);
         output.WriteUInt32(ItemLevel);
       }
+      if (IconPath.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(IconPath);
+      }
+      if (requirements_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(Requirements);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -245,6 +293,12 @@ namespace Tradie.Analyzer.Proto {
       }
       if (ItemLevel != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ItemLevel);
+      }
+      if (IconPath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(IconPath);
+      }
+      if (requirements_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Requirements);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -269,6 +323,15 @@ namespace Tradie.Analyzer.Proto {
       }
       if (other.ItemLevel != 0) {
         ItemLevel = other.ItemLevel;
+      }
+      if (other.IconPath.Length != 0) {
+        IconPath = other.IconPath;
+      }
+      if (other.requirements_ != null) {
+        if (requirements_ == null) {
+          Requirements = new global::Tradie.Analyzer.Proto.Requirements();
+        }
+        Requirements.MergeFrom(other.Requirements);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -301,6 +364,17 @@ namespace Tradie.Analyzer.Proto {
             ItemLevel = input.ReadUInt32();
             break;
           }
+          case 42: {
+            IconPath = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (requirements_ == null) {
+              Requirements = new global::Tradie.Analyzer.Proto.Requirements();
+            }
+            input.ReadMessage(Requirements);
+            break;
+          }
         }
       }
     #endif
@@ -330,6 +404,17 @@ namespace Tradie.Analyzer.Proto {
           }
           case 32: {
             ItemLevel = input.ReadUInt32();
+            break;
+          }
+          case 42: {
+            IconPath = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (requirements_ == null) {
+              Requirements = new global::Tradie.Analyzer.Proto.Requirements();
+            }
+            input.ReadMessage(Requirements);
             break;
           }
         }

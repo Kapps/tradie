@@ -72,7 +72,6 @@ export class ItemType {
   }
 
   static fromProto(proto: ProtoItemType): ItemType {
-    console.log(proto);
     return new ItemType(
       proto.getId(),
       proto.getName(),

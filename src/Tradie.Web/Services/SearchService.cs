@@ -46,7 +46,13 @@ public class SearchService : Proto.SearchService.SearchServiceBase {
 					Flags = (uint)details.Flags,
 					Influences = (uint)details.Influences,
 					Name = details.Name,
-					ItemLevel = details.ItemLevel.GetValueOrDefault()
+					ItemLevel = details.ItemLevel.GetValueOrDefault(),
+					Requirements = new() {
+						Dex = details.Requirements?.Dex ?? 0,
+						Str = details.Requirements?.Str ?? 0,
+						Int = details.Requirements?.Int ?? 0,
+						Level = details.Requirements?.Level ?? 0,
+					}
 				}
 			});
 		}
@@ -54,12 +60,17 @@ public class SearchService : Proto.SearchService.SearchServiceBase {
 		if(item.Properties.Get<IAnalyzedProperties>(KnownAnalyzers.Modifiers) is ItemAffixesAnalysis affixes) {
 			var analysis = new Tradie.Analyzer.Proto.ItemAnalysis() {
 				AnalyzerId = KnownAnalyzers.Modifiers,
-				AffixProperties = new ItemAffixProperties()
+				AffixProperties = new ItemAffixProperties() {
+					PrefixCount = affixes.PrefixCount,
+					SuffixCount = affixes.SuffixCount,
+					Affixes = {
+						affixes.Affixes.Select(c=>new Affix() {
+							Key = new() { Location = (int)c.Kind, Modifier = (long)c.Hash },
+							Value = (float)c.Scalar
+						})
+					}
+				}
 			};
-			analysis.AffixProperties.Affixes.AddRange(affixes.Affixes.Select(c=>new Affix() {
-				Key = new() { Location = (int)c.Kind, Modifier = (long)c.Hash },
-				Value = (float)c.Scalar
-			}));
 			res.Properties.Add(analysis);
 		}
 		

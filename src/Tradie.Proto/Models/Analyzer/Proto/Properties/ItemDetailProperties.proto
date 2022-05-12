@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "Models/Analyzer/Proto/Requirements.proto";
+
 option csharp_namespace = "Tradie.Analyzer.Proto";
 
 message ItemDetailProperties {
@@ -7,4 +9,6 @@ message ItemDetailProperties {
   uint32 flags = 2;
   uint32 influences = 3;
   uint32 itemLevel = 4;
+  string iconPath = 5;
+  Requirements requirements = 6;
 }

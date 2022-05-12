@@ -17,7 +17,7 @@ public class ModifierService : Proto.ModifierService.ModifierServiceBase {
 				modifiers.Select(c => new Modifier() {
 					Hash = (long)c.ModHash, Id = c.Id, Text = c.ModifierText
 				})
-			}
+			},
 		};
 		return response;
 	}

@@ -62,7 +62,7 @@ namespace Tradie.ItemLog.Tests.Postgres {
 				.SkipDefault<AnalyzedPropertyCollection>()
 				.Assert(); 
 		}
-		
+
 		[TestMethod]
 		public async Task TestItemUpserts_Deletes() {
 			var items = new LoggedItem[] {

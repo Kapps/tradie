@@ -11,4 +11,6 @@ message Affix {
 
 message ItemAffixProperties {
    repeated Affix affixes = 1;
+   int32 prefixCount = 2;
+   int32 suffixCount = 3;
 }

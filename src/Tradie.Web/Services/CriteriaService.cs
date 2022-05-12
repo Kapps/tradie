@@ -43,18 +43,20 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 			Id = $"league-{c.Id}",
 			Name = c.Id,
 			Kind = CriteriaKind.League,
-			League = new League() {
+			League = c.Id,
+			/*League = new League() {
 				Id = c.Id
-			}
+			}*/
 		}).Union(mods.Select(c => new Criteria() {
 			Id = $"mod-{c.Id}",
 			Name = c.ModifierText,
 			Kind = CriteriaKind.Modifier,
-			Modifier = new Modifier() {
+			ModifierHash = (long)c.ModHash
+			/*Modifier = new Modifier() {
 				Hash = (long)c.ModHash,
 				Id = c.Id,
 				Text = c.ModifierText
-			}
+			}*/
 		})).Union(itemTypes.Select(c=>c.Category).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
 			Id = $"cat-{c}",
 			Name = c,
@@ -70,7 +72,8 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 			Id = $"it-{c}",
 			Name = c.Name,
 			Kind = CriteriaKind.ItemType,
-			ItemType = new ItemType() {
+			ItemTypeId = c.Id
+			/*ItemType = new ItemType() {
 				Id = c.Id,
 				Category = c.Category,
 				Height = c.Height,
@@ -86,7 +89,7 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 					c.Subcategories
 				},
 				IconUrl = c.IconUrl
-			}
+			}*/
 		})).ToArray();
 
 		return criteria;

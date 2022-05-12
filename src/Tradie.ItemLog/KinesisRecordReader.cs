@@ -28,6 +28,9 @@ public interface IKinesisRecordReader {
 /// Provides a wrapper around an AWS Kinesis client to allow for streaming records with throughput and retry management.
 /// </summary>
 public class KinesisRecordReader : IKinesisRecordReader {
+
+	private bool IsThrottling => DateTime.Now - LastThrottle <= TimeSpan.FromSeconds(10);
+	
 	public KinesisRecordReader(IAmazonKinesis kinesisClient, IMetricPublisher metricPublisher, ILogger<KinesisRecordReader> logger) {
 		this._kinesisClient = kinesisClient;
 		this._metricPublisher = metricPublisher;
@@ -92,7 +95,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			}	
 		};
 
-		return GetRecords((DateTime.Now - this.LastThrottle >= TimeSpan.FromSeconds(10)) ? TradieConfig.ItemStreamBatchSize : 50);
+		return GetRecords(IsThrottling ? TradieConfig.ItemStreamBatchSize : 50);
 	}
 
 	private async Task<string> GetStartingIterator(KinesisStreamReference streamReference, ItemLogOffset offset, CancellationToken cancellationToken) {

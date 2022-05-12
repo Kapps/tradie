@@ -36,7 +36,7 @@ export const performSearch = createAsyncThunk('search/performSearch', async (_, 
         .map(
           (c) =>
             new AffixRange(
-              new ModKey(c.criteria!.modifier!.hash!, ModKind.Explicit),
+              new ModKey(c.criteria!.modifierHash!, ModKind.Explicit),
               c.value.minValue,
               c.value.maxValue,
             ),

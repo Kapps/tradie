@@ -288,7 +288,9 @@ proto.ItemAffixProperties.prototype.toObject = function(opt_includeInstance) {
 proto.ItemAffixProperties.toObject = function(includeInstance, msg) {
   var f, obj = {
     affixesList: jspb.Message.toObjectList(msg.getAffixesList(),
-    proto.Affix.toObject, includeInstance)
+    proto.Affix.toObject, includeInstance),
+    prefixcount: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    suffixcount: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -330,6 +332,14 @@ proto.ItemAffixProperties.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.Affix.deserializeBinaryFromReader);
       msg.addAffixes(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPrefixcount(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setSuffixcount(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -365,6 +375,20 @@ proto.ItemAffixProperties.serializeBinaryToWriter = function(message, writer) {
       1,
       f,
       proto.Affix.serializeBinaryToWriter
+    );
+  }
+  f = message.getPrefixcount();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+  f = message.getSuffixcount();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
+      f
     );
   }
 };
@@ -405,6 +429,42 @@ proto.ItemAffixProperties.prototype.addAffixes = function(opt_value, opt_index) 
  */
 proto.ItemAffixProperties.prototype.clearAffixesList = function() {
   return this.setAffixesList([]);
+};
+
+
+/**
+ * optional int32 prefixCount = 2;
+ * @return {number}
+ */
+proto.ItemAffixProperties.prototype.getPrefixcount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ItemAffixProperties} returns this
+ */
+proto.ItemAffixProperties.prototype.setPrefixcount = function(value) {
+  return jspb.Message.setProto3IntField(this, 2, value);
+};
+
+
+/**
+ * optional int32 suffixCount = 3;
+ * @return {number}
+ */
+proto.ItemAffixProperties.prototype.getSuffixcount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ItemAffixProperties} returns this
+ */
+proto.ItemAffixProperties.prototype.setSuffixcount = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 

@@ -1,8 +1,5 @@
 syntax = "proto3";
 
-import "Models/Analyzer/Proto/Modifier.proto";
-import "Models/Analyzer/Proto/League.proto";
-import "Models/Analyzer/Proto/ItemType.proto";
 option csharp_namespace = "Tradie.Analyzer.Proto";
 
 enum CriteriaKind {
@@ -21,10 +18,10 @@ message Criteria {
   CriteriaKind kind = 3;
   
   oneof underlying {
-    Modifier modifier = 10;
-    League league = 11;
+    int64 modifierHash = 10 [jstype=JS_STRING];
+    string league = 11;
     string category = 12;
     string subcategory = 13;
-    ItemType itemType = 14;
+    int32 itemTypeId = 14;
   }
 }

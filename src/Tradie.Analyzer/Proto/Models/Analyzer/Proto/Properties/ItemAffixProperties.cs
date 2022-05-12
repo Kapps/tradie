@@ -27,14 +27,15 @@ namespace Tradie.Analyzer.Proto {
             "CjpNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vUHJvcGVydGllcy9JdGVtQWZmaXhQ",
             "cm9wZXJ0aWVzLnByb3RvGilNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vTW9kaWZp",
             "ZXJUeXBlcy5wcm90byIsCgVBZmZpeBIUCgNrZXkYASABKAsyBy5Nb2RLZXkS",
-            "DQoFdmFsdWUYAiABKAIiLgoTSXRlbUFmZml4UHJvcGVydGllcxIXCgdhZmZp",
-            "eGVzGAEgAygLMgYuQWZmaXhCGKoCFVRyYWRpZS5BbmFseXplci5Qcm90b2IG",
-            "cHJvdG8z"));
+            "DQoFdmFsdWUYAiABKAIiWAoTSXRlbUFmZml4UHJvcGVydGllcxIXCgdhZmZp",
+            "eGVzGAEgAygLMgYuQWZmaXgSEwoLcHJlZml4Q291bnQYAiABKAUSEwoLc3Vm",
+            "Zml4Q291bnQYAyABKAVCGKoCFVRyYWRpZS5BbmFseXplci5Qcm90b2IGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Tradie.Analyzer.Proto.ModifierTypesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Affix), global::Tradie.Analyzer.Proto.Affix.Parser, new[]{ "Key", "Value" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.ItemAffixProperties), global::Tradie.Analyzer.Proto.ItemAffixProperties.Parser, new[]{ "Affixes" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.ItemAffixProperties), global::Tradie.Analyzer.Proto.ItemAffixProperties.Parser, new[]{ "Affixes", "PrefixCount", "SuffixCount" }, null, null, null, null)
           }));
     }
     #endregion
@@ -311,6 +312,8 @@ namespace Tradie.Analyzer.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ItemAffixProperties(ItemAffixProperties other) : this() {
       affixes_ = other.affixes_.Clone();
+      prefixCount_ = other.prefixCount_;
+      suffixCount_ = other.suffixCount_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -331,6 +334,30 @@ namespace Tradie.Analyzer.Proto {
       get { return affixes_; }
     }
 
+    /// <summary>Field number for the "prefixCount" field.</summary>
+    public const int PrefixCountFieldNumber = 2;
+    private int prefixCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int PrefixCount {
+      get { return prefixCount_; }
+      set {
+        prefixCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "suffixCount" field.</summary>
+    public const int SuffixCountFieldNumber = 3;
+    private int suffixCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int SuffixCount {
+      get { return suffixCount_; }
+      set {
+        suffixCount_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -347,6 +374,8 @@ namespace Tradie.Analyzer.Proto {
         return true;
       }
       if(!affixes_.Equals(other.affixes_)) return false;
+      if (PrefixCount != other.PrefixCount) return false;
+      if (SuffixCount != other.SuffixCount) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -355,6 +384,8 @@ namespace Tradie.Analyzer.Proto {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= affixes_.GetHashCode();
+      if (PrefixCount != 0) hash ^= PrefixCount.GetHashCode();
+      if (SuffixCount != 0) hash ^= SuffixCount.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -374,6 +405,14 @@ namespace Tradie.Analyzer.Proto {
       output.WriteRawMessage(this);
     #else
       affixes_.WriteTo(output, _repeated_affixes_codec);
+      if (PrefixCount != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PrefixCount);
+      }
+      if (SuffixCount != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(SuffixCount);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -385,6 +424,14 @@ namespace Tradie.Analyzer.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       affixes_.WriteTo(ref output, _repeated_affixes_codec);
+      if (PrefixCount != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PrefixCount);
+      }
+      if (SuffixCount != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(SuffixCount);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -396,6 +443,12 @@ namespace Tradie.Analyzer.Proto {
     public int CalculateSize() {
       int size = 0;
       size += affixes_.CalculateSize(_repeated_affixes_codec);
+      if (PrefixCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PrefixCount);
+      }
+      if (SuffixCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SuffixCount);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -409,6 +462,12 @@ namespace Tradie.Analyzer.Proto {
         return;
       }
       affixes_.Add(other.affixes_);
+      if (other.PrefixCount != 0) {
+        PrefixCount = other.PrefixCount;
+      }
+      if (other.SuffixCount != 0) {
+        SuffixCount = other.SuffixCount;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -428,6 +487,14 @@ namespace Tradie.Analyzer.Proto {
             affixes_.AddEntriesFrom(input, _repeated_affixes_codec);
             break;
           }
+          case 16: {
+            PrefixCount = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            SuffixCount = input.ReadInt32();
+            break;
+          }
         }
       }
     #endif
@@ -445,6 +512,14 @@ namespace Tradie.Analyzer.Proto {
             break;
           case 10: {
             affixes_.AddEntriesFrom(ref input, _repeated_affixes_codec);
+            break;
+          }
+          case 16: {
+            PrefixCount = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            SuffixCount = input.ReadInt32();
             break;
           }
         }

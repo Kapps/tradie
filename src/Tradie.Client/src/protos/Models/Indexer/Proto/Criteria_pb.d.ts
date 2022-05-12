@@ -1,8 +1,5 @@
 import * as jspb from 'google-protobuf'
 
-import * as Models_Analyzer_Proto_Modifier_pb from '../../../Models/Analyzer/Proto/Modifier_pb';
-import * as Models_Analyzer_Proto_League_pb from '../../../Models/Analyzer/Proto/League_pb';
-import * as Models_Analyzer_Proto_ItemType_pb from '../../../Models/Analyzer/Proto/ItemType_pb';
 
 
 export class Criteria extends jspb.Message {
@@ -15,15 +12,11 @@ export class Criteria extends jspb.Message {
   getKind(): CriteriaKind;
   setKind(value: CriteriaKind): Criteria;
 
-  getModifier(): Models_Analyzer_Proto_Modifier_pb.Modifier | undefined;
-  setModifier(value?: Models_Analyzer_Proto_Modifier_pb.Modifier): Criteria;
-  hasModifier(): boolean;
-  clearModifier(): Criteria;
+  getModifierhash(): string;
+  setModifierhash(value: string): Criteria;
 
-  getLeague(): Models_Analyzer_Proto_League_pb.League | undefined;
-  setLeague(value?: Models_Analyzer_Proto_League_pb.League): Criteria;
-  hasLeague(): boolean;
-  clearLeague(): Criteria;
+  getLeague(): string;
+  setLeague(value: string): Criteria;
 
   getCategory(): string;
   setCategory(value: string): Criteria;
@@ -31,10 +24,8 @@ export class Criteria extends jspb.Message {
   getSubcategory(): string;
   setSubcategory(value: string): Criteria;
 
-  getItemtype(): Models_Analyzer_Proto_ItemType_pb.ItemType | undefined;
-  setItemtype(value?: Models_Analyzer_Proto_ItemType_pb.ItemType): Criteria;
-  hasItemtype(): boolean;
-  clearItemtype(): Criteria;
+  getItemtypeid(): number;
+  setItemtypeid(value: number): Criteria;
 
   getUnderlyingCase(): Criteria.UnderlyingCase;
 
@@ -51,20 +42,20 @@ export namespace Criteria {
     id: string,
     name: string,
     kind: CriteriaKind,
-    modifier?: Models_Analyzer_Proto_Modifier_pb.Modifier.AsObject,
-    league?: Models_Analyzer_Proto_League_pb.League.AsObject,
+    modifierhash: string,
+    league: string,
     category: string,
     subcategory: string,
-    itemtype?: Models_Analyzer_Proto_ItemType_pb.ItemType.AsObject,
+    itemtypeid: number,
   }
 
   export enum UnderlyingCase { 
     UNDERLYING_NOT_SET = 0,
-    MODIFIER = 10,
+    MODIFIERHASH = 10,
     LEAGUE = 11,
     CATEGORY = 12,
     SUBCATEGORY = 13,
-    ITEMTYPE = 14,
+    ITEMTYPEID = 14,
   }
 }
 
