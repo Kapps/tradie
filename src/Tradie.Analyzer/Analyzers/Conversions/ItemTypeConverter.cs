@@ -28,7 +28,7 @@ public class ItemTypeConverter : IPersistentEntityConverter<ItemType> {
 	public bool RequiresUpdate(ItemType mapped, ItemType incoming) {
 		return new[] {
 			String.IsNullOrWhiteSpace(mapped.IconUrl) && !String.IsNullOrWhiteSpace(incoming.IconUrl),
-			incoming.Subcategories?.Length > mapped.Subcategories?.Length
+			(incoming.Subcategories?.Length ?? 0) > (mapped.Subcategories?.Length ?? 0)
 		}.Any(c=>c);
 		/*return new[] {
 			mapped.IconUrl != incoming.IconUrl,

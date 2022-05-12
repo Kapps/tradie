@@ -33,7 +33,7 @@ public class ItemTypeConverterTests : TestBase {
 		
 		Assert.IsFalse(this._converter.RequiresUpdate(existing, incoming));
 
-		existing.Requirements = null;
+		existing.Subcategories = null;
 		Assert.IsTrue(this._converter.RequiresUpdate(existing, incoming));
 	}
 
