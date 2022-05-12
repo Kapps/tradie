@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import * as criteriaApi from './criteriaApi';
-import memoize from 'memoizee';
 import { Criteria } from './criteria';
+import { notifyError } from '../notifications/notifications';
 
 
 const CACHE_KEY = 'CACHED_CRITERIA';
@@ -34,7 +34,7 @@ export const criteriaSlice = createSlice({
       state.criteria = action.payload;
     });
     builder.addCase(loadCriteria.rejected, (state, action) => {
-      throw new Error('could not load filter criteria');
+      notifyError('Could not load filter criteria', action.error);
     });
   },
 });

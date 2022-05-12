@@ -17,16 +17,20 @@ plugins:
   - '@typescript-eslint'
 rules:
   indent:
-    - error
+    - off
     - 2
-    - SwitchCase: 0
+    - SwitchCase: 1
+  '@typescript-eslint/indent':
+    - off
+    - 2
+    - SwitchCase: 1
   linebreak-style:
     - error
     - unix
   semi:
     - error
     - always
-  "@typescript-eslint/no-non-null-assertion":
+  '@typescript-eslint/no-non-null-assertion':
     - off
-  "@typescript-eslint/no-unused-vars":
+  '@typescript-eslint/no-unused-vars':
     - off

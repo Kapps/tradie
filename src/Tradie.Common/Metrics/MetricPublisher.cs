@@ -50,7 +50,7 @@ public class CloudWatchMetricPublisher : IMetricPublisher {
 		};
 		
 		await this._cloudWatch.PutMetricDataAsync(request, cancellationToken);
-		this._lastPublishTimes.Add(metric, DateTime.Now);
+		this._lastPublishTimes[metric] = DateTime.Now;
 	}
 
 	private readonly IAmazonCloudWatch _cloudWatch;

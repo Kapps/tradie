@@ -4,34 +4,44 @@ import { useDispatch } from 'react-redux';
 import styles from './CriteriaList.module.css';
 import { getRandomDescriptionHint, getRandomPlaceholderHints } from '../criteria/criteriaApi';
 import { SelectedCriteria } from './SelectedCriteria';
-import { loadCriteria, selectAvailableCriteria } from '../criteria/criteriaSlice';
+import { selectAvailableCriteria } from '../criteria/criteriaSlice';
 import { useAppSelector } from '../../app/hooks';
 import { CriteriaGroup } from '../criteriagroups/criteriaGroupsSlice';
 import { useClickOutside } from '@mantine/hooks';
-import { addCriteriaValue, removeCriteriaValue, selectCriteriaValues } from './criteriaValueSlice';
+import { addCriteriaValue, CriteriaValue, removeCriteriaValue, selectCriteriaValues } from './criteriaValueSlice';
 import uuid from '../../utils/uuid';
-import { $enum } from 'ts-enum-util';
-import { Criteria, CriteriaKind } from '../criteria/criteria';
+import { Criteria, CriteriaKind, getLabelForCriteriaKind } from '../criteria/criteria';
 
 export interface CriteriaListProps {
   group: CriteriaGroup;
 }
 
-const getMatchedCriteria = (criteria: Criteria[], searchText: string) => {
-  const searchLowerified = searchText.toLowerCase();
+const getMatchedCriteria = (criteria: Criteria[], selectedCriteriaValues: CriteriaValue[], searchText: string) => {
+  const selectedCriteria = selectedCriteriaValues.map(c => criteria.find(d => d.id === c.criteriaId)!);
+  const selectedLookup = new Set<Criteria>(selectedCriteria);
+  const searchLowerified = (searchText || '').toLowerCase();
   const results = new Array<Criteria>();
+
   for (const crit of criteria) {
-    if (crit.name.toLowerCase().includes(searchLowerified)) {
+    if (crit.kind !== CriteriaKind.MODIFIER && selectedCriteria.some(c => c.kind === crit.kind)) {
+      continue;
+    }
+    if (crit.name.toLowerCase().includes(searchLowerified) || selectedLookup.has(crit)) {
       results.push(crit);
+      selectedLookup.delete(crit);
     }
     if (results.length > 20) {
       break;
     }
   }
+
+  for (const remaining of selectedLookup) {
+    results.push(remaining);
+  }
+
+
   return results;
 };
-
-const criteriaKindEnum = $enum(CriteriaKind);
 
 type CriteriaListEntry = ComponentPropsWithoutRef<'div'> &
   Criteria & {
@@ -48,6 +58,11 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   const [searchText, setSearchText] = useState('');
   const [isPending, startTransition] = useTransition();
 
+  useEffect(() => {
+    console.log('opening');
+    setIsOpen(true);
+  }, []);
+
   useClickOutside(() => setIsOpen(false));
 
   const dispatch = useDispatch();
@@ -56,18 +71,20 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   //const selectedCriteria = useAppSelector(selectCriteriaGroup(group.id));
   const selectedCriteria = useAppSelector(selectCriteriaValues(group.id));
   const selectedValues = selectedCriteria?.map((c) => c.id.toString());
-  //const availableCriteria = getMatchedCriteria(allCriteria, searchText).map((c) => ({
-  const availableCriteria = allCriteria.map((c) => ({
+  const availableCriteria = getMatchedCriteria(allCriteria, selectedCriteria, searchText).map((c) => ({
+  //const availableCriteria = allCriteria.map((c) => ({
     label: c.name,
     value: c.id.toString(),
     criteriaId: c.id.toString(),
-    kindLabel: criteriaKindEnum.getKeyOrDefault(c.kind),
+    group: `${getLabelForCriteriaKind(c.kind)}s`.toUpperCase(),
+    kindLabel: getLabelForCriteriaKind(c.kind),
     //disableSelection: selectedCriteria.some((d) => c.id.toString() === d.criteriaId),
     //criteria: { criteriaId: c.id.toString(), id: c.id.toString(), groupId: group.id },
   }));
 
   const updateSearchText = (query: string) => {
-    startTransition(() => setSearchText(query));
+    //startTransition(() => setSearchText(query));
+    setSearchText(query);
   };
 
   const updateCriteriaValues = (values: string[]) => {
@@ -89,10 +106,6 @@ export default function CriteriaList({ group }: CriteriaListProps) {
       );
     }
   };
-
-  useEffect(() => {
-    dispatch(loadCriteria());
-  }, []);
 
   const EntryItem = forwardRef<HTMLDivElement, CriteriaListEntry>(
     ({ label, value, kindLabel, criteriaId, ...others }, ref) => (
@@ -132,8 +145,8 @@ export default function CriteriaList({ group }: CriteriaListProps) {
         nothingFound="No results found"
         onDropdownOpen={() => setIsOpen(true)}
         onDropdownClose={() => setIsOpen(false)}
-        // clearSearchOnChange
-        // initiallyOpened={isOpen}
+        clearSearchOnChange
+        initiallyOpened={isOpen}
         description={`Tip: ${descriptionHint.hint}`}
         sx={{
           input: {

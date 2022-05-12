@@ -19,6 +19,10 @@ export enum PropertyDisplay {
   Unique,
   Currency,
   Corrupted,
+  Note,
+  Name,
+  Modifier,
+  Fractured,
 }
 
 export type ModifierPart = {
@@ -62,6 +66,14 @@ const getClassForDisplay = (display: PropertyDisplay) => {
     return styles.property;
   case PropertyDisplay.Corrupted:
     return styles.corrupted;
+  case PropertyDisplay.Note:
+    return styles.note;
+  case PropertyDisplay.Modifier:
+    return styles.modifier;
+  case PropertyDisplay.Name:
+    return styles.name;
+  case PropertyDisplay.Fractured:
+    return styles.fractured;
   default:
     return styles.default;
   }

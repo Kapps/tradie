@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Entities;
 using Tradie.TestUtils;
 
 namespace Tradie.Analyzer.Tests.Analyzers;
@@ -21,7 +22,7 @@ public class ItemDetailsAnalyzerTests : TestBase {
 			"Behemoth March",
 			ItemFlags.Corrupted | ItemFlags.Synthesized,
 			InfluenceKind.Crusader | InfluenceKind.Shaper,
-			67
+			67, ItemRarity.Rare, new Requirements(56, 56, 0, 60)
 		));
 	}
 

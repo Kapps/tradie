@@ -48,10 +48,14 @@ namespace Tradie.Infrastructure.Resources {
 				SubnetId = network.PublicSubnets[0].Id,
 				UserData =$@"
 #!/bin/bash
+echo Disabling Docker
 sudo amazon-linux-extras disable docker
+echo Installing ECS
 sudo amazon-linux-extras install -y ecs
+echo Enabling Agent
 sudo systemctl enable --now --no-block ecs
 echo ECS_CLUSTER={ecs.Cluster.Name} >> /etc/ecs/ecs.config
+echo Enabling IP forwarding
 sysctl -w net.ipv4.ip_forward=1
 /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 echo ""net.ipv4.ip_forward = 1"" >> /etc/sysctl.conf
@@ -59,6 +63,7 @@ yum install iptables-services -y
 service iptables save
 service iptables start
 sudo chkconfig iptables on
+echo Ready
 "
 			});
 			

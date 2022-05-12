@@ -1,11 +1,13 @@
 
 using Amazon.SimpleSystemsManagement;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.IO.Compression;
 using System.Net;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.Web;
 using Tradie.Web.Services;
 using ICompressionProvider = Grpc.Net.Compression.ICompressionProvider;
 
@@ -21,11 +23,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc(options => {
 	options.EnableDetailedErrors = true;
+	options.CompressionProviders.Add(new Tradie.Web.BrotliCompressionProvider());
+	options.CompressionProviders.Add(new Grpc.Net.Compression.DeflateCompressionProvider(CompressionLevel.Optimal));
+	options.CompressionProviders.Add(new Grpc.Net.Compression.GzipCompressionProvider(CompressionLevel.Optimal));
 	//options.CompressionProviders = new List<ICompressionProvider>();
 	//options.CompressionProviders.Add(new BrotliCompressionProvider(new BrotliCompressionProviderOptions()));
 	//options.ResponseCompressionAlgorithm = "br";
-	options.ResponseCompressionAlgorithm = "gzip";
-	options.ResponseCompressionLevel = (CompressionLevel)6;
+	//options.ResponseCompressionAlgorithm = "gzip";
+	options.ResponseCompressionAlgorithm = "br";
+	options.ResponseCompressionLevel = CompressionLevel.Optimal;
 	
 });
 

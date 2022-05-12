@@ -32,12 +32,12 @@ public class AnalyzedPropertyCollectionTests : TestBase {
 	public void TestEnumerable() {
 		var collection = new AnalyzedPropertyCollection() {
 			{KnownAnalyzers.ItemType, new ItemTypeAnalysis(12)},
-			{KnownAnalyzers.ItemDetails, new ItemDetailsAnalysis("foo", ItemFlags.Corrupted, InfluenceKind.Crusader, null)}
+			{KnownAnalyzers.ItemDetails, new ItemDetailsAnalysis("foo", ItemFlags.Corrupted, InfluenceKind.Crusader, null, ItemRarity.Rare, null)}
 		};
 		
 		collection.ToArray().ShouldDeepEqual(new IAnalyzedProperties[] {
 			new ItemTypeAnalysis(12),
-			new ItemDetailsAnalysis("foo", ItemFlags.Corrupted, InfluenceKind.Crusader, null)
+			new ItemDetailsAnalysis("foo", ItemFlags.Corrupted, InfluenceKind.Crusader, null, ItemRarity.Rare, null)
 		});
 	}
 }

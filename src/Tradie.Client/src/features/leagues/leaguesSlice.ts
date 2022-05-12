@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import memoize from 'memoizee';
 import { RootState } from '../../app/store';
-import { League, getActiveLeagues } from './leaguesApi';
+import { notifyError } from '../notifications/notifications';
+import { League } from './league';
+import { getActiveLeagues } from './leaguesApi';
 
 export interface LeagueState {
   activeLeagues: League[];
@@ -11,10 +12,10 @@ const initialState: LeagueState = {
   activeLeagues: [],
 };
 
-export const loadActiveLeagues = createAsyncThunk('leagues/getActiveLeagues', memoize(async () => {
+export const loadActiveLeagues = createAsyncThunk('leagues/getActiveLeagues', async () => {
   const response = await getActiveLeagues();
   return response;
-}));
+});
 
 export const selectActiveLeagues = (state: RootState) => state.leagues.activeLeagues;
 
@@ -29,7 +30,7 @@ export const leagueSlice = createSlice({
       state.activeLeagues = action.payload;
     });
     builder.addCase(loadActiveLeagues.rejected, (state, action) => {
-      throw new Error('could not load active leagues');
+      notifyError('Could not load active leagues', action.error);
     });
   },
 });

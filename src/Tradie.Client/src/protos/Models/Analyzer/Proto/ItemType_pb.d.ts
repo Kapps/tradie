@@ -29,6 +29,9 @@ export class ItemType extends jspb.Message {
   getHeight(): number;
   setHeight(value: number): ItemType;
 
+  getIconurl(): string;
+  setIconurl(value: string): ItemType;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ItemType.AsObject;
   static toObject(includeInstance: boolean, msg: ItemType): ItemType.AsObject;
@@ -46,6 +49,7 @@ export namespace ItemType {
     requirements?: Models_Analyzer_Proto_Requirements_pb.Requirements.AsObject,
     width: number,
     height: number,
+    iconurl: string,
   }
 }
 

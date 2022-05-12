@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Models\Web\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="None" CompileOutputs="False" />
+        <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Models\Indexer\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="None" CompileOutputs="False" />
         <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Services\Web\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="Server" CompileOutputs="False" />
         <Protobuf OutputDir="Proto" Include="..\Tradie.Proto\Services\Indexer\Proto\*.proto" ProtoRoot="..\Tradie.Proto" GrpcServices="Client" CompileOutputs="False" />
     </ItemGroup>
@@ -21,7 +22,6 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Tradie.Analyzer\Tradie.Analyzer.csproj" />
-      <ProjectReference Include="..\Tradie.Indexer\Tradie.Indexer.csproj" />
     </ItemGroup>
 
 </Project>

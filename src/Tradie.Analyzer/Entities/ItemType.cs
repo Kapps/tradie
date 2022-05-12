@@ -13,6 +13,7 @@ namespace Tradie.Analyzer.Entities;
 public class ItemType {
 	public ItemType() { }
 
+
 	public ItemType(int id, string? name, string? category, string[] subcategories, Requirements? requirements, string iconUrl, int width, int height) {
 		this.Id = id;
 		this.Name = name;
@@ -66,4 +67,13 @@ public class ItemType {
 	/// </summary>
 	[Column]
 	public string? IconUrl { get; set; }
+
+
+	public override string ToString() {
+		return
+			$"{nameof(this.Id)}: {this.Id}, {nameof(this.Name)}: {this.Name}, {nameof(this.Category)}: {this.Category}, " +
+			$"{nameof(this.Subcategories)}: {String.Join(", ", this.Subcategories ?? Array.Empty<string>())}, " +
+			$"{nameof(this.Requirements)}: {this.Requirements}, {nameof(this.Width)}: {this.Width}, " +
+			$"{nameof(this.Height)}: {this.Height}, {nameof(this.IconUrl)}: {this.IconUrl}";
+	}
 }

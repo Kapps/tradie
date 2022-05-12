@@ -19,7 +19,11 @@ export const search = async (query: SearchQuery): Promise<SearchResponse> => {
   const protoQuery = query.toProto();
   request.setQuery(protoQuery);
 
-  const response = await service.searchGear(request, null);
+  const response = await service.searchGear(request, {
+    //'X-Grpc-Accept-Encoding': 'br',
+    //'Grpc-Accept-Encoding': 'br',
+    //'Accept-Encoding': 'br',
+  });
 
   return {
     results: response.getItemsList().map(item => Item.fromProto(item)),

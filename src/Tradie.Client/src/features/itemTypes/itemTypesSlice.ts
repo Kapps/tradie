@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import memoize from 'memoizee';
 import { RootState } from '../../app/store';
+import { notifyError } from '../notifications/notifications';
 import { ItemType } from './itemType';
 import { getItemTypes } from './itemTypesApi';
 
@@ -12,10 +12,10 @@ const initialState: ItemTypeState = {
   itemTypes: [],
 };
 
-export const loadItemTypes = createAsyncThunk('itemTypes/getItemTypes', memoize(async () => {
+export const loadItemTypes = createAsyncThunk('itemTypes/getItemTypes', async () => {
   const response = await getItemTypes();
   return response;
-}));
+});
 
 export const selectItemTypes = (state: RootState) => state.itemTypes.itemTypes;
 
@@ -32,7 +32,7 @@ export const itemTypesSlice = createSlice({
       state.itemTypes = action.payload;
     });
     builder.addCase(loadItemTypes.rejected, (state, action) => {
-      throw new Error('could not load item types');
+      notifyError('Could not load item types', action.error);
     });
   },
 });

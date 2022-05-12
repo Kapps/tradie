@@ -34,7 +34,7 @@ const getRangeDescription = (text: string, minValue?: number, maxValue?: number)
   return '#';
 };
 
-const substituteValuesInText = (text: string, min?: number, max?: number) => {
+export const substituteValuesInText = (text: string, min?: number, max?: number) => {
   const numValues = text.split('').filter((c) => c === '#').length;
   if (numValues === 0) {
     return text;

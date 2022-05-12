@@ -31,6 +31,8 @@ import { useDispatch } from 'react-redux';
 import { loadCriteria } from './features/criteria/criteriaSlice';
 import { loadActiveLeagues } from './features/leagues/leaguesSlice';
 import { loadItemTypes } from './features/itemTypes/itemTypesSlice';
+import { NotificationsProvider } from '@mantine/notifications';
+import { loadModifiers } from './features/modifiers/modifiersSlice';
 
 const lightTheme: MantineThemeOverride = {
   colorScheme: 'light',
@@ -64,12 +66,12 @@ function App() {
     dispatch(loadCriteria());
     dispatch(loadActiveLeagues());
     dispatch(loadItemTypes());
+    dispatch(loadModifiers());
   }, []);
   return (
     <MantineProvider theme={theme} withCSSVariables>
-      <AppShell
-        padding="xl"
-        header={
+      <NotificationsProvider>
+        <AppShell padding="xl" header={
           <Header height="100px" p="xs" className="header">
             <Group align="flex-start">
               <div className="logoContainer">
@@ -101,21 +103,21 @@ function App() {
               </Center>
             </Group>
           </Header>
-        }
-      >
-        <Container fluid m={0}>
-          <Grid>
-            <Grid.Col span={5}>
-              <FilterPanel />
-            </Grid.Col>
-            <Grid.Col span={7}>
-              <Card>
-                <SearchResultList />
-              </Card>
-            </Grid.Col>
-          </Grid>
-        </Container>
-      </AppShell>
+        }>
+          <Container fluid m={0}>
+            <Grid>
+              <Grid.Col span={5}>
+                <FilterPanel />
+              </Grid.Col>
+              <Grid.Col span={7}>
+                <Card>
+                  <SearchResultList />
+                </Card>
+              </Grid.Col>
+            </Grid>
+          </Container>
+        </AppShell>
+      </NotificationsProvider>
     </MantineProvider>
   );
 }

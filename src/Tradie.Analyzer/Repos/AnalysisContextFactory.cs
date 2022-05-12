@@ -14,7 +14,7 @@ public class AnalysisContextFactory : IDesignTimeDbContextFactory<AnalysisContex
 		connStringBuilder.CommandTimeout = 0;
 		
 		var optionsBuilder = new DbContextOptionsBuilder();
-		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
+		//optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
 		//optionsBuilder.LogTo(Console.WriteLine);
 		
 		optionsBuilder.UseNpgsql(connStringBuilder.ToString());

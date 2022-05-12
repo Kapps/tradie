@@ -25,6 +25,8 @@ var Models_Analyzer_Proto_Modifier_pb = require('../../../Models/Analyzer/Proto/
 goog.object.extend(proto, Models_Analyzer_Proto_Modifier_pb);
 var Models_Analyzer_Proto_League_pb = require('../../../Models/Analyzer/Proto/League_pb.js');
 goog.object.extend(proto, Models_Analyzer_Proto_League_pb);
+var Models_Analyzer_Proto_ItemType_pb = require('../../../Models/Analyzer/Proto/ItemType_pb.js');
+goog.object.extend(proto, Models_Analyzer_Proto_ItemType_pb);
 goog.exportSymbol('proto.Criteria', null, global);
 goog.exportSymbol('proto.Criteria.UnderlyingCase', null, global);
 goog.exportSymbol('proto.CriteriaKind', null, global);
@@ -58,7 +60,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.Criteria.oneofGroups_ = [[10,11,12,13]];
+proto.Criteria.oneofGroups_ = [[10,11,12,13,14]];
 
 /**
  * @enum {number}
@@ -68,7 +70,8 @@ proto.Criteria.UnderlyingCase = {
   MODIFIER: 10,
   LEAGUE: 11,
   CATEGORY: 12,
-  SUBCATEGORY: 13
+  SUBCATEGORY: 13,
+  ITEMTYPE: 14
 };
 
 /**
@@ -115,7 +118,8 @@ proto.Criteria.toObject = function(includeInstance, msg) {
     modifier: (f = msg.getModifier()) && Models_Analyzer_Proto_Modifier_pb.Modifier.toObject(includeInstance, f),
     league: (f = msg.getLeague()) && Models_Analyzer_Proto_League_pb.League.toObject(includeInstance, f),
     category: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    subcategory: jspb.Message.getFieldWithDefault(msg, 13, "")
+    subcategory: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    itemtype: (f = msg.getItemtype()) && Models_Analyzer_Proto_ItemType_pb.ItemType.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -181,6 +185,11 @@ proto.Criteria.deserializeBinaryFromReader = function(msg, reader) {
     case 13:
       var value = /** @type {string} */ (reader.readString());
       msg.setSubcategory(value);
+      break;
+    case 14:
+      var value = new Models_Analyzer_Proto_ItemType_pb.ItemType;
+      reader.readMessage(value,Models_Analyzer_Proto_ItemType_pb.ItemType.deserializeBinaryFromReader);
+      msg.setItemtype(value);
       break;
     default:
       reader.skipField();
@@ -260,6 +269,14 @@ proto.Criteria.serializeBinaryToWriter = function(message, writer) {
     writer.writeString(
       13,
       f
+    );
+  }
+  f = message.getItemtype();
+  if (f != null) {
+    writer.writeMessage(
+      14,
+      f,
+      Models_Analyzer_Proto_ItemType_pb.ItemType.serializeBinaryToWriter
     );
   }
 };
@@ -462,6 +479,43 @@ proto.Criteria.prototype.clearSubcategory = function() {
  */
 proto.Criteria.prototype.hasSubcategory = function() {
   return jspb.Message.getField(this, 13) != null;
+};
+
+
+/**
+ * optional ItemType itemType = 14;
+ * @return {?proto.ItemType}
+ */
+proto.Criteria.prototype.getItemtype = function() {
+  return /** @type{?proto.ItemType} */ (
+    jspb.Message.getWrapperField(this, Models_Analyzer_Proto_ItemType_pb.ItemType, 14));
+};
+
+
+/**
+ * @param {?proto.ItemType|undefined} value
+ * @return {!proto.Criteria} returns this
+*/
+proto.Criteria.prototype.setItemtype = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 14, proto.Criteria.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.Criteria} returns this
+ */
+proto.Criteria.prototype.clearItemtype = function() {
+  return this.setItemtype(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.Criteria.prototype.hasItemtype = function() {
+  return jspb.Message.getField(this, 14) != null;
 };
 
 

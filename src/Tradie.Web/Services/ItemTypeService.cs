@@ -32,7 +32,8 @@ public class ItemTypeService : Proto.ItemTypeService.ItemTypeServiceBase {
 						},
 					Subcategories = {
 						c.Subcategories
-					}
+					},
+					IconUrl = c.IconUrl
 				})
 			}
 		};

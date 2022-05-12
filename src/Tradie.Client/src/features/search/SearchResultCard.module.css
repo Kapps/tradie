@@ -1,5 +1,10 @@
-.resultCard {}
-
-.resultCard.even {}
-
-.resultCard.odd {}
+.separator {
+  height: 1px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0);
+  background-image: linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
+  background-image: -o-linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
+  background-image: -moz-linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
+  background-image: -webkit-linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
+}

@@ -18,6 +18,7 @@ using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.RawModels;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
 
@@ -53,6 +54,7 @@ public class Function {
 							format.IncludeScopes = true;
 							format.SingleLine = false;
 						});
+						builder.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 					});
 					services.AddSingleton<IParameterStore, SsmParameterStore>()
 						.AddSingleton<IAmazonKinesis, AmazonKinesisClient>()

@@ -1,6 +1,9 @@
 using MessagePack;
+using Microsoft.VisualBasic.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using Tradie.Analyzer.Analyzers.Conversions;
+using Tradie.Analyzer.Entities;
 using Tradie.Common.RawModels;
 
 namespace Tradie.Analyzer.Analyzers;
@@ -10,14 +13,16 @@ namespace Tradie.Analyzer.Analyzers;
 /// </summary>
 public class ItemDetailsAnalyzer : IItemAnalyzer {
 	
-	public static ushort Id { get; } = (ushort)KnownAnalyzers.ItemDetails;
+	public static ushort Id { get; } = KnownAnalyzers.ItemDetails;
 	
 	public ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		foreach(var item in items) {
 			var raw = item.RawItem;
 			var flags = GetFlags(raw);
 			var influences = GetInfluences(raw);
-			var analyzed = new ItemDetailsAnalysis(raw.Name, flags, influences, (byte?)raw.ItemLevel);
+			var rarity = (ItemRarity)raw.FrameType.GetValueOrDefault();
+			var requirements = RequirementParser.MapRequirements(raw, true);
+			var analyzed = new ItemDetailsAnalysis(raw.Name, flags, influences, (byte?)raw.ItemLevel, rarity, requirements);
 			item.Analysis.PushAnalysis(Id, analyzed);
 		}
 
@@ -84,7 +89,9 @@ public readonly record struct ItemDetailsAnalysis(
 	[property:DataMember, Key(0)] string Name,
 	[property:DataMember, Key(1), JsonConverter(typeof(FlagsEnumJsonConverter<ItemFlags>))] ItemFlags Flags,
 	[property:DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<InfluenceKind>))] InfluenceKind Influences,
-	[property:DataMember, Key(3)] byte? ItemLevel
+	[property:DataMember, Key(3)] byte? ItemLevel,
+	[property:DataMember, Key(4), JsonConverter(typeof(FlagsEnumJsonConverter<ItemRarity>))] ItemRarity Rarity,
+	[property:DataMember, Key(5)] Requirements? Requirements
 ) : IAnalyzedProperties;
 	
 /// <summary>
@@ -114,4 +121,15 @@ public enum InfluenceKind : ushort {
 	Hunter = 8,
 	Shaper = 16,
 	Elder = 32
+}
+
+/// <summary>
+/// The rarity, or frame type, of an item.
+/// </summary>
+public enum ItemRarity : byte {
+	Normal = 0,
+	Magic = 1,
+	Rare = 2,
+	Unique = 3,
+	Gem = 4
 }

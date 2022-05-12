@@ -90,7 +90,8 @@ proto.ItemType.toObject = function(includeInstance, msg) {
     subcategoriesList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
     requirements: (f = msg.getRequirements()) && Models_Analyzer_Proto_Requirements_pb.Requirements.toObject(includeInstance, f),
     width: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    height: jspb.Message.getFieldWithDefault(msg, 7, 0)
+    height: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    iconurl: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -155,6 +156,10 @@ proto.ItemType.deserializeBinaryFromReader = function(msg, reader) {
     case 7:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setHeight(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIconurl(value);
       break;
     default:
       reader.skipField();
@@ -232,6 +237,13 @@ proto.ItemType.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       7,
+      f
+    );
+  }
+  f = message.getIconurl();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
       f
     );
   }
@@ -399,6 +411,24 @@ proto.ItemType.prototype.getHeight = function() {
  */
 proto.ItemType.prototype.setHeight = function(value) {
   return jspb.Message.setProto3IntField(this, 7, value);
+};
+
+
+/**
+ * optional string iconUrl = 8;
+ * @return {string}
+ */
+proto.ItemType.prototype.getIconurl = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ItemType} returns this
+ */
+proto.ItemType.prototype.setIconurl = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 

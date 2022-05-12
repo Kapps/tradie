@@ -5,6 +5,7 @@ import { selectCriteria } from "../criteria/criteriaSlice";
 import { selectCriteriaGroups } from "../criteriagroups/criteriaGroupsSlice";
 import { selectCriteriaValues } from "../criterialist/criteriaValueSlice";
 import { Item } from "../item/item";
+import { notifyError } from "../notifications/notifications";
 import { AffixRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from "./search";
 import { search } from "./searchApi";
 
@@ -66,7 +67,7 @@ export const searchSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(performSearch.rejected, (state, action) => {
-      throw new Error('could not load search results');
+      notifyError('Could not load search results', action.error);
     });
   }
 });

@@ -66,7 +66,7 @@ public class AnalysisContext : DbContext {
 		//optionsBuilder.LogTo(Console.WriteLine);
 		
 		optionsBuilder.UseNpgsql(CreateConnectionStringBuilder().ToString());
-		optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+		optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
 
 		base.OnConfiguring(optionsBuilder);
 	}

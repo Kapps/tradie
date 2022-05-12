@@ -41,8 +41,9 @@ export class ItemType {
   requirements?: Requirements;
   width: number;
   height: number;
+  iconUrl: string;
 
-  constructor(id: number, name: string, category: string, subcategoriesList: Array<string>, width: number, height: number, requirements?: Requirements) {
+  constructor(id: number, name: string, category: string, subcategoriesList: Array<string>, width: number, height: number, iconUrl: string, requirements?: Requirements) {
     this.id = id;
     this.name = name;
     this.category = category;
@@ -50,6 +51,7 @@ export class ItemType {
     this.requirements = requirements;
     this.width = width;
     this.height = height;
+    this.iconUrl = iconUrl;
   }
 
   toProto(): ProtoItemType {
@@ -60,6 +62,7 @@ export class ItemType {
     proto.setSubcategoriesList(this.subcategoriesList);
     proto.setWidth(this.width);
     proto.setHeight(this.height);
+    proto.setIconurl(this.iconUrl);
 
     if (this.requirements) {
       proto.setRequirements(this.requirements.toProto());
@@ -69,6 +72,7 @@ export class ItemType {
   }
 
   static fromProto(proto: ProtoItemType): ItemType {
+    console.log(proto);
     return new ItemType(
       proto.getId(),
       proto.getName(),
@@ -76,6 +80,7 @@ export class ItemType {
       proto.getSubcategoriesList(),
       proto.getWidth(),
       proto.getHeight(),
+      proto.getIconurl(),
       proto.hasRequirements() ? Requirements.fromProto(proto.getRequirements()!) : undefined,
     );
   }

@@ -2,7 +2,7 @@ import { appConfig } from '../../app/config';
 import { CriteriaServiceClient } from '../../protos/Services/Web/Proto/CriteriaServiceServiceClientPb';
 import { ListCriteriaRequest } from '../../protos/Services/Web/Proto/CriteriaService_pb';
 import { getNRandomElements, getRandomElement } from '../../utils/arrayRandom';
-import { memoizeLocalStorage } from '../../utils/cachedResource';
+import { memoizePersistent } from '../../utils/cachedResource';
 import { Criteria } from './criteria';
 
 const placeholderHints = [
@@ -44,7 +44,7 @@ export function getRandomDescriptionHint() {
  * Returns all available filter criteria.
  */
 export const getAllCriteria = (): Promise<Criteria[]> => {
-  return memoizeLocalStorage('criteria', async () => {
+  return memoizePersistent('criteria', async () => {
     const service = new CriteriaServiceClient(appConfig.apiBaseUrl);
     const request = new ListCriteriaRequest();
     const response = await service.listCriteria(request, null);

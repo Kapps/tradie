@@ -2,6 +2,7 @@ import * as jspb from 'google-protobuf'
 
 import * as Models_Analyzer_Proto_Modifier_pb from '../../../Models/Analyzer/Proto/Modifier_pb';
 import * as Models_Analyzer_Proto_League_pb from '../../../Models/Analyzer/Proto/League_pb';
+import * as Models_Analyzer_Proto_ItemType_pb from '../../../Models/Analyzer/Proto/ItemType_pb';
 
 
 export class Criteria extends jspb.Message {
@@ -30,6 +31,11 @@ export class Criteria extends jspb.Message {
   getSubcategory(): string;
   setSubcategory(value: string): Criteria;
 
+  getItemtype(): Models_Analyzer_Proto_ItemType_pb.ItemType | undefined;
+  setItemtype(value?: Models_Analyzer_Proto_ItemType_pb.ItemType): Criteria;
+  hasItemtype(): boolean;
+  clearItemtype(): Criteria;
+
   getUnderlyingCase(): Criteria.UnderlyingCase;
 
   serializeBinary(): Uint8Array;
@@ -49,6 +55,7 @@ export namespace Criteria {
     league?: Models_Analyzer_Proto_League_pb.League.AsObject,
     category: string,
     subcategory: string,
+    itemtype?: Models_Analyzer_Proto_ItemType_pb.ItemType.AsObject,
   }
 
   export enum UnderlyingCase { 
@@ -57,6 +64,7 @@ export namespace Criteria {
     LEAGUE = 11,
     CATEGORY = 12,
     SUBCATEGORY = 13,
+    ITEMTYPE = 14,
   }
 }
 
