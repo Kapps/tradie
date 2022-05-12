@@ -1,5 +1,6 @@
 using Amazon.Kinesis;
 using Amazon.Kinesis.Model;
+using Amazon.Runtime.Internal;
 using System.Runtime.CompilerServices;
 using Tradie.Common;
 
@@ -67,18 +68,21 @@ public class KinesisRecordReader : IKinesisRecordReader {
 	}
 	
 	private Task<GetRecordsResponse> GetRecordsFromIterator(KinesisStreamReference streamReference, string iterator, CancellationToken cancellationToken) {
-		Task<GetRecordsResponse> GetRecords (int limit) {
+		async Task<GetRecordsResponse> GetRecords (int limit) {
 			try {
-				return this._kinesisClient.GetRecordsAsync(new GetRecordsRequest() {
+				return await this._kinesisClient.GetRecordsAsync(new GetRecordsRequest() {
 					Limit = limit,
 					ShardIterator = iterator,
 				}, cancellationToken);
-			} catch(ProvisionedThroughputExceededException) {
+			} catch(Exception e)
+				when (e is ProvisionedThroughputExceededException || 
+				      (e is HttpErrorResponseException err && err.Message.Contains("Amazon.Kinesis.Model.ProvisionedThroughputExceededException"))) 
+			{
 				if(limit <= 1) {
 					throw new InvalidDataException(
 						$"Kinesis stream for {streamReference.StreamName}:{streamReference.ShardId} could not be read at iterator {iterator}.");
 				}
-				return GetRecords(limit / 2);
+				return await GetRecords(limit / 2);
 			}	
 		};
 
