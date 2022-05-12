@@ -57,8 +57,8 @@ public class ModifierAnalyzer : IItemAnalyzer {
 [MessagePackObject]
 public readonly record struct ItemAffixesAnalysis(
 	[property:DataMember,Key(0)] Affix[] Affixes,
-	[property:DataMember,Key(0)] byte PrefixCount,
-	[property:DataMember,Key(1)] byte SuffixCount
+	[property:DataMember,Key(1)] byte PrefixCount,
+	[property:DataMember,Key(2)] byte SuffixCount
 ) : IAnalyzedProperties;
 
 /// <summary>
