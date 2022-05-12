@@ -3,6 +3,7 @@ using Amazon.Kinesis.Model;
 using DeepEqual.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -116,9 +117,9 @@ public class KinesisRecordReaderTests : TestBase {
 	}
 
 	protected override void Initialize() {
-		this._recordReader = new KinesisRecordReader(this._kinesisClient.Object, this._metricPublisher.Object);
+		this._recordReader = new KinesisRecordReader(this._kinesisClient.Object, this._metricPublisher.Object, TestUtils.TestUtils.CreateLogger<KinesisRecordReader>());
 	}
-
+	
 	private Mock<IAmazonKinesis> _kinesisClient = null!;
 	private Mock<IMetricPublisher> _metricPublisher = null!;
 	private KinesisRecordReader _recordReader = null!;

@@ -48,8 +48,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			if(records.NextShardIterator == null) {
 				yield break;
 			}
-
-
+			
 			await this._metricPublisher.PublishMetric(ItemLogMetrics.KinesisStreamLag, new CustomMetricDimension[] {
 				new("Stream Name", streamReference.StreamName),
 				new("Shard Id", streamReference.ShardId)
@@ -83,6 +82,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 				_logger.LogWarning("Encountering throughput limitations while reading {limit} records at a time; slowing down", limit);
 				
 				await Task.Delay(1000, cancellationToken);
+				this.LastThrottle = DateTime.Now;
 				
 				if(limit <= 1) {
 					throw new InvalidDataException(
@@ -92,7 +92,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			}	
 		};
 
-		return GetRecords(TradieConfig.ItemStreamBatchSize);
+		return GetRecords((DateTime.Now - this.LastThrottle >= TimeSpan.FromSeconds(10)) ? TradieConfig.ItemStreamBatchSize : 50);
 	}
 
 	private async Task<string> GetStartingIterator(KinesisStreamReference streamReference, ItemLogOffset offset, CancellationToken cancellationToken) {
@@ -106,6 +106,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 		return resp.ShardIterator;
 	}
 	
+	private DateTime LastThrottle = DateTime.MinValue;
 	private readonly IAmazonKinesis _kinesisClient;
 	private readonly IMetricPublisher _metricPublisher;
 	private readonly ILogger<KinesisRecordReader> _logger;
