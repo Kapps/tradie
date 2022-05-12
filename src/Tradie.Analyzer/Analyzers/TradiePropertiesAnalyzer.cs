@@ -31,8 +31,7 @@ public class TradePropertiesAnalyzer : IItemAnalyzer {
 /// </summary>
 /// <param name="X">X Location within the stash tab.</param>
 /// <param name="Y">Y Location within the stash tab.</param>
-/// <param name="BuyoutAmount">The amount of the buyout currency the item is listed for.</param>
-/// <param name="BuyoutCurrency">The type of the currency to use for the buyout.</param>
+/// <param name="Price">The amount of currency the item is listed for.</param>
 /// <param name="Note">The actual note listed, before parsing.</param>
 [DataContract, MessagePackObject]
 public readonly record struct TradeListingAnalysis (

@@ -1,6 +1,7 @@
 using Amazon.Kinesis;
 using Amazon.Kinesis.Model;
 using Amazon.Runtime.Internal;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using Tradie.Common;
 
@@ -27,9 +28,10 @@ public interface IKinesisRecordReader {
 /// Provides a wrapper around an AWS Kinesis client to allow for streaming records with throughput and retry management.
 /// </summary>
 public class KinesisRecordReader : IKinesisRecordReader {
-	public KinesisRecordReader(IAmazonKinesis kinesisClient, IMetricPublisher metricPublisher) {
+	public KinesisRecordReader(IAmazonKinesis kinesisClient, IMetricPublisher metricPublisher, ILogger<KinesisRecordReader> logger) {
 		this._kinesisClient = kinesisClient;
 		this._metricPublisher = metricPublisher;
+		this._logger = logger;
 	}
 	
 	public async IAsyncEnumerable<Record> GetItems(KinesisStreamReference streamReference, ItemLogOffset offset, [EnumeratorCancellation] CancellationToken cancellationToken = default) {
@@ -55,8 +57,8 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			
 			iterationCount++;
 			if(iterationCount % 50 == 0) {
-				Console.WriteLine(
-					$"Next shard iterator is {records.NextShardIterator} (roughly {records.MillisBehindLatest}ms behind latest).");
+				_logger.LogInformation(
+					"Next shard iterator is {NextShardIterator} (roughly {MillisBehindLatest}ms behind latest)", records.NextShardIterator, records.MillisBehindLatest);
 			}
 
 			foreach(var record in records.Records) {
@@ -76,8 +78,12 @@ public class KinesisRecordReader : IKinesisRecordReader {
 				}, cancellationToken);
 			} catch(Exception e)
 				when (e is ProvisionedThroughputExceededException || 
-				      (e is HttpErrorResponseException err && err.Message.Contains("Amazon.Kinesis.Model.ProvisionedThroughputExceededException"))) 
-			{
+				      (e is HttpErrorResponseException err && err.Message.Contains("Amazon.Kinesis.Model.ProvisionedThroughputExceededException"))) {
+
+				_logger.LogWarning("Encountering throughput limitations while reading {limit} records at a time; slowing down", limit);
+				
+				await Task.Delay(1000, cancellationToken);
+				
 				if(limit <= 1) {
 					throw new InvalidDataException(
 						$"Kinesis stream for {streamReference.StreamName}:{streamReference.ShardId} could not be read at iterator {iterator}.");
@@ -102,4 +108,5 @@ public class KinesisRecordReader : IKinesisRecordReader {
 	
 	private readonly IAmazonKinesis _kinesisClient;
 	private readonly IMetricPublisher _metricPublisher;
+	private readonly ILogger<KinesisRecordReader> _logger;
 }
