@@ -90,11 +90,6 @@ public class Function {
 
 			var itemAnalyzers = host.Services.GetServices<IItemAnalyzer>().ToArray();
 
-			foreach(var analyzer in itemAnalyzers) {
-				Console.WriteLine($"Registered analyzer {analyzer.GetType().Name}.");
-			}
-
-
 			var stashAnalyzer = new StashTabAnalyzer(itemAnalyzers); // TODO: Can this become part of services?
 			var dispatcher = host.Services.GetRequiredService<IAnalyzedStashTabDispatcher>();
 
