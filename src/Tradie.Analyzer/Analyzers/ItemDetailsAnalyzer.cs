@@ -22,7 +22,8 @@ public class ItemDetailsAnalyzer : IItemAnalyzer {
 			var influences = GetInfluences(raw);
 			var rarity = (ItemRarity)raw.FrameType.GetValueOrDefault();
 			var requirements = RequirementParser.MapRequirements(raw, true);
-			var analyzed = new ItemDetailsAnalysis(raw.Name, flags, influences, (byte?)raw.ItemLevel, rarity, requirements);
+			string iconPath = raw.IconPath;
+			var analyzed = new ItemDetailsAnalysis(raw.Name, flags, influences, (byte?)raw.ItemLevel, rarity, requirements, iconPath);
 			item.Analysis.PushAnalysis(Id, analyzed);
 		}
 
@@ -91,7 +92,8 @@ public readonly record struct ItemDetailsAnalysis(
 	[property:DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<InfluenceKind>))] InfluenceKind Influences,
 	[property:DataMember, Key(3)] byte? ItemLevel,
 	[property:DataMember, Key(4), JsonConverter(typeof(FlagsEnumJsonConverter<ItemRarity>))] ItemRarity Rarity,
-	[property:DataMember, Key(5)] Requirements? Requirements
+	[property:DataMember, Key(5)] Requirements? Requirements,
+	[property:DataMember, Key(6)] string? IconPath
 ) : IAnalyzedProperties;
 	
 /// <summary>

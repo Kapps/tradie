@@ -52,7 +52,8 @@ public class SearchService : Proto.SearchService.SearchServiceBase {
 						Str = details.Requirements?.Str ?? 0,
 						Int = details.Requirements?.Int ?? 0,
 						Level = details.Requirements?.Level ?? 0,
-					}
+					},
+					IconPath = details.IconPath ?? ""
 				}
 			});
 		}

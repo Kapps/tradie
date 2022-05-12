@@ -17,7 +17,7 @@ public class AnalyzedPropertyCollectionJsonConverterTests : TestBase {
 	[TestMethod]
 	public void TestDeserialization_FullObject() {
 		string json =
-			@"{""1"": {""ItemTypeId"": 159}, ""2"": {""Affixes"": []}, ""3"": {""X"": 0, ""Y"": 2, ""Price"": {""Kind"": ""None"", ""Amount"": 0, ""Currency"": ""None""}}, ""4"": {""Name"": """", ""Flags"": 65, ""ItemLevel"": 86, ""Influences"": """",""Rarity"":2} }";
+			@"{""1"": {""ItemTypeId"": 159}, ""2"": {""Affixes"": []}, ""3"": {""X"": 0, ""Y"": 2, ""Price"": {""Kind"": ""None"", ""Amount"": 0, ""Currency"": ""None""}}, ""4"": {""Name"": """", ""Flags"": 65, ""ItemLevel"": 86, ""Influences"": """",""Rarity"":2, ""IconPath"": ""foo""} }";
 		var props = JsonSerializer.Deserialize<AnalyzedPropertyCollection>(json, new JsonSerializerOptions() {
 			Converters = {
 				new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, false)
@@ -34,7 +34,7 @@ public class AnalyzedPropertyCollectionJsonConverterTests : TestBase {
 	public void TestSerialization_FullObject() {
 		var obj = new AnalyzedPropertyCollection();
 		obj.Add(KnownAnalyzers.ItemDetails,
-			new ItemDetailsAnalysis("foo", ItemFlags.Corrupted | ItemFlags.Fractured, InfluenceKind.None, 86, ItemRarity.Rare, null));
+			new ItemDetailsAnalysis("foo", ItemFlags.Corrupted | ItemFlags.Fractured, InfluenceKind.None, 86, ItemRarity.Rare, null, "foo"));
 
 		string json = JsonSerializer.Serialize(obj, new JsonSerializerOptions() {
 			Converters = {
@@ -43,7 +43,7 @@ public class AnalyzedPropertyCollectionJsonConverterTests : TestBase {
 		});
 
 		string expected =
-			@"{""4"":{""Name"":""foo"",""Flags"":65,""Influences"":0,""ItemLevel"":86,""Rarity"":2,""Requirements"":null}}";
+			@"{""4"":{""Name"":""foo"",""Flags"":65,""Influences"":0,""ItemLevel"":86,""Rarity"":2,""Requirements"":null,""IconPath"":""foo""}}";
 		Assert.AreEqual(expected, json);
 	}
 }

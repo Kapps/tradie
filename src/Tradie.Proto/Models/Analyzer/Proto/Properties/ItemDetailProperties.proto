@@ -11,4 +11,5 @@ message ItemDetailProperties {
   uint32 itemLevel = 4;
   string iconPath = 5;
   Requirements requirements = 6;
+  uint32 rarity = 7;
 }

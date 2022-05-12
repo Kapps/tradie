@@ -22,7 +22,8 @@ public class ItemDetailsAnalyzerTests : TestBase {
 			"Behemoth March",
 			ItemFlags.Corrupted | ItemFlags.Synthesized,
 			InfluenceKind.Crusader | InfluenceKind.Shaper,
-			67, ItemRarity.Rare, new Requirements(56, 56, 0, 60)
+			67, ItemRarity.Rare, new Requirements(56, 56, 0, 60),
+			"https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQXJtb3Vycy9Cb290cy9Cb290c1N0ckRleDIiLCJ3IjoyLCJoIjoyLCJzY2FsZSI6MX1d/d5b5430d4c/BootsStrDex2.png"
 		));
 	}
 
