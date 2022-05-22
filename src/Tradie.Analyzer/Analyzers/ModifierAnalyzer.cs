@@ -1,14 +1,9 @@
 ﻿using MessagePack;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using Tradie.Analyzer.Analyzers.Conversions;
-using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Models;
-using Tradie.Analyzer.Repos;
-using Tradie.Common;
-using Tradie.Common.RawModels;
 
-namespace Tradie.Analyzer.Analyzers; 
+namespace Tradie.Analyzer.Analyzers;
 
 /// <summary>
 /// An item analyzer that scans for affixes within items, keeping track of all available
