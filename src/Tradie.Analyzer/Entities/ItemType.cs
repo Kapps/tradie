@@ -13,7 +13,7 @@ namespace Tradie.Analyzer.Entities;
 public class ItemType {
 	public ItemType() { }
 
-
+	
 	public ItemType(int id, string? name, string? category, string[] subcategories, Requirements? requirements, string iconUrl, int width, int height) {
 		this.Id = id;
 		this.Name = name;

@@ -177,6 +177,8 @@ namespace Tradie.Common.RawModels {
 		[DataMember(Name = "implicitMods")]
 		public readonly string[]? ImplicitMods;
 		[DataMember(Name = "explicitMods")]
+		public readonly string[]? CraftedMods;
+		[DataMember(Name = "craftedMods")]
 		public readonly string[]? ExplicitMods;
 		[DataMember(Name = "fracturedMods")]
 		public readonly string[]? FracturedMods;
@@ -238,7 +240,7 @@ namespace Tradie.Common.RawModels {
 			string? secondaryDescription = null, string[]? flavourText = null,
 			string[]? flavourTextParsed = null, string[]? utilityMods = null,
 			string[]? enchantMods = null, string[]? scourgeMods = null, string[]? implicitMods = null,
-			string[]? explicitMods = null, string[]? fracturedMods = null,
+			string[]? explicitMods = null, string[]? fracturedMods = null, string[]? craftedMods = null,
 			string[]? cosmeticMods = null, string[]? veiledMods = null, string? prophecyText = null,
 			int? frameType = default, string? artFilename = null, string? inventoryId = null,
 			int? socket = default, string? colour = null, ItemProperty[]? properties = null,
@@ -286,6 +288,7 @@ namespace Tradie.Common.RawModels {
 	        this.ScourgeMods = scourgeMods;
 	        this.ImplicitMods = implicitMods;
 	        this.ExplicitMods = explicitMods;
+			this.CraftedMods = craftedMods;
 	        this.FracturedMods = fracturedMods;
 	        this.CosmeticMods = cosmeticMods;
 	        this.VeiledMods = veiledMods;

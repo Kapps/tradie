@@ -113,6 +113,9 @@
   "scourgeMods": [
     "20% increased Movement Speed"
   ],
+  "cosmeticMods": [
+    "this should be ignored"
+  ],
   "corruptedMods": [
     
   ],

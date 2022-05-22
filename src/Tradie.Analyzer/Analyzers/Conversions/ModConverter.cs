@@ -34,6 +34,7 @@ public class AnalyzingModConverter : IModConverter {
 		var affixes = MapValues(item.CosmeticMods, ModKind.Cosmetic).ConcatMany(
 			MapValues(item.EnchantMods, ModKind.Enchant),
 			MapValues(item.ExplicitMods, ModKind.Explicit),
+			MapValues(item.CraftedMods, ModKind.Crafted),
 			MapValues(item.FracturedMods, ModKind.Fractured),
 			MapValues(item.ImplicitMods, ModKind.Implicit),
 			MapValues(item.ScourgeMods, ModKind.Scourge),
@@ -64,10 +65,9 @@ public class AnalyzingModConverter : IModConverter {
 	}
 
 	public async ValueTask<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items) {
-		var modTexts = items.SelectMany(c => c.CosmeticMods.ConcatMany(
-			c.EnchantMods, c.ExplicitMods, c.FracturedMods,
-			c.ImplicitMods, c.ScourgeMods, c.UtilityMods,
-			c.VeiledMods
+		var modTexts = items.SelectMany(c => c.EnchantMods.ConcatMany(
+			c.ExplicitMods, c.FracturedMods, c.ImplicitMods,
+			c.ScourgeMods, c.UtilityMods, c.VeiledMods
 		)).Where(c=>!String.IsNullOrWhiteSpace(c));
 
 		var modifiers = modTexts.Select(c => new Modifier(
