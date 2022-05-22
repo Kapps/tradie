@@ -31,7 +31,7 @@ public class LeagueRepository : ILeagueRepository {
 			return SpanJson.JsonSerializer.Generic.Utf8.Deserialize<League[]>(cachedLeagues);
 		}
 
-		await using var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(cancellationToken);
+		var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(cancellationToken);
 		await using var comm = new NpgsqlCommand(@"
 			SELECT ""League"", COUNT(*) FROM ""StashTabs""
 			WHERE ""League"" IS NOT NULL AND ""LastModified"" > (CURRENT_TIMESTAMP - INTERVAL '70 days')

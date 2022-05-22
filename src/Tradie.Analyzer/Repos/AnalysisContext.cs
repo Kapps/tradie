@@ -26,7 +26,15 @@ public class AnalysisContext : DbContext {
 	/// </summary>
 	public DbSet<LoggedStashTab> LoggedStashTabs { get; set; } = null!;
 
+	/// <summary>
+	/// Returns all items contained within the logged stash tabs.
+	/// </summary>
 	public DbSet<LoggedItem> LoggedItems { get; set; } = null!;
+
+	/// <summary>
+	/// Returns the set of affix ranges in the context.
+	/// </summary>
+	public DbSet<AffixRange> AffixRanges { get; set; } = null!;
 
 	/// <summary>
 	/// Returns a connection string that can be used to connect to the analysis database.
@@ -63,8 +71,10 @@ public class AnalysisContext : DbContext {
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 		optionsBuilder.EnableDetailedErrors(TradieConfig.DetailedSqlErrors);
+#if DEBUG
 		//optionsBuilder.LogTo(Console.WriteLine);
-		
+#endif
+
 		optionsBuilder.UseNpgsql(CreateConnectionStringBuilder().ToString());
 		optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
 
@@ -88,6 +98,8 @@ public class AnalysisContext : DbContext {
 		modelBuilder.Entity<ItemType>()
 			.HasIndex(c => c.Subcategories)
 			.HasMethod("GIN");
+		modelBuilder.Entity<AffixRange>()
+			.HasKey(c => new { c.ModHash, c.ModCategory, c.EntityKind });
 		base.OnModelCreating(modelBuilder);
 	}
 }

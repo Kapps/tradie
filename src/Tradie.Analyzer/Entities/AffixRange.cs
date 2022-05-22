@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 using Tradie.Analyzer.Models;
 
 using KeyAttribute = MessagePack.KeyAttribute;
-using PrimaryKeyAttribute = System.ComponentModel.DataAnnotations.KeyAttribute;
 
 namespace Tradie.Analyzer.Entities;
 
@@ -33,9 +32,9 @@ public enum AffixRangeEntityKind : byte {
 [Index(nameof(AffixRange.ModHash))]
 [Index(nameof(AffixRange.ModCategory))]
 public record AffixRange(
-	[property:DataMember, Required, Key(0), PrimaryKey] ulong ModHash,
+	[property:DataMember, Required, Key(0)] ulong ModHash,
 	[property:DataMember, Key(1)] float? MinValue,
 	[property:DataMember, Key(2)] float? MaxValue,
-	[property:DataMember, Required, Key(3), PrimaryKey] AffixRangeEntityKind EntityKind,
-	[property:DataMember, Required, Key(4), PrimaryKey] ModKindCategory ModCategory
+	[property:DataMember, Required, Key(3)] AffixRangeEntityKind EntityKind,
+	[property:DataMember, Required, Key(4)] ModKindCategory ModCategory
 );
