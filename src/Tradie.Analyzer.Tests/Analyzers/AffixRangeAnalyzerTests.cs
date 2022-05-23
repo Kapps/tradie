@@ -25,12 +25,12 @@ public class AffixRangeAnalyzerTests : TestBase {
 
 		var expectedRanges = new AffixRange[] {
 			new(
-				ModifierText.CalculateValueIndependentHash("+23% to Cold Resistance"),
-				23, 46, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit
-			),
-			new(
 				ModifierText.CalculateValueIndependentHash("10% increased Movement Speed"),
 				20, 20, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("+23% to Cold Resistance"),
+				23, 46, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit
 			),
 			new(
 				ModifierText.CalculateValueIndependentHash("10% increased Movement Speed"),

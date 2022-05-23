@@ -68,6 +68,9 @@ public class ItemTest {
 			implicitMods: new[] {
 				"+17 to Dexterity and Intelligence"
 			},
+			craftedMods: new[] {
+				"+12 to Maximum Life"
+			},
 			explicitMods: new[] {
 				"+11 to all Attributes",
 				"+12% to Chaos Damage over Time Multiplier",
@@ -87,8 +90,8 @@ public class ItemTest {
 			.SkipDefault<ExtendedItemProperties>()
 			.SkipDefault<ItemPropertyValue>()
 			.Assert();*/
-		var expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expected);
-		var actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actual);
+		var expectedJson = Serializer.Serialize(expected);
+		var actualJson = Serializer.Serialize(actual);
 		Assert.AreEqual(expectedJson, actualJson);
 	}
 

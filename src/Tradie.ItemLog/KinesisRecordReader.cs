@@ -95,7 +95,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 			}	
 		};
 
-		return GetRecords(IsThrottling ? TradieConfig.ItemStreamBatchSize : 50);
+		return GetRecords(!IsThrottling ? TradieConfig.ItemStreamBatchSize : 50);
 	}
 
 	private async Task<string> GetStartingIterator(KinesisStreamReference streamReference, ItemLogOffset offset, CancellationToken cancellationToken) {

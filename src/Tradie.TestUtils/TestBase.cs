@@ -81,8 +81,9 @@ namespace Tradie.TestUtils {
 		protected virtual void InstantiateMocks() {
 			foreach(var mockField in MockFields) {
 				var ctor = mockField.FieldType.GetConstructor(new[] {typeof(MockBehavior)})!;
-				var instance = ctor.Invoke(new object[] {MockBehavior.Strict});
+				var instance = (Mock)ctor.Invoke(new object[] {MockBehavior.Strict});
 				mockField.SetValue(this, instance);
+				instance.Switches = Switches.CollectDiagnosticFileInfoForSetups;
 			}
 		}
 

@@ -176,9 +176,9 @@ namespace Tradie.Common.RawModels {
 		public readonly string[]? ScourgeMods;
 		[DataMember(Name = "implicitMods")]
 		public readonly string[]? ImplicitMods;
-		[DataMember(Name = "explicitMods")]
-		public readonly string[]? CraftedMods;
 		[DataMember(Name = "craftedMods")]
+		public readonly string[]? CraftedMods;
+		[DataMember(Name = "explicitMods")]
 		public readonly string[]? ExplicitMods;
 		[DataMember(Name = "fracturedMods")]
 		public readonly string[]? FracturedMods;
