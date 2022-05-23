@@ -47,11 +47,13 @@
     <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
     <PackageReference Include="EFCore.BulkExtensions" Version="6.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tradie.Common\Tradie.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="EFCore.BulkExtensions" />
+    <None Remove="Newtonsoft.Json" />
   </ItemGroup>
 </Project>

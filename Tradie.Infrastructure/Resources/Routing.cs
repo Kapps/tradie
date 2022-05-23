@@ -87,13 +87,13 @@ echo Ready
 				VpcId = network.Vpc.Id,
 				Route = new[] {
 					new RouteTableRoute() {
-						Ipv6CidrBlock = "",
+						//Ipv6CidrBlock = "",
 						CidrBlock = "0.0.0.0/0",
 						InstanceId = natInstance.Id,
-						EgressOnlyGatewayId = "", GatewayId = "", CarrierGatewayId = "",
+						/*EgressOnlyGatewayId = "", GatewayId = "", CarrierGatewayId = "",
 						LocalGatewayId = "", NatGatewayId = "", NetworkInterfaceId = "",
 						TransitGatewayId = "", VpcEndpointId = "", VpcPeeringConnectionId = "",
-						DestinationPrefixListId = ""
+						DestinationPrefixListId = ""*/
 					},
 					/*new RouteTableRoute() {
 						Ipv6CidrBlock = "::/0",
@@ -113,10 +113,10 @@ echo Ready
 					new RouteTableRoute() {
 						CidrBlock = "0.0.0.0/0", //network.Vpc.CidrBlock,
 						GatewayId = inetGateway.Id,
-						EgressOnlyGatewayId = "", InstanceId = "", CarrierGatewayId = "",
+						/*EgressOnlyGatewayId = "", InstanceId = "", CarrierGatewayId = "",
 						LocalGatewayId = "", NatGatewayId = "", NetworkInterfaceId = "",
 						TransitGatewayId = "", VpcEndpointId = "", VpcPeeringConnectionId = "",
-						DestinationPrefixListId = "", Ipv6CidrBlock = "",
+						DestinationPrefixListId = "", Ipv6CidrBlock = "",*/
 					},
 				},
 			});

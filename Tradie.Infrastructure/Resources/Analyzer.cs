@@ -120,7 +120,6 @@ namespace Tradie.Infrastructure.Resources {
 					TargetArn = dlq.Arn
 				},
 				ImageUri = repo.EcrImageUri,
-				Tags = new[] { repo.BuildResource.Id },
 				MemorySize = 1536,
 				PackageType = "Image",
 				Timeout = 120,

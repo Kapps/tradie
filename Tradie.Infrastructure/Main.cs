@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using Tradie.Infrastructure.Aspects;
 using Tradie.Infrastructure.Resources;
+using System.Collections.Generic;
 
 namespace Tradie.Infrastructure {
     public class MyApp : TerraformStack {
@@ -19,7 +20,9 @@ namespace Tradie.Infrastructure {
 	        new AwsProvider(this, "AWS", new AwsProviderConfig {
 				Region = config.Region,
 				DefaultTags = new AwsProviderDefaultTags() {
-					Tags = config.Environment,
+					Tags = new Dictionary<string, string>() {
+						{ "TRADIE_REGION", config.Environment }
+					},
 				}
 			});
 

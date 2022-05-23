@@ -1,6 +1,6 @@
 {
   "language": "csharp",
-  "app": "dotnet run -p Tradie.Infrastructure.csproj",
+  "app": "dotnet run --project=Tradie.Infrastructure.csproj",
   "projectId": "053022fb-11e2-4d49-a96e-b9a54b421f84",
   "terraformProviders": [
     "null@~> 3.1"
