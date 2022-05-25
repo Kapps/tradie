@@ -25,7 +25,7 @@ public class MigratePackedItemsScript : ScriptBase {
 
 		async Task SendUpdates() {
 			await using AnalysisContext newContext = new AnalysisContext();
-			await using NpgsqlConnection nextConn = await newContext.GetOpenedConnection<NpgsqlConnection>();
+			NpgsqlConnection nextConn = await newContext.GetOpenedConnection<NpgsqlConnection>();
 
 			NpgsqlCommand comm = new NpgsqlCommand(@$"
 				UPDATE ""StashTabs""

@@ -11,6 +11,7 @@ namespace Tradie.Common {
 		/// <summary>
 		/// Returns a connection being used by this DbContext.
 		/// If the connection is not currently open, it will be opened before being returned.
+		/// The returned connection must not get disposed.
 		/// </summary>
 		public static async Task<T> GetOpenedConnection<T>(this DbContext context, CancellationToken cancellationToken = default) where T : DbConnection {
 			var conn = (T)context.Database.GetDbConnection();

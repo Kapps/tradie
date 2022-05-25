@@ -1,4 +1,5 @@
 using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Tradie.Analyzer.Entities;
 using Tradie.Common;
@@ -48,7 +49,16 @@ public class AffixRangeRepository : IAffixRangeRepository {
 	private async Task UpsertIntoPrimaryTable(NpgsqlConnection connection, CancellationToken cancellationToken) {
 		await using var comm = new NpgsqlCommand($@"
 			INSERT INTO ""AffixRanges""
-				SELECT * FROM ""{TempTableName}""
+				SELECT * FROM ""{TempTableName}"" t
+				WHERE NOT EXISTS(
+					SELECT * FROM ""AffixRanges"" r
+					WHERE
+						r.""ModHash"" = t.""ModHash""
+						AND r.""EntityKind"" = t.""EntityKind""
+						AND r.""ModCategory"" = t.""ModCategory""
+						AND (r.""MinValue"" IS NOT NULL AND r.""MinValue"" > t.""MinValue"")
+						AND (r.""MaxValue"" IS NOT NULL AND r.""MaxValue"" < t.""MaxValue"")
+				)
 			ON CONFLICT(""ModHash"", ""EntityKind"", ""ModCategory"")
 			DO UPDATE SET
 				""MinValue"" = LEAST(""AffixRanges"".""MinValue"", excluded.""MinValue""),

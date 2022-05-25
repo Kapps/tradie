@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using StackExchange.Redis;
 using System.IO.Compression;
 using System.Net;
@@ -28,8 +29,8 @@ namespace Tradie.Analyzer;
 public class Function {
 	public async Task FunctionHandler(S3Event input, ILambdaContext context) {
 		try {
-			var ssmClient = new AmazonSimpleSystemsManagementClient();
-			var s3Client = new AmazonS3Client();
+			using var ssmClient = new AmazonSimpleSystemsManagementClient();
+			using var s3Client = new AmazonS3Client();
 
 			Console.WriteLine($"Starting Analyzer with build hash {Environment.GetEnvironmentVariable("BUILD_HASH")}");
 			
@@ -45,7 +46,7 @@ public class Function {
 
 			await Initializers.InitializeOnce(Initializer);
 
-			IHost host = Host.CreateDefaultBuilder()
+			using IHost host = Host.CreateDefaultBuilder()
 				.ConfigureServices(services => {
 					services.AddLogging(builder => {
 						builder.AddSimpleConsole(format => {
@@ -84,7 +85,7 @@ public class Function {
 						};
 					});
 					
-					services.AddDbContext<AnalysisContext>(ServiceLifetime.Transient);
+					services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
 				})
 				.Build();
 
@@ -99,8 +100,8 @@ public class Function {
 				Console.WriteLine($"Getting record for {record.S3.Bucket.Name}:{record.S3.Object.Key}");
 				var stashes = await GetStashTabsFromRecord(record, s3Client);
 				foreach(var stash in stashes) {
-					Console.WriteLine($"Found stash with id {stash.Id} containing {stash.Items.Length} items.");
-					var analyzedTab = await stashAnalyzer.AnalyzeTab(stash);
+					var analyzedTab = await AnalyzeStashTab(host.Services, stashAnalyzer, stash);
+
 					await dispatcher.DispatchTab(analyzedTab);
 				}
 
@@ -120,5 +121,18 @@ public class Function {
 
 		var stashes = await SpanJson.JsonSerializer.Generic.Utf8.DeserializeAsync<RawStashTab[]>(decompressedStream);
 		return stashes;
+	}
+
+	private static async Task<AnalyzedStashTab> AnalyzeStashTab(IServiceProvider services, IStashTabAnalyzer stashAnalyzer, RawStashTab stash) {
+		var dbContext = services.GetRequiredService<AnalysisContext>();
+
+		await using var tx = await dbContext.Database.BeginTransactionAsync();
+
+		Console.WriteLine($"Found stash with id {stash.Id} containing {stash.Items.Length} items.");
+		var analyzedTab = await stashAnalyzer.AnalyzeTab(stash);
+
+		await dbContext.Database.CommitTransactionAsync();
+
+		return analyzedTab;
 	}
 }

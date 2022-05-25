@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Entities;

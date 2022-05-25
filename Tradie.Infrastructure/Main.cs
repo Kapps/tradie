@@ -3,7 +3,6 @@ using System;
 using Constructs;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws;
-using Providers.Null;
 using HashiCorp.Cdktf.Providers.Random;
 using System.IO;
 using System.Net;
@@ -26,7 +25,7 @@ namespace Tradie.Infrastructure {
 				}
 			});
 
-	        new NullProvider(this, id);
+			new Providers.Null.NullProvider(this, id);
 
 	        new RandomProvider(this, "random-provider", new RandomProviderConfig() {
 

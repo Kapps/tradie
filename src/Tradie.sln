@@ -16,35 +16,35 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Common.Tests", "Trad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Scanner.Tests", "Tradie.Scanner.Tests\Tradie.Scanner.Tests.csproj", "{C7AED2BB-F811-4EC8-B38B-395A2229B2D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Analyzer", "Tradie.Analyzer\Tradie.Analyzer.csproj", "{80C320B8-19F9-481E-A83E-F1C69BCAE10F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Analyzer", "Tradie.Analyzer\Tradie.Analyzer.csproj", "{80C320B8-19F9-481E-A83E-F1C69BCAE10F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Analyzer.Tests", "Tradie.Analyzer.Tests\Tradie.Analyzer.Tests.csproj", "{90FDA44F-B11A-4ED8-893A-C5B84D1BF514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Analyzer.Tests", "Tradie.Analyzer.Tests\Tradie.Analyzer.Tests.csproj", "{90FDA44F-B11A-4ED8-893A-C5B84D1BF514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Infrastructure", "..\Tradie.Infrastructure\Tradie.Infrastructure.csproj", "{66746A27-FA3F-4556-A570-8C02F5687939}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Infrastructure", "..\Tradie.Infrastructure\Tradie.Infrastructure.csproj", "{66746A27-FA3F-4556-A570-8C02F5687939}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Infrastructure.Tests", "..\Tradie.Infrastructure.Tests\Tradie.Infrastructure.Tests.csproj", "{6D8F8241-F325-43A1-A99F-BA25919262A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Infrastructure.Tests", "..\Tradie.Infrastructure.Tests\Tradie.Infrastructure.Tests.csproj", "{6D8F8241-F325-43A1-A99F-BA25919262A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Simulator", "Tradie.Simulator\Tradie.Simulator.csproj", "{6E78A36C-4193-41F8-B8C9-D131F613A3A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Simulator", "Tradie.Simulator\Tradie.Simulator.csproj", "{6E78A36C-4193-41F8-B8C9-D131F613A3A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.ItemLogBuilder", "Tradie.ItemLogBuilder\Tradie.ItemLogBuilder.csproj", "{56F7B5CD-673E-47CB-8DA2-A0AC800A8280}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.ItemLogBuilder", "Tradie.ItemLogBuilder\Tradie.ItemLogBuilder.csproj", "{56F7B5CD-673E-47CB-8DA2-A0AC800A8280}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.ItemLogBuilder.Tests", "Tradie.ItemLogBuilder.Tests\Tradie.ItemLogBuilder.Tests.csproj", "{9E024532-AD35-4DEB-A5AF-FA7CE2312728}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.ItemLogBuilder.Tests", "Tradie.ItemLogBuilder.Tests\Tradie.ItemLogBuilder.Tests.csproj", "{9E024532-AD35-4DEB-A5AF-FA7CE2312728}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Indexer", "Tradie.Indexer\Tradie.Indexer.csproj", "{24F538FF-9FF9-46B5-B65F-3439DB948547}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Indexer", "Tradie.Indexer\Tradie.Indexer.csproj", "{24F538FF-9FF9-46B5-B65F-3439DB948547}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.ItemLog", "Tradie.ItemLog\Tradie.ItemLog.csproj", "{5073F57C-7C40-43FD-979B-EABC5BC3F16E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.ItemLog", "Tradie.ItemLog\Tradie.ItemLog.csproj", "{5073F57C-7C40-43FD-979B-EABC5BC3F16E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.ItemLog.Tests", "Tradie.ItemLog.Tests\Tradie.ItemLog.Tests.csproj", "{F02424D1-BF6E-4BFA-AFAC-292B659BBC58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.ItemLog.Tests", "Tradie.ItemLog.Tests\Tradie.ItemLog.Tests.csproj", "{F02424D1-BF6E-4BFA-AFAC-292B659BBC58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.TestUtils", "Tradie.TestUtils\Tradie.TestUtils.csproj", "{48354D5A-6E43-49AE-818F-74998ABD97EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.TestUtils", "Tradie.TestUtils\Tradie.TestUtils.csproj", "{48354D5A-6E43-49AE-818F-74998ABD97EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Providers.Null", "..\Tradie.Infrastructure\.gen\Providers.Null\Providers.Null.csproj", "{171C0550-4BB5-407F-820A-C04874760C78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Indexer.Tests", "Tradie.Indexer.Tests\Tradie.Indexer.Tests.csproj", "{AB59AF57-5BBA-4A72-8A82-54E5C5E16230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Indexer.Tests", "Tradie.Indexer.Tests\Tradie.Indexer.Tests.csproj", "{AB59AF57-5BBA-4A72-8A82-54E5C5E16230}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Web", "Tradie.Web\Tradie.Web.csproj", "{B603AF69-1DA4-4984-9B32-B38805AF80C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Web", "Tradie.Web\Tradie.Web.csproj", "{B603AF69-1DA4-4984-9B32-B38805AF80C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tradie.Web.Tests", "Tradie.Web.Tests\Tradie.Web.Tests.csproj", "{086B6B82-54C1-4E88-8A11-6E18683908F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tradie.Web.Tests", "Tradie.Web.Tests\Tradie.Web.Tests.csproj", "{086B6B82-54C1-4E88-8A11-6E18683908F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Providers.Null", "..\Tradie.Infrastructure\.gen\Providers.Null\Providers.Null.csproj", "{4F579658-09F6-408D-98D2-408FDAB6E5A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -174,14 +174,6 @@ Global
 		{48354D5A-6E43-49AE-818F-74998ABD97EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48354D5A-6E43-49AE-818F-74998ABD97EF}.Release|x64.ActiveCfg = Release|Any CPU
 		{48354D5A-6E43-49AE-818F-74998ABD97EF}.Release|x64.Build.0 = Release|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Debug|x64.Build.0 = Debug|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Release|x64.ActiveCfg = Release|Any CPU
-		{171C0550-4BB5-407F-820A-C04874760C78}.Release|x64.Build.0 = Release|Any CPU
 		{AB59AF57-5BBA-4A72-8A82-54E5C5E16230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB59AF57-5BBA-4A72-8A82-54E5C5E16230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB59AF57-5BBA-4A72-8A82-54E5C5E16230}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -206,6 +198,14 @@ Global
 		{086B6B82-54C1-4E88-8A11-6E18683908F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{086B6B82-54C1-4E88-8A11-6E18683908F1}.Release|x64.ActiveCfg = Release|Any CPU
 		{086B6B82-54C1-4E88-8A11-6E18683908F1}.Release|x64.Build.0 = Release|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Debug|x64.Build.0 = Debug|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{4F579658-09F6-408D-98D2-408FDAB6E5A5}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

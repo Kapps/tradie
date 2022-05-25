@@ -119,13 +119,13 @@ namespace Tradie.Infrastructure.Resources {
 				DeadLetterConfig = new LambdaFunctionDeadLetterConfig() {
 					TargetArn = dlq.Arn
 				},
+				ReservedConcurrentExecutions = 5,
 				ImageUri = repo.EcrImageUri,
 				MemorySize = 1536,
 				PackageType = "Image",
 				Timeout = 120,
-				DependsOn = new[] { repo.BuildResource }
+				DependsOn = new[] { repo.BuildResource },
 			});
-			
 
 			var triggerPerm = new LambdaPermission(stack, "analyzer-s3-perm", new LambdaPermissionConfig() {
 				Action = "lambda:InvokeFunction",

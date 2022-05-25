@@ -54,7 +54,7 @@ public class AnalysisContext : DbContext {
 			CommandTimeout = 120,
 			InternalCommandTimeout = 120,
 			MaxAutoPrepare = 60,
-			MaxPoolSize = 5,
+			MaxPoolSize = 10,
 			IncludeErrorDetail = true,
 			Enlist = true,
 			TcpKeepAlive = true,

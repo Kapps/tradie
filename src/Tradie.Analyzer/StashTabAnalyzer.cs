@@ -30,7 +30,10 @@ public class StashTabAnalyzer : IStashTabAnalyzer {
 		
 		var items = tab.Items!.Select(c => new AnalyzedItem(c)).ToArray();
 		
-		await Parallel.ForEachAsync(this._analyzers, (c, token) => c.AnalyzeItems(items));
+		//await Parallel.ForEachAsync(this._analyzers, (c, token) => c.AnalyzeItems(items));
+		foreach(var analyzer in this._analyzers) {
+			await analyzer.AnalyzeItems(items);
+		}
 
 		return new AnalyzedStashTab(tab.Id, tab.Name, tab.LastCharacterName,
 			tab.AccountName, tab.League, tab.Type, items.Select(c=>c.Analysis).ToArray());

@@ -82,7 +82,8 @@ namespace Tradie.Infrastructure.Resources {
 				DependsOn = new ITerraformDependable[] { auth },
 			});
 			this.BuildResource.AddOverride("provisioner.local-exec.command",
-				$"docker logout && docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
+				""
+				//$"docker logout \"{auth.ProxyEndpoint}\" && docker login -u \"{auth.UserName}\" -p \"{auth.Password}\" \"{auth.ProxyEndpoint}\" && "
 				+ $"docker buildx build -f \"{resourceConfig.BaseDirectory}/{projectFolder}/Dockerfile\" -t \"{this.HashTag}\" -t \"{this.LatestTag}\" \"{_cachedSolutionAsset.Path}\" --platform {this.Platform} && " 
 				+ $"docker push \"{this.LatestTag}\"");
 
