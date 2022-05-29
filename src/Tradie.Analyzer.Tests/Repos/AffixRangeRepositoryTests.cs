@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Models;
 using Tradie.Analyzer.Repos;
@@ -18,6 +20,9 @@ namespace Tradie.Analyzer.Tests.Repos;
 public class AffixRangeRepositoryTests : TestBase {
 	protected override void Initialize() {
 		this._repo = new AffixRangeRepository(this._context);
+
+		this._context.AffixRanges.RemoveRange(this._context.AffixRanges.ToArray());
+		this._context.SaveChanges();
 	}
 
 	[TestMethod]
@@ -56,6 +61,29 @@ public class AffixRangeRepositoryTests : TestBase {
 
 		var inserted = await _context.AffixRanges.ToArrayAsync();
 		inserted.ShouldDeepEqual(ranges);
+	}
+
+	[TestMethod]
+	public async Task TestDeadlock() {
+		this.DisposeContexts();
+
+		const int NumTasks = 100;
+		var tasks = new List<Task>();
+		var rng = new Random();
+		for(int i = 0; i < NumTasks; i++) {
+			tasks.Add(Task.Run(async () => {
+				var ranges = Enumerable.Range(1, 100)
+					.Select(c => new AffixRange((ulong)rng.Next(0, 50), rng.Next(0, 10), rng.Next(0, 10), AffixRangeEntityKind.Modifier, ModKindCategory.Implicit))
+					.DistinctBy(c => c.ModHash);
+				await using var context = new AnalysisContext();
+				await using var conn = await context.Database.BeginTransactionAsync();
+				await using var repo = new AffixRangeRepository(context);
+				await repo.UpsertRanges(ranges, CancellationToken.None);
+				await conn.RollbackAsync();
+			}));
+		}
+
+		await Task.WhenAll(tasks);
 	}
 
 	private AnalysisContext _context = null!;

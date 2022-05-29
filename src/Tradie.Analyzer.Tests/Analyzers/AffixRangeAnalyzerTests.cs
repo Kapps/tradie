@@ -21,7 +21,7 @@ public class AffixRangeAnalyzerTests : TestBase {
 
 	[TestMethod]
 	public async Task TestAnalyze() {
-		var items = await Task.WhenAll(new[] {"2mod"}.Select(ItemUtils.ReadTestItem));
+		var items = await Task.WhenAll(new[] { "rangetest" }.Select(ItemUtils.ReadTestItem));
 
 		var expectedRanges = new AffixRange[] {
 			new(
@@ -35,7 +35,12 @@ public class AffixRangeAnalyzerTests : TestBase {
 			new(
 				ModifierText.CalculateValueIndependentHash("10% increased Movement Speed"),
 				10, 10, AffixRangeEntityKind.Modifier, ModKindCategory.Enchant
-			)
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("Immune to Freeze"),
+				null, null, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit
+			),
+
 		};
 
 		this._repo.Setup(c => c.UpsertRanges(expectedRanges.DeepMatcher<IEnumerable<AffixRange>>(), CancellationToken.None))

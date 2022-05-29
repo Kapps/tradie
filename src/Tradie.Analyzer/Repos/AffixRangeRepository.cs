@@ -56,9 +56,10 @@ public class AffixRangeRepository : IAffixRangeRepository {
 						r.""ModHash"" = t.""ModHash""
 						AND r.""EntityKind"" = t.""EntityKind""
 						AND r.""ModCategory"" = t.""ModCategory""
-						AND (r.""MinValue"" IS NOT NULL AND r.""MinValue"" > t.""MinValue"")
-						AND (r.""MaxValue"" IS NOT NULL AND r.""MaxValue"" < t.""MaxValue"")
+						AND (r.""MinValue"" IS NOT NULL AND r.""MinValue"" <= t.""MinValue"")
+						AND (r.""MaxValue"" IS NOT NULL AND r.""MaxValue"" >= t.""MaxValue"")
 				)
+				ORDER BY t.""ModHash"", t.""EntityKind"", t.""ModCategory""
 			ON CONFLICT(""ModHash"", ""EntityKind"", ""ModCategory"")
 			DO UPDATE SET
 				""MinValue"" = LEAST(""AffixRanges"".""MinValue"", excluded.""MinValue""),

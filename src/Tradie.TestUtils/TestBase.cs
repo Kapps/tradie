@@ -31,7 +31,7 @@ namespace Tradie.TestUtils {
 			this.InstantiateMocks();
 			this.Initialize();
 		}
-		
+
 		[TestCleanup]
 		public void BaseCleaner() {
 			this.Cleanup();
@@ -45,7 +45,7 @@ namespace Tradie.TestUtils {
 		/// A method to override to implement additional initialization after mocks and other resources are.
 		/// </summary>
 		protected virtual void Initialize() { }
-		
+
 		/// <summary>
 		/// A method to override to implement additional cleanup before mocks and other resources are.
 		/// </summary>
@@ -54,11 +54,14 @@ namespace Tradie.TestUtils {
 		protected virtual void DisposeContexts() {
 			foreach(var contextField in ContextFields) {
 				var instance = (DbContext)contextField.GetValue(this)!;
-				instance.Dispose();
+				if(instance != null)
+					instance.Dispose();
 			}
-			
-			Transaction.Current!.Rollback();
-			this.TransactionScope.Dispose();
+
+			if(Transaction.Current != null)
+				Transaction.Current!.Rollback();
+			if(this.TransactionScope != null)
+				this.TransactionScope.Dispose();
 		}
 
 		protected virtual void AssertMocks() {
@@ -77,11 +80,11 @@ namespace Tradie.TestUtils {
 				instance.Database.AutoTransactionsEnabled = false;
 			}
 		}
-		
+
 		protected virtual void InstantiateMocks() {
 			foreach(var mockField in MockFields) {
-				var ctor = mockField.FieldType.GetConstructor(new[] {typeof(MockBehavior)})!;
-				var instance = (Mock)ctor.Invoke(new object[] {MockBehavior.Strict});
+				var ctor = mockField.FieldType.GetConstructor(new[] { typeof(MockBehavior) })!;
+				var instance = (Mock)ctor.Invoke(new object[] { MockBehavior.Strict });
 				mockField.SetValue(this, instance);
 				instance.Switches = Switches.CollectDiagnosticFileInfoForSetups;
 			}
@@ -89,13 +92,13 @@ namespace Tradie.TestUtils {
 
 		private IEnumerable<FieldInfo> MockFields => this.GetType()
 			.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy |
-			           BindingFlags.Instance)
+					   BindingFlags.Instance)
 			.Where(c => c.FieldType.IsGenericType && c.FieldType.GetGenericTypeDefinition() == typeof(Mock<>))
 			.ToArray();
 
 		private IEnumerable<FieldInfo> ContextFields => this.GetType()
 			.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy |
-			           BindingFlags.Instance)
+					   BindingFlags.Instance)
 			.Where(c => c.FieldType == typeof(AnalysisContext))
 			.ToArray();
 

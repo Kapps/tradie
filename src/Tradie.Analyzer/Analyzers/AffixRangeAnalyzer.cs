@@ -31,7 +31,7 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 		return affixes.GroupBy(c => c.Hash).Select(c => c.Aggregate(
 			new AffixRange(c.Key, null, null, AffixRangeEntityKind.Modifier, kind.GetCategory()),
 			(a, b) => a with {
-				MinValue = Math.Min(a.MinValue ?? float.MaxValue, (float)b.Scalar), 
+				MinValue = Math.Min(a.MinValue ?? float.MaxValue, (float)b.Scalar),
 				MaxValue = Math.Max(a.MaxValue ?? float.MinValue, (float)b.Scalar)
 			})
 		);
