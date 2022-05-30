@@ -82,7 +82,8 @@ proto.ItemDetailProperties.toObject = function(includeInstance, msg) {
     influences: jspb.Message.getFieldWithDefault(msg, 3, 0),
     itemlevel: jspb.Message.getFieldWithDefault(msg, 4, 0),
     iconpath: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    requirements: (f = msg.getRequirements()) && Models_Analyzer_Proto_Requirements_pb.Requirements.toObject(includeInstance, f)
+    requirements: (f = msg.getRequirements()) && Models_Analyzer_Proto_Requirements_pb.Requirements.toObject(includeInstance, f),
+    rarity: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -143,6 +144,10 @@ proto.ItemDetailProperties.deserializeBinaryFromReader = function(msg, reader) {
       var value = new Models_Analyzer_Proto_Requirements_pb.Requirements;
       reader.readMessage(value,Models_Analyzer_Proto_Requirements_pb.Requirements.deserializeBinaryFromReader);
       msg.setRequirements(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setRarity(value);
       break;
     default:
       reader.skipField();
@@ -214,6 +219,13 @@ proto.ItemDetailProperties.serializeBinaryToWriter = function(message, writer) {
       6,
       f,
       Models_Analyzer_Proto_Requirements_pb.Requirements.serializeBinaryToWriter
+    );
+  }
+  f = message.getRarity();
+  if (f !== 0) {
+    writer.writeUint32(
+      7,
+      f
     );
   }
 };
@@ -343,6 +355,24 @@ proto.ItemDetailProperties.prototype.clearRequirements = function() {
  */
 proto.ItemDetailProperties.prototype.hasRequirements = function() {
   return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional uint32 rarity = 7;
+ * @return {number}
+ */
+proto.ItemDetailProperties.prototype.getRarity = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ItemDetailProperties} returns this
+ */
+proto.ItemDetailProperties.prototype.setRarity = function(value) {
+  return jspb.Message.setProto3IntField(this, 7, value);
 };
 
 

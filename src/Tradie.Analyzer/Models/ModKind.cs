@@ -48,6 +48,7 @@ public static class ModKindExtensions {
 			case ModKind.Fractured:
 			case ModKind.Veiled:
 			case ModKind.Crafted:
+			case ModKind.Unknown:
 				return ModKindCategory.Explicit;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(kind));

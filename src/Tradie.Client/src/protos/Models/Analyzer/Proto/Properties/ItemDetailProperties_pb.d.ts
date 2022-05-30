@@ -24,6 +24,9 @@ export class ItemDetailProperties extends jspb.Message {
   hasRequirements(): boolean;
   clearRequirements(): ItemDetailProperties;
 
+  getRarity(): number;
+  setRarity(value: number): ItemDetailProperties;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ItemDetailProperties.AsObject;
   static toObject(includeInstance: boolean, msg: ItemDetailProperties): ItemDetailProperties.AsObject;
@@ -40,6 +43,7 @@ export namespace ItemDetailProperties {
     itemlevel: number,
     iconpath: string,
     requirements?: Models_Analyzer_Proto_Requirements_pb.Requirements.AsObject,
+    rarity: number,
   }
 }
 

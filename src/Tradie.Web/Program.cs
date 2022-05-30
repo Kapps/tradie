@@ -32,7 +32,7 @@ builder.Services.AddGrpc(options => {
 	//options.ResponseCompressionAlgorithm = "gzip";
 	options.ResponseCompressionAlgorithm = "br";
 	options.ResponseCompressionLevel = CompressionLevel.Optimal;
-	
+
 });
 
 builder.Services.AddStackExchangeRedisCache(options => {
@@ -47,11 +47,11 @@ builder.Services.AddStackExchangeRedisCache(options => {
 			new DnsEndPoint(TradieConfig.RedisHost, 6379)
 		}
 	};
-});	
+});
 
 builder.Services.AddScoped<IModifierRepository, ModifierDbRepository>()
 	.AddScoped<ILeagueRepository, LeagueRepository>()
-	.AddScoped<IItemTypeRepository, ItemTypeDbRepository>();	
+	.AddScoped<IItemTypeRepository, ItemTypeDbRepository>();
 
 builder.Services.AddDbContext<AnalysisContext>(ServiceLifetime.Transient);
 
@@ -90,6 +90,7 @@ app.MapGrpcService<LeagueService>().RequireCors("AllowAll");
 app.MapGrpcService<CriteriaService>().RequireCors("AllowAll");
 app.MapGrpcService<SearchService>().RequireCors("AllowAll");
 app.MapGrpcService<ItemTypeService>().RequireCors("AllowAll");
+app.MapGrpcService<AffixRangeService>().RequireCors("AllowAll");
 
 //app.UseResponseCompression();
 

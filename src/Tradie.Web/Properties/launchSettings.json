@@ -1,9 +1,7 @@
-﻿{
+{
   "profiles": {
     "Tradie.Web": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
       "applicationUrl": "http://localhost:5181",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

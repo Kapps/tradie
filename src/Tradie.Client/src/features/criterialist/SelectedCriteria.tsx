@@ -14,6 +14,10 @@ import { MouseEventHandler, useRef } from 'react';
 import { useState } from 'react';
 import { ImCross } from 'react-icons/im';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { AffixRangeEntityKind, ModKindCategory } from '../affixRanges/affixRange';
+import { selectAffixRange } from '../affixRanges/affixRangesSlice';
+import { CriteriaKind } from '../criteria/criteria';
+import { selectCriteria } from '../criteria/criteriaSlice';
 
 import styles from './CriteriaList.module.css';
 import { clearCriteriaValues, CriteriaValue, selectCriteriaValue, updateCriteriaValue } from './criteriaValueSlice';
@@ -33,6 +37,16 @@ const getRangeDescription = (text: string, minValue?: number, maxValue?: number)
   }
   return '#';
 };
+
+const getMinMax = (criteriaId: string) => {
+  const criteria = useAppSelector(selectCriteria(criteriaId))!;
+  if (criteria.kind === CriteriaKind.MODIFIER) {
+    const range = useAppSelector(selectAffixRange(criteria.modifierHash!, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit));
+    return range ? [range?.minValue, range?.maxValue] : null;
+  }
+  return null;
+};
+
 
 export const substituteValuesInText = (text: string, min?: number, max?: number) => {
   const numValues = text.split('').filter((c) => c === '#').length;
@@ -82,8 +96,9 @@ export function SelectedCriteria({
   kindLabel,
   ...others
 }: MultiSelectValueProps & { value: string; allowPopover: boolean; criteriaId: string; kindLabel: string }) {
-  const criteria = useAppSelector(selectCriteriaValue(criteriaId))!;
-  const [val, setVal] = useState<[number, number]>([criteria.minValue ?? -Infinity, criteria.maxValue ?? Infinity]);
+  const criteriaValue = useAppSelector(selectCriteriaValue(criteriaId))!;
+  const [min, max] = getMinMax(criteriaId) ?? [0, 0];
+  const [val, setVal] = useState<[number, number]>([criteriaValue.minValue ?? min ?? -Infinity, criteriaValue.maxValue ?? max ?? Infinity]);
   const [opened, setOpened] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -105,12 +120,12 @@ export function SelectedCriteria({
   };
 
   const onClose = () => {
-    const [min, max] = val;
+    const [minVal, maxVal] = val;
     dispatch(
       updateCriteriaValue({
-        ...criteria,
-        minValue: min === -Infinity ? undefined : min,
-        maxValue: max === Infinity ? undefined : max,
+        ...criteriaValue,
+        minValue: minVal === min ? undefined : minVal,
+        maxValue: maxVal === max ? undefined : maxVal,
       }),
     );
     setOpened(false);
@@ -157,7 +172,7 @@ export function SelectedCriteria({
               </ActionIcon>
             }
           >
-            {substituteValuesInText(label, criteria.minValue, criteria.maxValue)}
+            {substituteValuesInText(label, criteriaValue.minValue, criteriaValue.maxValue)}
           </Badge>
         }
         width={400}
@@ -170,6 +185,8 @@ export function SelectedCriteria({
           </Text>
           <Space h={20} />
           <RangeSlider
+            min={min}
+            max={max}
             //onBlur={onClose}
             //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
             value={val}

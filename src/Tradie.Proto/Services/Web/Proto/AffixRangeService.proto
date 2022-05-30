@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "Models/Analyzer/Proto/AffixRange.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service AffixRangeService {
+  rpc ListAffixRanges(ListAffixRangesRequest) returns(ListAffixRangesResponse);
+}
+
+message ListAffixRangesRequest {
+
+}
+
+message ListAffixRangesResponse {
+  repeated AffixRange affixRanges = 1;
+}

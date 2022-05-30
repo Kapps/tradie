@@ -33,6 +33,7 @@ import { loadActiveLeagues } from './features/leagues/leaguesSlice';
 import { loadItemTypes } from './features/itemTypes/itemTypesSlice';
 import { NotificationsProvider } from '@mantine/notifications';
 import { loadModifiers } from './features/modifiers/modifiersSlice';
+import { loadAffixRanges } from './features/affixRanges/affixRangesSlice';
 
 const lightTheme: MantineThemeOverride = {
   colorScheme: 'light',
@@ -67,6 +68,7 @@ function App() {
     dispatch(loadActiveLeagues());
     dispatch(loadItemTypes());
     dispatch(loadModifiers());
+    dispatch(loadAffixRanges());
   }, []);
   return (
     <MantineProvider theme={theme} withCSSVariables>

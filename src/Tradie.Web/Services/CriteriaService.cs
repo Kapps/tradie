@@ -21,7 +21,7 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 	public override async Task<ListCriteriaResponse> ListCriteria(ListCriteriaRequest request, ServerCallContext context) {
 		var res = new ListCriteriaResponse();
 		IEnumerable<Criteria> criteria;
-		if(await this._cache.GetAsync(this.CacheKey) is var cacheBytes && cacheBytes is not null) {
+		if(false && await this._cache.GetAsync(this.CacheKey) is var cacheBytes && cacheBytes is not null) {
 			criteria = JsonSerializer.Generic.Utf8.Deserialize<IEnumerable<Criteria>>(cacheBytes);
 		} else {
 			criteria = await GenerateCriteria(context.CancellationToken);

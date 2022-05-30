@@ -24,13 +24,15 @@ namespace Tradie.Analyzer.Proto {
     static AffixRangeReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CiZNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vQWZmaXhSYW5nZS5wcm90byIaCgpB",
-            "ZmZpeFJhbmdlEgwKBGhhc2gYASABKANCGKoCFVRyYWRpZS5BbmFseXplci5Q",
-            "cm90b2IGcHJvdG8z"));
+            "CiZNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vQWZmaXhSYW5nZS5wcm90byJuCgpB",
+            "ZmZpeFJhbmdlEhMKB21vZEhhc2gYASABKANCAjABEhAKCG1pblZhbHVlGAIg",
+            "ASgCEhAKCG1heFZhbHVlGAMgASgCEhIKCmVudGl0eUtpbmQYBCABKAUSEwoL",
+            "bW9kQ2F0ZWdvcnkYBSABKAVCGKoCFVRyYWRpZS5BbmFseXplci5Qcm90b2IG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.AffixRange), global::Tradie.Analyzer.Proto.AffixRange.Parser, new[]{ "Hash" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.AffixRange), global::Tradie.Analyzer.Proto.AffixRange.Parser, new[]{ "ModHash", "MinValue", "MaxValue", "EntityKind", "ModCategory" }, null, null, null, null)
           }));
     }
     #endregion
@@ -71,7 +73,11 @@ namespace Tradie.Analyzer.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public AffixRange(AffixRange other) : this() {
-      hash_ = other.hash_;
+      modHash_ = other.modHash_;
+      minValue_ = other.minValue_;
+      maxValue_ = other.maxValue_;
+      entityKind_ = other.entityKind_;
+      modCategory_ = other.modCategory_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -81,15 +87,63 @@ namespace Tradie.Analyzer.Proto {
       return new AffixRange(this);
     }
 
-    /// <summary>Field number for the "hash" field.</summary>
-    public const int HashFieldNumber = 1;
-    private long hash_;
+    /// <summary>Field number for the "modHash" field.</summary>
+    public const int ModHashFieldNumber = 1;
+    private long modHash_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public long Hash {
-      get { return hash_; }
+    public long ModHash {
+      get { return modHash_; }
       set {
-        hash_ = value;
+        modHash_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "minValue" field.</summary>
+    public const int MinValueFieldNumber = 2;
+    private float minValue_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float MinValue {
+      get { return minValue_; }
+      set {
+        minValue_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maxValue" field.</summary>
+    public const int MaxValueFieldNumber = 3;
+    private float maxValue_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float MaxValue {
+      get { return maxValue_; }
+      set {
+        maxValue_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "entityKind" field.</summary>
+    public const int EntityKindFieldNumber = 4;
+    private int entityKind_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int EntityKind {
+      get { return entityKind_; }
+      set {
+        entityKind_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "modCategory" field.</summary>
+    public const int ModCategoryFieldNumber = 5;
+    private int modCategory_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int ModCategory {
+      get { return modCategory_; }
+      set {
+        modCategory_ = value;
       }
     }
 
@@ -108,7 +162,11 @@ namespace Tradie.Analyzer.Proto {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Hash != other.Hash) return false;
+      if (ModHash != other.ModHash) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinValue, other.MinValue)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxValue, other.MaxValue)) return false;
+      if (EntityKind != other.EntityKind) return false;
+      if (ModCategory != other.ModCategory) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -116,7 +174,11 @@ namespace Tradie.Analyzer.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Hash != 0L) hash ^= Hash.GetHashCode();
+      if (ModHash != 0L) hash ^= ModHash.GetHashCode();
+      if (MinValue != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinValue);
+      if (MaxValue != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxValue);
+      if (EntityKind != 0) hash ^= EntityKind.GetHashCode();
+      if (ModCategory != 0) hash ^= ModCategory.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -135,9 +197,25 @@ namespace Tradie.Analyzer.Proto {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Hash != 0L) {
+      if (ModHash != 0L) {
         output.WriteRawTag(8);
-        output.WriteInt64(Hash);
+        output.WriteInt64(ModHash);
+      }
+      if (MinValue != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(MinValue);
+      }
+      if (MaxValue != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(MaxValue);
+      }
+      if (EntityKind != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(EntityKind);
+      }
+      if (ModCategory != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(ModCategory);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -149,9 +227,25 @@ namespace Tradie.Analyzer.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Hash != 0L) {
+      if (ModHash != 0L) {
         output.WriteRawTag(8);
-        output.WriteInt64(Hash);
+        output.WriteInt64(ModHash);
+      }
+      if (MinValue != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(MinValue);
+      }
+      if (MaxValue != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(MaxValue);
+      }
+      if (EntityKind != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(EntityKind);
+      }
+      if (ModCategory != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(ModCategory);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -163,8 +257,20 @@ namespace Tradie.Analyzer.Proto {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Hash != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Hash);
+      if (ModHash != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ModHash);
+      }
+      if (MinValue != 0F) {
+        size += 1 + 4;
+      }
+      if (MaxValue != 0F) {
+        size += 1 + 4;
+      }
+      if (EntityKind != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(EntityKind);
+      }
+      if (ModCategory != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ModCategory);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -178,8 +284,20 @@ namespace Tradie.Analyzer.Proto {
       if (other == null) {
         return;
       }
-      if (other.Hash != 0L) {
-        Hash = other.Hash;
+      if (other.ModHash != 0L) {
+        ModHash = other.ModHash;
+      }
+      if (other.MinValue != 0F) {
+        MinValue = other.MinValue;
+      }
+      if (other.MaxValue != 0F) {
+        MaxValue = other.MaxValue;
+      }
+      if (other.EntityKind != 0) {
+        EntityKind = other.EntityKind;
+      }
+      if (other.ModCategory != 0) {
+        ModCategory = other.ModCategory;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -197,7 +315,23 @@ namespace Tradie.Analyzer.Proto {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Hash = input.ReadInt64();
+            ModHash = input.ReadInt64();
+            break;
+          }
+          case 21: {
+            MinValue = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            MaxValue = input.ReadFloat();
+            break;
+          }
+          case 32: {
+            EntityKind = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            ModCategory = input.ReadInt32();
             break;
           }
         }
@@ -216,7 +350,23 @@ namespace Tradie.Analyzer.Proto {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            Hash = input.ReadInt64();
+            ModHash = input.ReadInt64();
+            break;
+          }
+          case 21: {
+            MinValue = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            MaxValue = input.ReadFloat();
+            break;
+          }
+          case 32: {
+            EntityKind = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            ModCategory = input.ReadInt32();
             break;
           }
         }

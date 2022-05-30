@@ -11,7 +11,7 @@ public class ItemTypeService : Proto.ItemTypeService.ItemTypeServiceBase {
 	public ItemTypeService(AnalysisContext context) {
 		this._context = context;
 	}
-	
+
 	public override async Task<ListItemTypesResponse> ListItemTypes(ListItemTypesRequest request, ServerCallContext context) {
 		var itemTypes = await this._context.ItemTypes.ToArrayAsync();
 		return new ListItemTypesResponse() {
@@ -33,11 +33,11 @@ public class ItemTypeService : Proto.ItemTypeService.ItemTypeServiceBase {
 					Subcategories = {
 						c.Subcategories
 					},
-					IconUrl = c.IconUrl
+					IconUrl = c.IconUrl ?? "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxSYXJlIiwic2NhbGUiOjF9XQ/46a2347805/CurrencyRerollRare.png"
 				})
 			}
 		};
 	}
-	
+
 	private readonly AnalysisContext _context;
 }
