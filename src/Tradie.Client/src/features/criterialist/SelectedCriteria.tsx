@@ -30,10 +30,10 @@ const getRangeDescription = (text: string, minValue?: number, maxValue?: number)
     return `${minValue}-${maxValue}`;
   }
   if (minValue && !maxValue) {
-    return `>${minValue}`;
+    return `>=${minValue}`;
   }
   if (!minValue && maxValue) {
-    return `<${maxValue}`;
+    return `<=${maxValue}`;
   }
   return '#';
 };
@@ -187,6 +187,7 @@ export function SelectedCriteria({
           <RangeSlider
             min={min}
             max={max}
+            minRange={0}
             //onBlur={onClose}
             //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
             value={val}

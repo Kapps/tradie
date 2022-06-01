@@ -24,10 +24,10 @@ public class ScannerWorker : BackgroundService {
 
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
 		this._logger.LogInformation("Starting scan with build hash {BuildHash}",
-			System.Environment.GetEnvironmentVariable("BUILD_HASH"));
+			Environment.GetEnvironmentVariable("BUILD_HASH"));
 		this._logger.LogDebug("Cancellation token is {StoppingToken}", stoppingToken);
 			
-		var stashParam = await _paramStore.GetParameter(ParamNextChangeId, "1295601985-1301161226-1256819523-1404257053-1350867496");
+		var stashParam = await _paramStore.GetParameter(ParamNextChangeId, "1540888454-1545014155-1493613294-1659867775-1605131623");
 		string nextChangeId = stashParam.Value ?? throw new ArgumentNullException();
 
 		while(!stoppingToken.IsCancellationRequested) {
