@@ -105,9 +105,6 @@ app.MapGet("/",
 	() =>
 		"Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
-// Intentionally wait a second before running, to prevent spamming the API on a crash.
-await Task.Delay(1000);
-
 app.Run();
 
 

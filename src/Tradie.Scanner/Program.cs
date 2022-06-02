@@ -36,6 +36,10 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 
 Console.WriteLine("About to run at {0}", DateTime.Now);
+
+// Intentionally wait a second before running, to prevent spamming the API on a crash.
+await Task.Delay(1000);
+
 try {
 	await host.RunAsync();
 } catch(Exception ex) {

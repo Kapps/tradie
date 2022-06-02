@@ -10,8 +10,8 @@ namespace Tradie.Infrastructure;
 public class StackBase : TerraformStack {
 	public StackBase(Construct scope, string id, ResourceConfig config) : base(scope, id) {
 		new S3Backend(this, new S3BackendProps() {
-			Bucket = "tradie-terraform-remote-backend",
-			Region = "us-east-1",
+			Bucket = "tradie-res-tf-state",
+			Region = "ca-central-1",
 			Key = $"cdktf-remote-{this.GetType().Name}",
 		});
 		
