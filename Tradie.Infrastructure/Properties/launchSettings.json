@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Tradie.Infrastructure": {
+      "commandName": "Project",
+      "workingDirectory": "../../../",
+      "commandLineArgs": "foundation",
+      "environmentVariables": {
+        "TRADIE_ENV": "dev",
+        "AWS_PROFILE": "resolver",
+        "AWS_DEFAULT_PROFILE": "resolver"
+      }
+    }
+  }
+}

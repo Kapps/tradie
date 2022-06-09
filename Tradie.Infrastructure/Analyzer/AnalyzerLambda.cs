@@ -1,5 +1,6 @@
 ﻿using Constructs;
 using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Aws.Ecr;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
 using HashiCorp.Cdktf.Providers.Aws.Lambdafunction;
 using HashiCorp.Cdktf.Providers.Aws.S3;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Tradie.Infrastructure.Foundation;
+using Tradie.Infrastructure.Packaging;
 using Tradie.Infrastructure.Resources;
 using Tradie.Infrastructure.Scanner;
 
@@ -23,8 +25,13 @@ public class AnalyzerLambda {
 		Permissions permissions,
 		ScannerService scanner,
 		Network network,
-		ItemStream itemStream
+		ItemStream itemStream,
+		PackagedBuild packagedBuild
 	) {
+
+		var build = packagedBuild.GetPublishedPackage()
+			.GetAwaiter().GetResult();
+		
 		this.AnalyzedItemBucket = new S3Bucket(stack, "analyzed-changesets-bucket", new S3BucketConfig() {
 			Bucket = "analyzed-changesets",
 			ForceDestroy = true,
@@ -103,10 +110,8 @@ public class AnalyzerLambda {
 			RetentionInDays = 14,
 		});*/
 
-		var repo = new EcrProjectRepository(stack, "analyzer", "Tradie.Analyzer", resourceConfig);
-
 		var lambda = new LambdaFunction(stack, "analyzer-lambda", new LambdaFunctionConfig() {
-			Architectures = new[] {"arm64"},
+			Architectures = new[] {"x86_64"},
 			VpcConfig = new LambdaFunctionVpcConfig() {
 				SubnetIds = new[] {network.PrivateSubnets[0].Id},
 				SecurityGroupIds = new[] {network.InternalTrafficOnlySecurityGroup.Id},
@@ -117,18 +122,18 @@ public class AnalyzerLambda {
 				Variables = new Dictionary<string, string>() {
 					{"TRADIE_ENV", resourceConfig.Environment},
 					{"DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false"},
-					{"BUILD_HASH", repo.HashTag}
+					{"BUILD_HASH", build.ImageId.ImageTag}
 				},
 			},
 			DeadLetterConfig = new LambdaFunctionDeadLetterConfig() {
 				TargetArn = dlq.Arn
 			},
 			ReservedConcurrentExecutions = 5,
-			ImageUri = repo.EcrImageUri,
+			ImageUri = build.TaggedImageUri,
 			MemorySize = 1536,
 			PackageType = "Image",
 			Timeout = 120,
-			DependsOn = new[] {repo.BuildResource},
+			//DependsOn = new[] {repo.BuildResource},
 		});
 
 		var triggerPerm = new LambdaPermission(stack, "analyzer-s3-perm", new LambdaPermissionConfig() {

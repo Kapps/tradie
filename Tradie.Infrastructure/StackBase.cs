@@ -26,7 +26,7 @@ public class StackBase : TerraformStack {
 			}
 		});
 
-		new Providers.Null.NullProvider(this, id);
+		//new Providers.Null.NullProvider(this, id);
 
 		new RandomProvider(this, "random-provider", new RandomProviderConfig() {
 

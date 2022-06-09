@@ -22,5 +22,9 @@ namespace Tradie.Infrastructure {
 		/// IP Address of the machine running this executable.
 		/// </summary>
 		public IPAddress LocalIpAddress { get; set; }
+		/// <summary>
+		/// The list of deployable stacks that should be deployed.
+		/// </summary>
+		public string[] StacksToDeploy { get; set; }
 	}
 }

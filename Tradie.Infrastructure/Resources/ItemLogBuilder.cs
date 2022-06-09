@@ -17,10 +17,6 @@ namespace Tradie.Infrastructure.Resources {
 			//ItemStream itemStream,
 			//Network network
 		) {
-			
-			var repo = new EcrProjectRepository(stack, "logbuilder", "Tradie.ItemLogBuilder", resourceConfig);
-
-			
 			/*var dlq = new SqsQueue(stack, "logbuilder-dlq", new SqsQueueConfig() {
 				Name = "logbuilder-dlq",
 			});

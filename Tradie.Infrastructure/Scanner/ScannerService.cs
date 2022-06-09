@@ -1,5 +1,6 @@
 ﻿using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Cloudwatch;
+using HashiCorp.Cdktf.Providers.Aws.Ecr;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
 using HashiCorp.Cdktf.Providers.Aws.Iam;
 using HashiCorp.Cdktf.Providers.Aws.S3;
@@ -7,20 +8,24 @@ using HashiCorp.Cdktf.Providers.Aws.Ssm;
 using System.Collections.Generic;
 using System.Text.Json;
 using Tradie.Infrastructure.Foundation;
+using Tradie.Infrastructure.Packaging;
 using Tradie.Infrastructure.Resources;
 
 namespace Tradie.Infrastructure.Scanner;
 
 public class ScannerService {
 	public readonly S3Bucket ChangeBucket;
-	public readonly EcrProjectRepository Repo;
 
 	public ScannerService(
 		TerraformStack stack,
 		Ecs ecs,
 		ResourceConfig resourceConfig,
-		Permissions permissions
+		Permissions permissions,
+		PackagedBuild packagedBuild
 	) {
+		var build = packagedBuild.GetPublishedPackage()
+			.GetAwaiter().GetResult();
+
 		this.ChangeBucket = new S3Bucket(stack, "raw-changesets-bucket", new S3BucketConfig() {
 			Bucket = "raw-changesets",
 			ForceDestroy = true,
@@ -41,13 +46,11 @@ public class ScannerService {
 			}
 		});
 
-		new SsmParameter(stack, "raw-changesets-ssm", new SsmParameterConfig() {
+		_ = new SsmParameter(stack, "raw-changesets-ssm", new SsmParameterConfig() {
 			Name = "Config.ChangeSetBucket",
 			Value = this.ChangeBucket.Bucket,
 			Type = "String",
 		});
-
-		this.Repo = new EcrProjectRepository(stack, "scanner", "Tradie.Scanner", resourceConfig);
 
 		var logs = new CloudwatchLogGroup(stack, "scanner-log-group", new CloudwatchLogGroupConfig() {
 			Name = "scanner-logs",
@@ -100,12 +103,12 @@ public class ScannerService {
 			TaskRoleArn = taskRole.Arn,
 			RequiresCompatibilities = new[] {"EC2"},
 			ExecutionRoleArn = permissions.ExecutionRole.Arn,
-			DependsOn = new[] {this.Repo.BuildResource},
+			//DependsOn = new[] {this.Repo.BuildResource},
 			ContainerDefinitions = JsonSerializer.Serialize(new[] {
 				new {
 					name = "tradie-scanner",
-					Tag = this.Repo.LatestTag,
-					image = this.Repo.EcrImageUri,
+					tag = build.ImageId.ImageTag,
+					image = build.TaggedImageUri,
 					cpu = 512,
 					memory = 512,
 					executionRoleArn = permissions.ExecutionRole.Arn,
@@ -117,7 +120,7 @@ public class ScannerService {
 						},
 						new {
 							name = "BUILD_HASH",
-							Value = this.Repo.HashTag
+							Value = build.ImageId.ImageTag
 						}
 					},
 					logConfiguration = new {

@@ -1,23 +1,33 @@
-using Amazon.SimpleSystemsManagement;
 using System;
-using Constructs;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws;
-using HashiCorp.Cdktf.Providers.Random;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using Tradie.Infrastructure.Aspects;
-using Tradie.Infrastructure.Resources;
 using System.Collections.Generic;
+using System.Linq;
 using Tradie.Infrastructure;
 using Tradie.Infrastructure.Analyzer;
 using Tradie.Infrastructure.Foundation;
+using Tradie.Infrastructure.ImageRepository;
+using Tradie.Infrastructure.Packaging;
 using Tradie.Infrastructure.Scanner;
 
-App app = new(new AppOptions(){StackTraces = true});
+var deployableStacks = new[] {
+	"scanner", "analyzer"
+};
+
+var context = new Dictionary<string, object>();
+App app = new(new AppOptions(){StackTraces = true, Context = context,});
+
 var httpClient = new HttpClient();
 var localIp = IPAddress.Parse(httpClient.GetStringAsync("https://api.ipify.org").Result);
+
+string[] stacksToDeploy = (Environment.GetEnvironmentVariable("TRADIE_BUILD") ?? "")
+	.Split(new[] {',', ' '}, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+if(stacksToDeploy.Any(c => !deployableStacks.Contains(c))) {
+	throw new ArgumentException("Invalid stack specified");
+}
+
 var config = new ResourceConfig() {
     Environment = "dev",
     Region = "ca-central-1",
@@ -25,12 +35,22 @@ var config = new ResourceConfig() {
     BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "../src/"),
     Version = "0.1.1",
     LocalIpAddress = localIp,
+    StacksToDeploy = stacksToDeploy
 };
 
+Console.WriteLine($"Deploying stacks {String.Join(", ", stacksToDeploy)}");
+
+var packager = new DockerPackager(config);
+//await packager.BuildAndPushProject($"Tradie.Analyzer/Dockerfile", "tradie-dev-analyzer-repo");
 
 var foundation = new FoundationStack(app, "foundation", config);
-var scanner = new ScannerStack(app, "scanner", config, foundation);
-var analyzer = new AnalyzerStack(app, "analyzer", config, foundation, scanner);
+var repos = new ImageRepositoryStack(app, "repositories", config);
+var scanner = new ScannerStack(app, "scanner", config, foundation, new(packager, "Tradie.Scanner/Dockerfile", "scanner", "linux/arm64") {
+	IsDirty = config.StacksToDeploy.Contains("scanner")
+});
+var analyzer = new AnalyzerStack(app, "analyzer", config, foundation, scanner, new(packager, "Tradie.Analyzer/Dockerfile", "analyzer", "linux/amd64") {
+	IsDirty = config.StacksToDeploy.Contains("analyzer")
+});
 
 app.Synth();
 
