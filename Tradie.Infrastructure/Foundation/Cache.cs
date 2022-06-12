@@ -8,7 +8,7 @@ public class Cache {
 		var ssmHost = new SsmParameter(stack, "ssm-redis-host", new SsmParameterConfig() {
 			Name = "Config.RedisHost",
 			Type = "String",
-			Value = "dev.tradie.io"
+			Value = "srv.tradie.io"
 		});
 
 		var ssmUser = new SsmParameter(stack, "ssm-redis-user", new SsmParameterConfig() {

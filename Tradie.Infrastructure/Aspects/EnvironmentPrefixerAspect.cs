@@ -2,6 +2,7 @@
 using Constructs;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Rds;
+using HashiCorp.Cdktf.Providers.Aws.Route53;
 using HashiCorp.Cdktf.Providers.Aws.S3;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace Tradie.Infrastructure.Aspects {
 		public void Visit(IConstruct node) {
 			bool updated = false;
 			var prefixedProps = new[] {"Name", "Bucket", "Family", "Identifier", "ClusterIdentifier"};
+			if(node.GetType() == typeof(Route53Record)) {
+				return;
+			}
 			foreach(var prop in prefixedProps) {
 				if(prop == "Bucket" && node.GetType() != typeof(S3Bucket)) {
 					continue;

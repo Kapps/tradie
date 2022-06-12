@@ -9,11 +9,13 @@ using Tradie.Infrastructure;
 using Tradie.Infrastructure.Analyzer;
 using Tradie.Infrastructure.Foundation;
 using Tradie.Infrastructure.ImageRepository;
+using Tradie.Infrastructure.Indexer;
 using Tradie.Infrastructure.Packaging;
 using Tradie.Infrastructure.Scanner;
+using Tradie.Infrastructure.Web;
 
 var deployableStacks = new[] {
-	"scanner", "analyzer"
+	"scanner", "analyzer", "web", "indexer"
 };
 
 var context = new Dictionary<string, object>();
@@ -51,6 +53,16 @@ var scanner = new ScannerStack(app, "scanner", config, foundation, new(packager,
 var analyzer = new AnalyzerStack(app, "analyzer", config, foundation, scanner, new(packager, "Tradie.Analyzer/Dockerfile", "analyzer", "linux/amd64") {
 	IsDirty = config.StacksToDeploy.Contains("analyzer")
 });
+var web = new WebStack(app, "web", config, foundation, new(packager, "Tradie.Web/Dockerfile", "web", "linux/amd64") {
+	IsDirty = config.StacksToDeploy.Contains("web")	
+});
+var indexer = new IndexerStack(app, "indexer", config, new(packager, "Tradie.Indexer/Dockerfile", "indexer", "linux/amd64") {
+	IsDirty = config.StacksToDeploy.Contains("indexer")	
+});
+
+foreach(var deployable in new TerraformStack[] {scanner, analyzer, web}) {
+	deployable.AddDependency(repos);
+}
 
 app.Synth();
 

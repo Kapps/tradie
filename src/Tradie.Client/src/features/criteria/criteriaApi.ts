@@ -1,6 +1,7 @@
+import { get } from '../../api/apiClient';
 import { appConfig } from '../../app/config';
 import { CriteriaServiceClient } from '../../protos/Services/Web/Proto/CriteriaServiceServiceClientPb';
-import { ListCriteriaRequest } from '../../protos/Services/Web/Proto/CriteriaService_pb';
+import { ListCriteriaRequest, ListCriteriaResponse } from '../../protos/Services/Web/Proto/CriteriaService_pb';
 import { getNRandomElements, getRandomElement } from '../../utils/arrayRandom';
 import { memoizePersistent } from '../../utils/cachedResource';
 import { Criteria } from './criteria';
@@ -45,9 +46,9 @@ export function getRandomDescriptionHint() {
  */
 export const getAllCriteria = (): Promise<Criteria[]> => {
   return memoizePersistent('criteria', async () => {
-    const service = new CriteriaServiceClient(appConfig.apiBaseUrl);
     const request = new ListCriteriaRequest();
-    const response = await service.listCriteria(request, null);
+    const body = await get('criteria');
+    const response = await ListCriteriaResponse.deserializeBinary(body);
     const criteria = await response.getCriteriasList().map(c => Criteria.fromProto(c));
     return criteria;
   });

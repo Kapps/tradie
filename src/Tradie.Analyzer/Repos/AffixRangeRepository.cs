@@ -6,7 +6,7 @@ using Tradie.Common;
 
 namespace Tradie.Analyzer.Repos;
 
-public interface IAffixRangeRepository : IAsyncDisposable {
+public interface IAffixRangeRepository : IAsyncDisposable, IDisposable {
 	Task UpsertRanges(IEnumerable<AffixRange> ranges, CancellationToken cancellationToken);
 }
 
@@ -20,6 +20,10 @@ public class AffixRangeRepository : IAffixRangeRepository {
 
 	public async ValueTask DisposeAsync() {
 		await this._context.DisposeAsync();
+	}
+	
+	void IDisposable.Dispose() {
+		this._context.Dispose();
 	}
 
 	public async Task UpsertRanges(IEnumerable<AffixRange> ranges, CancellationToken cancellationToken) {

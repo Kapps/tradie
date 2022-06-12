@@ -14,6 +14,7 @@ public class FoundationStack : StackBase {
 	public Ecs EcsCluster { get; set; }
 	public Routing Routing { get; set; }
 	public Storage Storage { get; set; }
+	public Alb Alb { get; set; }
 
 
 	public FoundationStack(Construct scope, string id, ResourceConfig resourceConfig) : base(scope, id, resourceConfig) {
@@ -27,6 +28,6 @@ public class FoundationStack : StackBase {
 
 		this.EcsCluster = new(this, this.Network, ssm);
 		this.Routing = new(this, this.Network, this.EcsCluster, ssm);
-
+		this.Alb = new(this, this.Network, resourceConfig);
 	}
 }

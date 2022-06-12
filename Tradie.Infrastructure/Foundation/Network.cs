@@ -1,8 +1,10 @@
 ﻿using Constructs;
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Ecs;
+using HashiCorp.Cdktf.Providers.Aws.Elb;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
 using System;
+using System.Linq;
 
 namespace Tradie.Infrastructure.Foundation;
 
@@ -40,7 +42,7 @@ public class Network {
 	/// All egress traffic is allowed.
 	/// </summary>
 	public readonly SecurityGroup InternalTrafficOnlySecurityGroup;
-
+	
 	public Network(TerraformStack stack, ResourceConfig config) {
 		this.Vpc = new Vpc(stack, "vpc", new VpcConfig() {
 			CidrBlock = "10.200.0.0/16",

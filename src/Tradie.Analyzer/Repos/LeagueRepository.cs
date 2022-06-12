@@ -9,7 +9,7 @@ namespace Tradie.Analyzer.Repos;
 /// <summary>
 /// Repository for accessing information about challenge or permanent leagues.
 /// </summary>
-public interface ILeagueRepository : IAsyncDisposable {
+public interface ILeagueRepository : IAsyncDisposable, IDisposable {
 	/// <summary>
 	/// Returns all available leagues.
 	/// </summary>
@@ -57,6 +57,10 @@ public class LeagueRepository : ILeagueRepository {
 	
 	public ValueTask DisposeAsync() {
 		return this._context.DisposeAsync();
+	}
+	
+	void IDisposable.Dispose() {
+		this._context.Dispose();
 	}
 	
 	private readonly IDistributedCache _cache;

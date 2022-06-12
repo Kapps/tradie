@@ -83,10 +83,13 @@ services.AddSingleton<IParameterStore, SsmParameterStore>()
 services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
 builder.WebHost.ConfigureKestrel(options =>
 {
-	// Setup a HTTP/2 endpoint without TLS.
-	options.ListenLocalhost(5000, o => o.Protocols =
-		HttpProtocols.Http2);
+	if(builder.Environment.IsDevelopment()) {
+		// Setup a HTTP/2 endpoint without TLS.
+		options.ListenLocalhost(5000, o => o.Protocols =
+			HttpProtocols.Http2);
+	}
 });
+
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder => {
 	builder.AllowAnyOrigin()
 		.AllowAnyMethod()

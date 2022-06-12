@@ -109,7 +109,7 @@ public class DockerPackager {
 			Platform = platform,
 			Memory = 3L * 1024 * 1024 * 1024,
 			MemorySwap = 4L * 1024 * 1024 * 1024,
-			NoCache = true,
+			// NoCache = true,
 			BuildArgs = new Dictionary<string, string>() {
 				{ "Platform", platform }
 			},

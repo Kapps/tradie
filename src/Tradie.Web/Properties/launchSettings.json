@@ -5,7 +5,8 @@
       "applicationUrl": "http://localhost:5181",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "TRADIE_ENV": "dev"
+        "TRADIE_ENV": "dev",
+        "AWS_PROFILE": "resolver"
       }
     }
   }

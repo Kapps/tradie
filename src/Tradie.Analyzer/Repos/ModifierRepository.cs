@@ -7,7 +7,7 @@ namespace Tradie.Analyzer.Repos;
 /// <summary>
 /// Repository for storing possible affixes on items.
 /// </summary>
-public interface IModifierRepository : IAsyncDisposable {
+public interface IModifierRepository : IAsyncDisposable, IDisposable {
 	/// <summary>
 	/// Retrieves a list of all possible modifiers.
 	/// </summary>
@@ -45,6 +45,10 @@ public class ModifierDbRepository : IModifierRepository {
 	
 	public async ValueTask DisposeAsync() {
 		await this._context.DisposeAsync();
+	}
+	
+	void IDisposable.Dispose() {
+		this._context.Dispose();
 	}
 
 	private readonly AnalysisContext _context;
