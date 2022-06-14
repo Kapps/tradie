@@ -10,7 +10,10 @@ namespace Tradie.Infrastructure.Foundation;
 
 public class Alb {
 
-	private const string HostedZoneId = "Z04495081AOUFV3T91DNR"; // External hosted zone iD.
+	/// <summary>
+	/// The ID of the hosted route 53 zone.
+	/// </summary>
+	public readonly string HostedZoneId = "Z04495081AOUFV3T91DNR"; // External hosted zone iD.
 	
 	/// <summary>
 	/// Security group to allow traffic from 80 and 443.
@@ -29,9 +32,15 @@ public class Alb {
 	/// </summary>
 	public readonly AcmCertificate HttpsCertificate;
 
+	/// <summary>
+	/// An HTTPS certificate located in the US East region.
+	/// </summary>
+	public readonly AcmCertificate HttpsUsCertificate;
+
 
 	public Alb(TerraformStack stack, Network network, ResourceConfig config) {
-		string appHost = $"{config.Environment}.tradie.io";
+		string appHost = $"{config.Environment}-api.tradie.io";
+		var awsUseProvider = ((FoundationStack)stack).AwsUsProvider;
 		
 		var httpTrafficIngresses = new[] {
 			new SecurityGroupIngress() {
@@ -76,24 +85,11 @@ public class Alb {
 			EnableHttp2 = false
 		});
 
-		this.HttpsCertificate = new AcmCertificate(stack, "https-cert", new AcmCertificateConfig() {
-			DomainName = "tradie.io",
-			ValidationMethod = "DNS",
-			SubjectAlternativeNames = new[] {
-				"*.tradie.io"
-			},
-			Lifecycle = new TerraformResourceLifecycle() {
-				CreateBeforeDestroy = true
-			},
-			ValidationOption = new[] {
-				new AcmCertificateValidationOption() {
-					DomainName = "tradie.io",
-					ValidationDomain = "tradie.io"
-				},
-			}
-		});
+		this.HttpsCertificate = this.CreateCert(stack, "https-cert", null);
+		this.HttpsUsCertificate = this.CreateCert(stack, "https-global-cert", awsUseProvider);
 
 		var validationOpt = this.HttpsCertificate.DomainValidationOptions.Get(0);
+		
 		var record = new Route53Record(stack, "https-validation-record", new Route53RecordConfig() {
 			Name = validationOpt.ResourceRecordName,
 			Type = validationOpt.ResourceRecordType,
@@ -106,6 +102,15 @@ public class Alb {
 
 		var certificateValidation = new AcmCertificateValidation(stack, "https-validation", new AcmCertificateValidationConfig() {
 			CertificateArn = this.HttpsCertificate.Arn,
+			ValidationRecordFqdns = new[] {
+				record.Fqdn
+			}
+			// Provider = awsUseProvider
+		});
+
+		var useCertificationValidation = new AcmCertificateValidation(stack, "https-global-validation", new AcmCertificateValidationConfig() {
+			CertificateArn = this.HttpsUsCertificate.Arn,
+			Provider = awsUseProvider,
 			ValidationRecordFqdns = new[] {
 				record.Fqdn
 			}
@@ -159,6 +164,26 @@ public class Alb {
 			Records = new[] {
 				this.HttpAlb.DnsName
 			},
+		});
+	}
+
+	private AcmCertificate CreateCert(TerraformStack stack, string id, TerraformProvider provider) {
+		return new AcmCertificate(stack, id, new AcmCertificateConfig() {
+			DomainName = "tradie.io",
+			ValidationMethod = "DNS",
+			SubjectAlternativeNames = new[] {
+				"*.tradie.io"
+			},
+			Lifecycle = new TerraformResourceLifecycle() {
+				CreateBeforeDestroy = true
+			},
+			ValidationOption = new[] {
+				new AcmCertificateValidationOption() {
+					DomainName = "tradie.io",
+					ValidationDomain = "tradie.io"
+				},
+			},
+			Provider = provider
 		});
 	}
 }

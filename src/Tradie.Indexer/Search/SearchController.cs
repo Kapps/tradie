@@ -18,14 +18,14 @@ public class SearchController : SearchService.SearchServiceBase {
 	
 	public override async Task<SearchResponse> SearchGear(SearchRequest request, ServerCallContext context) {
 		var sw = Stopwatch.StartNew();
-		Console.WriteLine("---------Raw---------");
-		Console.WriteLine(JsonSerializer.Serialize(request.Query, new JsonSerializerOptions() { WriteIndented = true }));
+		//Console.WriteLine("---------Raw---------");
+		//Console.WriteLine(JsonSerializer.Serialize(request.Query, new JsonSerializerOptions() { WriteIndented = true }));
 		var results = this._blockSearcher.Search(this._itemTree.Root, request.Query, 100);
-		Console.WriteLine("--------Input--------");
+		/*Console.WriteLine("--------Input--------");
 		Console.WriteLine(JsonSerializer.Serialize((Tradie.Indexer.Search.SearchQuery)request.Query, new JsonSerializerOptions() { WriteIndented = true }));
 		Console.WriteLine("--------Output--------");
 		Console.WriteLine(JsonSerializer.Serialize(results, new JsonSerializerOptions() { WriteIndented = true }));
-		Console.WriteLine("----------------------");
+		Console.WriteLine("----------------------");*/
 		Console.WriteLine($"Elapsed: {sw.Elapsed.TotalMilliseconds}");
 
 		var response = new SearchResponse() {

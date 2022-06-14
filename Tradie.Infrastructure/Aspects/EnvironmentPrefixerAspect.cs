@@ -16,12 +16,17 @@ namespace Tradie.Infrastructure.Aspects {
 	public class EnvironmentPrefixerAspect : DeputyBase, IAspect {
 		public EnvironmentPrefixerAspect(string prefix) {
 			this.prefix = prefix;
+			this.excludes = new();
 		}
 
 		public void Visit(IConstruct node) {
 			bool updated = false;
 			var prefixedProps = new[] {"Name", "Bucket", "Family", "Identifier", "ClusterIdentifier"};
 			if(node.GetType() == typeof(Route53Record)) {
+				return;
+			}
+
+			if(this.excludes.Contains(node)) {
 				return;
 			}
 			foreach(var prop in prefixedProps) {
@@ -44,6 +49,10 @@ namespace Tradie.Infrastructure.Aspects {
 			if(!updated) {
 				Console.WriteLine($"No prefix rewrites were performed on {node.GetType().Name} {node}.");
 			}
+		}
+
+		public void AddExclude(IConstruct construct) {
+			this.excludes.Add(construct);
 		}
 
 		private bool TryPrefix(object obj, string property) {
@@ -79,5 +88,6 @@ namespace Tradie.Infrastructure.Aspects {
 		}
 
 		private string prefix;
+		private HashSet<IConstruct> excludes;
 	}
 }

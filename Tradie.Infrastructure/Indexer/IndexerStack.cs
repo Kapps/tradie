@@ -12,7 +12,7 @@ public class IndexerStack : StackBase {
 		var indexerHostParam = new SsmParameter(this, "indexer-host-ssm", new SsmParameterConfig() {
 			Name = "Config.IndexerGrpcAddress",
 			Type = "String",
-			Value = "http://srv.tradie.io:5000"
+			Value = "https://srv.tradie.io:5000"
 		});
 	}
 }

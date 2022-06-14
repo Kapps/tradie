@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tradie.Infrastructure;
 using Tradie.Infrastructure.Analyzer;
+using Tradie.Infrastructure.Client;
 using Tradie.Infrastructure.Foundation;
 using Tradie.Infrastructure.ImageRepository;
 using Tradie.Infrastructure.Indexer;
@@ -15,7 +16,7 @@ using Tradie.Infrastructure.Scanner;
 using Tradie.Infrastructure.Web;
 
 var deployableStacks = new[] {
-	"scanner", "analyzer", "web", "indexer"
+	"scanner", "analyzer", "web", "indexer", "client"
 };
 
 var context = new Dictionary<string, object>();
@@ -59,8 +60,9 @@ var web = new WebStack(app, "web", config, foundation, new(packager, "Tradie.Web
 var indexer = new IndexerStack(app, "indexer", config, new(packager, "Tradie.Indexer/Dockerfile", "indexer", "linux/amd64") {
 	IsDirty = config.StacksToDeploy.Contains("indexer")	
 });
+var client = new ClientStack(app, "client", config, foundation);
 
-foreach(var deployable in new TerraformStack[] {scanner, analyzer, web}) {
+foreach(var deployable in new TerraformStack[] {scanner, analyzer, web, indexer}) {
 	deployable.AddDependency(repos);
 }
 
