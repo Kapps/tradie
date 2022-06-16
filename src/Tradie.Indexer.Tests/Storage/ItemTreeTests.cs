@@ -27,7 +27,7 @@ public class ItemTreeTests : TestBase {
 		var rng = new Random();
 		
 		var items = Enumerable.Range(1, numItems)
-			.Select(c => new Item(c.ToString(), (float)c, new Affix[] {
+			.Select(c => new Item(c.ToString(), c, new Affix[] {
 				new(new ModKey((ulong)c, ModKind.Explicit), c),
 				new(new ModKey(numItems, ModKind.Implicit), (numItems - c) % (numItems / 5))
 			}))

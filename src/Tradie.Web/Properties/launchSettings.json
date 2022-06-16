@@ -6,7 +6,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "TRADIE_ENV": "dev",
-        "AWS_PROFILE": "resolver"
+        "AWS_PROFILE": "resolver",
+        "INDEXER_ADDRESS": "http://localhost:5000"
       }
     }
   }

@@ -81,10 +81,11 @@ services.AddSingleton<IParameterStore, SsmParameterStore>()
 	.AddHostedService<ItemTreeLoaderService>();
 
 services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
-builder.WebHost.ConfigureKestrel(options =>
-{
+builder.WebHost.ConfigureKestrel(options => {
+	Console.WriteLine("Configuring Kestrel");
 	if(builder.Environment.IsDevelopment()) {
 		// Setup a HTTP/2 endpoint without TLS.
+		Console.WriteLine("Using local env");
 		options.ListenLocalhost(5000, o => o.Protocols =
 			HttpProtocols.Http2);
 	}

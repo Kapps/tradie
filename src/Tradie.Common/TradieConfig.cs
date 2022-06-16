@@ -97,6 +97,11 @@ namespace Tradie.Common {
 			if(logLevelEnv != null) {
 				LogLevel = Enum.Parse<LogLevel>(logLevelEnv, true);
 			}
+
+			var indexerAddress = System.Environment.GetEnvironmentVariable("INDEXER_ADDRESS");
+			if(indexerAddress != null) {
+				IndexerGrpcAddress = indexerAddress;
+			}
 		}
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

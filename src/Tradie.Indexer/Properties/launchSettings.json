@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Tradie.Indexer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TRADIE_ENV":"dev",
+        "TRADIE_LEAGUE": "Standard",
+        "AWS_PROFILE": "resolver",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "hotReloadEnabled": true
+    }
+  }
+}
