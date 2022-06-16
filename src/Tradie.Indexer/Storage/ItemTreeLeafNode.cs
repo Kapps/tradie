@@ -16,8 +16,8 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 	/// </summary>
 	public ItemTreeLeafNode? RightSibling => this._rightSibling;
 	
-	public ItemTreeLeafNode(NodeList? children = null)
-		: base(NodeKind.Leaf, children) {
+	public ItemTreeLeafNode(ItemTree tree, NodeList? children)
+		: base(NodeKind.Leaf, tree, children) {
 		
 	}
 	
@@ -43,14 +43,15 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		// Eventually...
 		/*if(this._rightSibling?.Children is {HasSpaceBeforeSplit: true} && this._rightSibling.Parent == this.Parent) {
 			// We don't have room, but our right sibling can take over our maximum item.
-			throw new NotImplementedException("take max item not item");
-			this._rightSibling.Insert(0, item);
+			var largestItem = this.Children.RemoveAt<Item>(this.Children.Count - 1);
+			this._rightSibling.Insert(0, largestItem);
 			return;
 		}
 
 		if(this._leftSibling?.Children is {HasSpaceBeforeSplit: true} ls && this._leftSibling.Parent == this.Parent) {
 			// We don't have room, but our left sibling can take over our smallest item.
-			this._leftSibling.Insert(ls.Count, item);
+			var smallestItem = this.Children.RemoveAt<Item>(0);
+			this._leftSibling.Insert(ls.Count, smallestItem);
 			return;
 		}*/
 		
@@ -58,6 +59,10 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		// The resulting node gets added to this parent.
 
 		this.Split();
+	}
+
+	protected internal override void VisitLeafs(Action<ItemTreeLeafNode> visitor) {
+		visitor(this);
 	}
 
 	private int FindIndexForItem(Item item) {
@@ -76,7 +81,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 
 	private void Split() {
 		var rightItems = this.Children.SplitRight();
-		var rightNode = new ItemTreeLeafNode(rightItems);
+		var rightNode = new ItemTreeLeafNode(this.Tree, rightItems);
 
 		if(this._rightSibling != null) {
 			this._rightSibling._leftSibling = rightNode;
@@ -89,7 +94,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 			var rootChildren = new NodeList(NodeKind.Block);
 			rootChildren.Insert(0, this);
 			rootChildren.Insert(1, rightNode);
-			var newRoot = new ItemTreeBlockNode(rootChildren);
+			var newRoot = new ItemTreeBlockNode(this.Tree, rootChildren);
 		} else {
 			this.Parent.InsertAfter(this, rightNode);
 		}

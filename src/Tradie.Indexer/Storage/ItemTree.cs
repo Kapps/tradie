@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 
 namespace Tradie.Indexer.Storage;
 
@@ -49,10 +50,15 @@ public class ItemTree {
 	public ItemTreeNode Root => this._root;
 
 	/// <summary>
+	/// Indicates whether the tree is currently in the process of a bulk insert and therefore should delay affix recalculations.
+	/// </summary>
+	internal bool PerformingBulkInsert { get; private set; }
+
+	/// <summary>
 	/// Creates a new ItemTree with no items inside.
 	/// </summary>
 	public ItemTree() {
-		this._root = new ItemTreeLeafNode(null);
+		this._root = new ItemTreeLeafNode(this, null);
 		this.Depth = 1;
 	}
 	
@@ -68,6 +74,31 @@ public class ItemTree {
 		}
 
 		this.Count++;
+	}
+
+	/// <summary>
+	/// Inserts a bulk async enumerable collection of items into this tree in a more optimal way than adding them one at a time.
+	/// </summary>
+	public async Task AddBulk(IAsyncEnumerable<Item> items, CancellationToken cancellation) {
+		var sw = Stopwatch.StartNew();
+		Console.WriteLine("Performing bulk item tree update.");
+		int insertCount = 0;
+		this.PerformingBulkInsert = true;
+		try {
+			await foreach(var item in items.WithCancellation(cancellation)) {
+				this.Add(item);
+				insertCount++;
+			}
+		} catch(Exception ex) {
+			Console.WriteLine($"Failed to add bulk to tree: {ex}");
+			throw;
+		} finally {
+			this.PerformingBulkInsert = false;
+			Console.WriteLine($"Finished inserting {insertCount} items in {sw.Elapsed}; updating affix dimensions.");
+			sw.Restart();
+			this._root.VisitLeafs(leaf => leaf.RecalculateAffixes());
+			Console.WriteLine($"Took {sw.Elapsed} to recalculate affix dimensions.");
+		}
 	}
 
 	/// <summary>

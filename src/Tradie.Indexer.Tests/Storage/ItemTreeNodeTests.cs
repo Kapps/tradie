@@ -11,8 +11,9 @@ namespace Tradie.Indexer.Tests.Storage;
 public class ItemTreeNodeTests : TestBase {
 	[TestMethod]
 	public void TestNodeSplit_WithRoomInParent() {
-		var root = new ItemTreeBlockNode();
-		var child = new ItemTreeLeafNode();
+		var tree = new ItemTree();
+		var root = new ItemTreeBlockNode(tree, null);
+		var child = new ItemTreeLeafNode(tree, null);
 		root.InsertFront(child);
 		for(int i = 0; i < NodeList.ItemsPerBlock - 1; i++) {
 			child.Add(new Item($"{i}", i, Array.Empty<Affix>()));

@@ -8,7 +8,7 @@ namespace Tradie.Analyzer.Models;
 /// Represents the value of a modifier on an item, including scalar and location or kind.
 /// </summary>
 [DataContract]
-public readonly record struct Affix {
+public readonly record struct Affix : IComparable<Affix> {
 	[DataMember(Name = "hash", Order = 1, IsRequired = true)]
 	[JsonInclude]
 	[JsonPropertyName("hash")]
@@ -31,5 +31,19 @@ public readonly record struct Affix {
 		this.Hash = hash;
 		this.Scalar = double.IsNaN(scalar) ? 0 : scalar; // JSON doesn't support NaN
 		this.Kind = kind;
+	}
+
+	public int CompareTo(Affix other) {
+		var hashComparison = this.Hash.CompareTo(other.Hash);
+		if (hashComparison != 0) {
+			return hashComparison;
+		}
+
+		var scalarComparison = this.Scalar.CompareTo(other.Scalar);
+		if (scalarComparison != 0) {
+			return scalarComparison;
+		}
+
+		return this.Kind.CompareTo(other.Kind);
 	}
 }

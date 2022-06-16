@@ -10,26 +10,28 @@ namespace Tradie.Indexer.Tests.Storage;
 public class ItemTreeBlockNodeTests : TestBase {
 	[TestMethod]
 	public void TestBlockPricePropagation() {
+		var tree = new ItemTree();
 		var items = new NodeList(NodeKind.Block);
-		items.Insert(0, new ItemTreeBlockNode() { MinPrice = 3, MaxPrice = 6 });
-		items.Insert(1, new ItemTreeBlockNode() { MinPrice = 7, MaxPrice = 14 });
+		items.Insert(0, new ItemTreeBlockNode(tree, null) { MinPrice = 3, MaxPrice = 6 });
+		items.Insert(1, new ItemTreeBlockNode(tree, null) { MinPrice = 7, MaxPrice = 14 });
 
-		var node = new ItemTreeBlockNode(items);
+		var node = new ItemTreeBlockNode(tree, items);
 		Assert.AreEqual(3, node.MinPrice);
 		Assert.AreEqual(14, node.MaxPrice);
 	}
 	
 	[TestMethod]
 	public void TestParentPricePropagation() {
+		var tree = new ItemTree();
 		var items = new NodeList(NodeKind.Block);
-		items.Insert(0, new ItemTreeBlockNode() { MinPrice = 3, MaxPrice = 6 });
-		items.Insert(1, new ItemTreeBlockNode() { MinPrice = 7, MaxPrice = 14 });
+		items.Insert(0, new ItemTreeBlockNode(tree, null) { MinPrice = 3, MaxPrice = 6 });
+		items.Insert(1, new ItemTreeBlockNode(tree, null) { MinPrice = 7, MaxPrice = 14 });
 
-		var node = new ItemTreeBlockNode(items);
+		var node = new ItemTreeBlockNode(tree, items);
 		Assert.AreEqual(3, node.MinPrice);
 		Assert.AreEqual(14, node.MaxPrice);
 
-		var child = new ItemTreeBlockNode();
+		var child = new ItemTreeBlockNode(tree, null);
 		node.InsertFront(child);
 		
 		Assert.IsTrue(float.IsNaN(child.MinPrice));
@@ -38,9 +40,10 @@ public class ItemTreeBlockNodeTests : TestBase {
 
 	[TestMethod]
 	public void TestBlockSplit() {
-		var node = new ItemTreeBlockNode();
+		var tree = new ItemTree();
+		var node = new ItemTreeBlockNode(tree, null);
 		var leafs = Enumerable.Range(0, NodeList.BlocksPerBlock)
-			.Select(c => new ItemTreeLeafNode())
+			.Select(c => new ItemTreeLeafNode(tree, null))
 			.ToList();
 		leafs.Take(NodeList.BlocksPerBlock - 1).ToList().ForEach(node.InsertBack);
 		

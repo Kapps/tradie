@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Models;
+using Tradie.Indexer.Search;
 using Tradie.Indexer.Storage;
 using Tradie.TestUtils;
 using Affix = Tradie.Indexer.Storage.Affix;
@@ -23,6 +24,8 @@ public class ItemTreeTests : TestBase {
 	public void TestBulkInsertAndFind() {
 		const int numItems = 1000;
 		var tree = new ItemTree();
+		var rng = new Random();
+		
 		var items = Enumerable.Range(1, numItems)
 			.Select(c => new Item(c.ToString(), (float)c, new Affix[] {
 				new(new ModKey((ulong)c, ModKind.Explicit), c),
@@ -30,6 +33,7 @@ public class ItemTreeTests : TestBase {
 			}))
 			.ToArray();
 		int count = 1;
+		//foreach(var item in items.OrderBy(c=>rng.Next())) {
 		foreach(var item in items) {
 			tree.Add(item);
 			Assert.AreEqual(count, tree.Count);
@@ -37,18 +41,34 @@ public class ItemTreeTests : TestBase {
 		}
 		
 		Assert.AreEqual(numItems, tree.Count);
-		
+
+		var searcher = new PriceSortedBlockSearcher();
 		// Find items with different mods.
 		foreach(var item in items) {
 			var itemAffix = item.Affixes.First();
-			var itemBlocks = tree.Find(c => {
+			var foundItem = searcher.Search(
+				tree.Root,
+				new SearchQuery(
+					new[] {
+						new SearchGroup(GroupKind.And,
+							new[] {new AffixRange(itemAffix.Value, itemAffix.Value, itemAffix.Modifier)})
+					},
+					new SortOrder(SortKind.Price, null)
+				),
+				10
+			).Single();
+			Assert.AreEqual(foundItem, item);
+		}
+
+
+		/*var itemBlocks = tree.Find(c => {
 				var affix = c.Affixes.Get(itemAffix.Modifier);
 				if(affix.Key == default)
 					return false;
 				return affix.MinValue <= itemAffix.Value && affix.MaxValue >= itemAffix.Value;
 			});
 			Assert.IsTrue(itemBlocks.Single().Children.Items.ToArray().Contains(item));
-		}
+		}*/
 		
 		// Find items with the same mod and overlapping values.
 		foreach(var item in items) {

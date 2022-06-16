@@ -18,32 +18,38 @@ public class PriceSortedBlockSearcher : IBlockSearcher {
 			throw new NotImplementedException();
 
 		var results = new List<SearchResult>();
-		SearchBlock(treeNode, query, results, count);
+		SearchBlock(treeNode, query, results, count, "R");
 
 		return results.Select(c => c.Item).ToArray();
 	}
 
-	private void SearchBlock(ItemTreeNode treeNode, SearchQuery query, List<SearchResult> results, int count) {
+	private void SearchBlock(ItemTreeNode treeNode, SearchQuery query, List<SearchResult> results, int count, string path) {
 		// All blocks are sorted in order of the price of the items in them.
 		// So for the default sorting of chaos equiv, start iteration at index 0 always and do depth-first.
 		// Because we iterate in order of price, if we ever reach the desired count matching items, we know it's the count cheapest items.
+		Console.WriteLine($"Starting search for {path}.");
 		if(results.Count >= count && query.Sort.Kind == SortKind.Price) {
+			Console.WriteLine($"Ending {path} due to max count.");
 			return;
 		}
 
 		if(!QueryMatcher.IsMatch(treeNode, query)) {
+			Console.WriteLine($"Ending {path} due to no match.");
 			return;
 		}
 
 		if(treeNode.Kind == NodeKind.Block) {
+			int i = 0;
 			foreach(var child in treeNode.Children.Blocks) {
-				SearchBlock(child, query, results, count);
+				SearchBlock(child, query, results, count, $"{path}->{i}");
+				i++;
 			}
 		} else if(treeNode.Kind == NodeKind.Leaf) {
 			foreach(var item in treeNode.Children.Items) {
 				if(QueryMatcher.IsMatch(item, query)) {
 					var sort = this.GetSortPriority(item, query.Sort);
 					results.Add(new SearchResult(item, sort));
+					Console.WriteLine($"Added entry at path {path} with price of {item.ChaosEquivalentPrice}.");
 					if(results.Count >= count && query.Sort.Kind == SortKind.Price) {
 						return;
 					}

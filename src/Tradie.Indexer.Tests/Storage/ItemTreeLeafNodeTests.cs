@@ -15,8 +15,9 @@ namespace Tradie.Indexer.Tests.Storage;
 public class ItemTreeLeafNodeTests : TestBase {
 	[TestMethod]
 	public void TestEmpty() {
+		var tree = new ItemTree();
 		var item = new Item("1", 12, Array.Empty<Affix>());
-		var rootLeaf = new ItemTreeLeafNode();
+		var rootLeaf = new ItemTreeLeafNode(tree, null);
 		
 		Assert.AreEqual(rootLeaf, rootLeaf.FindLeafForItem(item));
 		
@@ -28,19 +29,21 @@ public class ItemTreeLeafNodeTests : TestBase {
 	
 	[TestMethod]
 	public void TestPricePropagation() {
+		var tree = new ItemTree();
 		var items = new NodeList(NodeKind.Leaf);
 		items.Insert(0, new Item("1", 1, Array.Empty<Affix>()));
 		items.Insert(1, new Item("2", 6, Array.Empty<Affix>()));
 		items.Insert(2, new Item("3", 12, Array.Empty<Affix>()));
 
-		var node = new ItemTreeLeafNode(items);
+		var node = new ItemTreeLeafNode(tree, items);
 		Assert.AreEqual(1, node.MinPrice);
 		Assert.AreEqual(12, node.MaxPrice);
 	}
 	
 	[TestMethod]
 	public void TestPriceUpdateOnInsert() {
-		var node = new ItemTreeLeafNode();
+		var tree = new ItemTree();
+		var node = new ItemTreeLeafNode(tree, null);
 		Assert.AreEqual(float.NaN, node.MinPrice);
 		Assert.AreEqual(float.NaN, node.MaxPrice);
 		
@@ -68,9 +71,10 @@ public class ItemTreeLeafNodeTests : TestBase {
 	[TestMethod]
 	[Ignore("Borrowing not yet implemented.")]	
 	public void TestAdd_BorrowFromRightSibling() {
-		var root = new ItemTreeBlockNode();
-		var left = new ItemTreeLeafNode();
-		var right = new ItemTreeLeafNode();
+		var tree = new ItemTree();
+		var root = new ItemTreeBlockNode(tree, null);
+		var left = new ItemTreeLeafNode(tree, null);
+		var right = new ItemTreeLeafNode(tree, null);
 		
 		root.InsertFront(left);
 		root.InsertBack(right);
@@ -97,7 +101,8 @@ public class ItemTreeLeafNodeTests : TestBase {
 	
 	[TestMethod]
 	public void TestNodeSplit_AsRoot() {
-		var originalNode = new ItemTreeLeafNode();
+		var tree = new ItemTree();
+		var originalNode = new ItemTreeLeafNode(tree, null);
 		for(int i = 0; i < NodeList.ItemsPerBlock - 1; i++) {
 			originalNode.Add(new Item($"{i}", i, Array.Empty<Affix>()));
 		}
@@ -126,7 +131,8 @@ public class ItemTreeLeafNodeTests : TestBase {
 
 	[TestMethod]
 	public void TestAffixCalculation() {
-		var node = new ItemTreeLeafNode();
+		var tree = new ItemTree();
+		var node = new ItemTreeLeafNode(tree, null);
 		node.Add(new Item("a", 1, new[] {
 			new Affix(new ModKey(12, ModKind.Explicit), 12),
 			new Affix(new ModKey(16, ModKind.Explicit), 16)

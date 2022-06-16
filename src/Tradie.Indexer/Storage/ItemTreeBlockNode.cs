@@ -3,8 +3,8 @@ using System.Diagnostics;
 namespace Tradie.Indexer.Storage;
 
 public class ItemTreeBlockNode : ItemTreeNode {
-	public ItemTreeBlockNode(NodeList? children = null)
-		: base(NodeKind.Block, children) {
+	public ItemTreeBlockNode(ItemTree tree, NodeList? children)
+		: base(NodeKind.Block, tree, children) {
 		
 	}
 
@@ -32,6 +32,12 @@ public class ItemTreeBlockNode : ItemTreeNode {
 		this.Insert(index + 1, node);
 	}
 
+	protected internal override void VisitLeafs(Action<ItemTreeLeafNode> visitor) {
+		foreach(var child in this.Children.Blocks) {
+			child.VisitLeafs(visitor);
+		}
+	}
+
 	private void Insert(int index, ItemTreeNode node) {
 		Debug.Assert(this.Children.Count < this.Children.Capacity);
 		this.Children.Insert(index, node);
@@ -48,14 +54,14 @@ public class ItemTreeBlockNode : ItemTreeNode {
 
 	private void Split() {
 		var rightChildren = this.Children.SplitRight();
-		var rightNode = new ItemTreeBlockNode(rightChildren);
+		var rightNode = new ItemTreeBlockNode(this.Tree, rightChildren);
 		
 		if(this.Parent == null) {
 			// We're a root node, so create a new parent node and make that the root.
 			var rootChildren = new NodeList(NodeKind.Block);
 			rootChildren.Insert(0, this);
 			rootChildren.Insert(1, rightNode);
-			_ = new ItemTreeBlockNode(rootChildren);
+			_ = new ItemTreeBlockNode(this.Tree, rootChildren);
 		} else { 
 			// Parent will deal with splitting if it's full.
 			this.Parent.InsertAfter(this, rightNode);

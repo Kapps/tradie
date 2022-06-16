@@ -218,6 +218,12 @@ namespace Tradie.Common {
 		/// </summary>
 		[DefaultValue(Microsoft.Extensions.Logging.LogLevel.Information)]
 		public static LogLevel LogLevel { get; set; }
+
+		/*/// <summary>
+		/// Gets the running AWS region.
+		/// </summary>
+		[IgnoreDataMember]
+		public static string Region { get; } = Amazon.Util.EC2InstanceMetadata.Region.SystemName;*/
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

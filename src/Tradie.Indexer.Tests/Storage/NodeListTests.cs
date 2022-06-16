@@ -51,6 +51,7 @@ public class NodeListTests : TestBase {
 	
 	[TestMethod]
 	public void TestNodes() {
+		var tree = new ItemTree();
 		var list = new NodeList(NodeKind.Block);
 		
 		Assert.AreEqual(NodeKind.Block, list.Kind);
@@ -59,7 +60,7 @@ public class NodeListTests : TestBase {
 		
 		for(int i = 0; i < list.Capacity; i++) {
 			Assert.AreEqual(i < list.Capacity - 1, list.HasSpaceBeforeSplit);
-			list.Insert(0, new ItemTreeLeafNode());
+			list.Insert(0, new ItemTreeLeafNode(tree, null));
 		}
 		
 		Assert.IsFalse(list.HasSpaceBeforeSplit);

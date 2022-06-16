@@ -50,15 +50,18 @@ public abstract class ItemTreeNode {
 	/// The maximum price of any item in this block.
 	/// </summary>
 	public float MaxPrice { get; internal set; }
-	
+
+	protected ItemTree Tree { get; private set; }
+
 	/// <summary>
 	/// Creates a new block of the given kind, with a parent (or null if this is the root block). 
 	/// </summary>
-	protected ItemTreeNode(NodeKind kind, NodeList? children = null) {
+	protected ItemTreeNode(NodeKind kind, ItemTree tree, NodeList? children = null) {
 		this.Kind = kind;
 		this.Affixes = SortedAffixRangeList.Empty();
 		this._children = children ?? new NodeList(kind);
 		this._affixes = new();
+		this.Tree = tree;
 
 		if(this.Kind == NodeKind.Block) {
 			foreach(var child in this._children.Blocks) {
@@ -74,7 +77,14 @@ public abstract class ItemTreeNode {
 		this.RecalculateAffixes();
 	}
 
-	protected void RecalculateAffixes() {
+	protected internal abstract void VisitLeafs(Action<ItemTreeLeafNode> visitor);
+
+	protected internal void RecalculateAffixes() {
+		if(this.Tree.PerformingBulkInsert) {
+			// Deal with bulk inserts later by recalculating the tree.
+			return;
+		}
+
 		this._affixes.Clear();
 		if(this._children.Count == 0) {
 			return;

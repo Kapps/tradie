@@ -3,6 +3,7 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Tradie.Analyzer;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Entities;
@@ -29,7 +30,7 @@ public class SearchController : IAsyncDisposable {
 	
 	[HttpPost]
 	public async Task<SearchResponse> Post(SearchRequest request) {
-		Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions() { WriteIndented = true }));
+		Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions() { WriteIndented = true, NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals}));
 		var ids = await PerformSearch(request.Query);
 		var items = await this._context.LoggedItems.Where(c => ids.Contains(c.RawId)).ToArrayAsync();
 		
