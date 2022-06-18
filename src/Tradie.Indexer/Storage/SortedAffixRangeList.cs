@@ -105,13 +105,12 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
 
 	    exists = false;
 	    return ref this.Insert(~index, range);
-
     }
 
     public AffixRange Get(ModKey searchKey) {
 	    int index = this.GetIndex(searchKey);
 	    if(index >= 0) {
-		    return *(((AffixRange*)(void*)this._elementsPtr) + index);
+		    return *((AffixRange*)(void*)this._elementsPtr + index);
 	    }
 
 	    return default;

@@ -49,7 +49,7 @@ public class ItemTreeBlockNode : ItemTreeNode {
 		}
 		
 		this.RecalculateDimensions();
-		this.RecalculateAffixes();
+		node.RecalculateDimensions();
 	}
 
 	private void Split() {
@@ -61,7 +61,8 @@ public class ItemTreeBlockNode : ItemTreeNode {
 			var rootChildren = new NodeList(NodeKind.Block);
 			rootChildren.Insert(0, this);
 			rootChildren.Insert(1, rightNode);
-			_ = new ItemTreeBlockNode(this.Tree, rootChildren);
+			var parent = new ItemTreeBlockNode(this.Tree, rootChildren);
+			parent.RecalculateDimensions();
 		} else { 
 			// Parent will deal with splitting if it's full.
 			this.Parent.InsertAfter(this, rightNode);

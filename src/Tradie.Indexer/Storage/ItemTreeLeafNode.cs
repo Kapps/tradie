@@ -59,6 +59,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		// The resulting node gets added to this parent.
 
 		this.Split();
+		this.AssertExpectations();
 	}
 
 	protected internal override void VisitLeafs(Action<ItemTreeLeafNode> visitor) {
@@ -69,6 +70,14 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		int insertIndex = this.Children.Items.BinarySearch(item);
 		if(insertIndex < 0)
 			insertIndex = ~insertIndex;
+		
+		/*var items = this.Children.Items;
+		while(insertIndex < this.Children.Count - 1) {
+			if(Math.Abs(items[insertIndex].ChaosEquivalentPrice - items[insertIndex + 1].ChaosEquivalentPrice) < 0.001 && items[insertIndex].ChaosEquivalentPrice < float.MaxValue) {
+				insertIndex++;
+			}
+		}*/
+		
 		return insertIndex;
 	}
 
@@ -94,7 +103,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 			var rootChildren = new NodeList(NodeKind.Block);
 			rootChildren.Insert(0, this);
 			rootChildren.Insert(1, rightNode);
-			var newRoot = new ItemTreeBlockNode(this.Tree, rootChildren);
+			_ = new ItemTreeBlockNode(this.Tree, rootChildren);
 		} else {
 			this.Parent.InsertAfter(this, rightNode);
 		}
@@ -102,6 +111,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		
 		this.RecalculateDimensions();
 		this._rightSibling.RecalculateDimensions();
+		this.AssertExpectations();
 	}
 
 	
@@ -122,6 +132,22 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 			}
 
 			break;
+		}
+	}
+	
+	[Conditional("DEBUG")]
+	private void AssertExpectations() {
+		if(this.Kind == NodeKind.Block) {
+			var blocks = this.Children.Blocks;
+			for(int i = 1; i < blocks.Length; i++) {
+				Debug.Assert(blocks[i].MinPrice >= blocks[i - 1].MinPrice);
+				Debug.Assert(blocks[i].MinPrice >= blocks[i - 1].MaxPrice);
+			}
+		} else {
+			var items = this.Children.Items;
+			for(int i = 1; i < items.Length; i++) {
+				Debug.Assert(items[i].ChaosEquivalentPrice >= items[i - 1].ChaosEquivalentPrice);
+			}
 		}
 	}
 

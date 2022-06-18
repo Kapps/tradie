@@ -33,9 +33,9 @@ public class SearchController : IAsyncDisposable {
 		Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions() { WriteIndented = true, NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals}));
 		var ids = await PerformSearch(request.Query);
 		var items = await this._context.LoggedItems.Where(c => ids.Contains(c.RawId)).ToArrayAsync();
-		
+		var sorted = items.OrderBy(c => Array.IndexOf(ids, c.RawId));
 		var resp = new SearchResponse();
-		resp.Items.AddRange(items.Select(FromAnalysis));
+		resp.Items.AddRange(sorted.Select(FromAnalysis));
 		
 		return resp;
 	}

@@ -62,7 +62,7 @@ public readonly record struct ItemPrice(
 		return CurrencyMappings.TryGetValue(raw, out parsed);
 	}
 
-	private static readonly Regex PriceRegex = new(@"^~(b\/o|price) (\d+) (\w+?)$", RegexOptions.Compiled);
+	private static readonly Regex PriceRegex = new(@"^~(b\/o|price) ([\d\.]+) (\w+?)$", RegexOptions.Compiled);
 
 	private static readonly Dictionary<string, Currency> CurrencyMappings =
 		new(StringComparer.InvariantCultureIgnoreCase) {
@@ -77,6 +77,7 @@ public readonly record struct ItemPrice(
 			{"exalt", Currency.Exalted},
 			{"exalts", Currency.Exalted},
 			{"exalted", Currency.Exalted},
+			{"exalteds", Currency.Exalted},
 			{"alch", Currency.Alchemy},
 			{"alchs", Currency.Alchemy},
 			{"alchemy", Currency.Alchemy},
@@ -86,7 +87,8 @@ public readonly record struct ItemPrice(
 			{"chrome", Currency.Chromatics},
 			{"mirror", Currency.Mirror},
 			{"kalandra", Currency.Mirror},
-			{"mirrors", Currency.Mirror}
+			{"mirrors", Currency.Mirror},
+			{"mir", Currency.Mirror}
 		
 		};
 }

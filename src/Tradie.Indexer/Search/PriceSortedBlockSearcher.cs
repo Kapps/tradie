@@ -42,7 +42,7 @@ public class PriceSortedBlockSearcher : IBlockSearcher {
 			//Console.WriteLine($"Ending {path} due to no match.");
 			return;
 		}
-
+	
 		if(treeNode.Kind == NodeKind.Block) {
 			int i = 0;
 			foreach(var child in treeNode.Children.Blocks) {

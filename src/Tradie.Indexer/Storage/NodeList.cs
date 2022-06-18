@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,11 +14,11 @@ public struct NodeList {
 	/// <summary>
 	/// Indicates how many items are present in a leaf block.
 	/// </summary>
-	internal const int ItemsPerBlock = 16;
+	internal const int ItemsPerBlock = 32;
 	/// <summary>
 	/// Indicates how many nodes are present in a node block.
 	/// </summary>
-	internal const int BlocksPerBlock = 12;
+	internal const int BlocksPerBlock = 16;
 
 	/// <summary>
 	/// Gets the number of items actively stored in this list.

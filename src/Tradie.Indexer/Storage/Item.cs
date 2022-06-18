@@ -31,7 +31,7 @@ public readonly struct Item : IComparable<Item> {
 	public Item(string id, float chaosEquivalentPricePrice, Affix[] affixes) {
 		this.Id = id;
 		this.Affixes = affixes;
-		this.ChaosEquivalentPrice = chaosEquivalentPricePrice;
+		this.ChaosEquivalentPrice = (float)Math.Round(chaosEquivalentPricePrice,2);
 	}
 
 	public override string ToString() {
