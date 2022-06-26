@@ -48,13 +48,15 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   const allCriteria = useAppSelector(selectAvailableCriteria);
   const selectedCriteria = useAppSelector(selectCriteriaValues(group.id));
   const selectedValues = selectedCriteria?.map((c) => c.id.toString());
-  const availableCriteria = getMatchedCriteria(allCriteria, selectedCriteria, searchText, maxDropdownValues).map((c) => ({
-    label: c.name,
-    value: c.id.toString(),
-    criteriaId: c.id.toString(),
-    group: `${getLabelForCriteriaKind(c.kind)}s`.toUpperCase(),
-    kindLabel: getLabelForCriteriaKind(c.kind),
-  }));
+  const availableCriteria = getMatchedCriteria(allCriteria, selectedCriteria, searchText, maxDropdownValues).map(
+    (c) => ({
+      label: c.name,
+      value: c.id.toString(),
+      criteriaId: c.id.toString(),
+      group: `${getLabelForCriteriaKind(c.kind)}s`.toUpperCase(),
+      kindLabel: getLabelForCriteriaKind(c.kind),
+    }),
+  );
 
   const updateSearchText = (query: string) => {
     startTransition(() => setSearchText(query));
@@ -78,7 +80,7 @@ export default function CriteriaList({ group }: CriteriaListProps) {
           groupId: group.id,
         }),
       );
-      const criteria = allCriteria.find(c => c.id === added.criteriaId);
+      const criteria = allCriteria.find((c) => c.id === added.criteriaId);
       if (criteria?.kind === CriteriaKind.LEAGUE) {
         dispatch(setDefaultLeague({ id: criteria.id }));
       }
@@ -113,7 +115,7 @@ export default function CriteriaList({ group }: CriteriaListProps) {
         limit={maxDropdownValues}
         value={selectedValues}
         onChange={updateCriteriaValues}
-        valueComponent={(props) => <SelectedCriteria {...props} allowPopover={!isOpen} />}
+        valueComponent={(props) => <SelectedCriteria {...props} initiallyOpen={false} allowPopover={!isOpen} />}
         itemComponent={EntryItem}
         className={styles.filterBar}
         variant="default"

@@ -67,17 +67,7 @@ public class CriteriaController : IAsyncDisposable {
 			/*League = new League() {
 				Id = c.Id
 			}*/
-		}).Union(itemTypes.Select(c=>c.Category).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
-			Id = $"cat-{c}",
-			Name = c,
-			Kind = CriteriaKind.Category,
-			Category = c
-		})).Union(itemTypes.SelectMany(c=>c.Subcategories ?? Array.Empty<string>()).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
-			Id = $"subcat-{c}",
-			Name = c,
-			Kind = CriteriaKind.Subcategory,
-			Subcategory = c
-		})).Union(mods.Select(c => new Criteria() {
+		}).Union(mods.Select(c => new Criteria() {
 			Id = $"mod-{c.Id}",
 			Name = c.ModifierText,
 			Kind = CriteriaKind.Modifier,
@@ -87,6 +77,16 @@ public class CriteriaController : IAsyncDisposable {
 				Id = c.Id,
 				Text = c.ModifierText
 			}*/
+		})).Union(itemTypes.Select(c=>c.Category).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
+			Id = $"cat-{c}",
+			Name = c,
+			Kind = CriteriaKind.Category,
+			Category = c
+		})).Union(itemTypes.SelectMany(c=>c.Subcategories ?? Array.Empty<string>()).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
+			Id = $"subcat-{c}",
+			Name = c,
+			Kind = CriteriaKind.Subcategory,
+			Subcategory = c
 		})).Union(itemTypes.Select(c=>new Criteria() {
 			Id = $"it-{c}",
 			Name = c.Name,

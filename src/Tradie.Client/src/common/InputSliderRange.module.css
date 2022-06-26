@@ -1,4 +1,4 @@
-.sliderLabel {
+/*.sliderLabel {
   top: 0;
   height: 28;
   line-height: 28px;
@@ -9,4 +9,12 @@
   align-items: center;
   font-weight: 700;
   background-color: 'transparent';
+}*/
+
+.rangeInput * input {
+  text-align: center !important;
+}
+
+.invalid {
+  border: 2px solid red;
 }

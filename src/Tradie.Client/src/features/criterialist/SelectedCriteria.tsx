@@ -3,18 +3,22 @@ import {
   Badge,
   Card,
   Center,
+  Checkbox,
+  Divider,
+  Group,
   MultiSelectValueProps,
   Popover,
   RangeSlider,
   Space,
+  Switch,
   Text,
 } from '@mantine/core';
 import { useClickOutside } from '@mantine/hooks';
 import { MouseEventHandler, useRef } from 'react';
 import { useState } from 'react';
-import { ImCross } from 'react-icons/im';
+import { ImCheckboxChecked, ImCheckmark, ImCross, ImFloppyDisk } from 'react-icons/im';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { InputSliderRange } from '../../common/InputSliderRange';
+import { InputSliderRange, SliderRangeValue } from '../../common/InputSliderRange';
 import { getRangeDescription, substituteValuesInText } from '../../utils/textFormatters';
 import { AffixRangeEntityKind, ModKindCategory } from '../affixRanges/affixRange';
 import { selectAffixRange } from '../affixRanges/affixRangesSlice';
@@ -65,15 +69,22 @@ export function SelectedCriteria({
   allowPopover,
   criteriaId,
   kindLabel,
+  initiallyOpen,
   ...others
-}: MultiSelectValueProps & { value: string; allowPopover: boolean; criteriaId: string; kindLabel: string }) {
+}: MultiSelectValueProps & {
+  value: string;
+  allowPopover: boolean;
+  criteriaId: string;
+  kindLabel: string;
+  initiallyOpen: boolean;
+}) {
   const criteriaValue = useAppSelector(selectCriteriaValue(criteriaId))!;
   const [min, max] = getMinMax(criteriaId) ?? [0, 0];
   const [val, setVal] = useState<[number, number]>([
     criteriaValue.minValue ?? min ?? -Infinity,
     criteriaValue.maxValue ?? max ?? Infinity,
   ]);
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(initiallyOpen);
 
   const dispatch = useAppDispatch();
 
@@ -93,6 +104,10 @@ export function SelectedCriteria({
     e.preventDefault();
   };
 
+  const onValueChanged = (val: SliderRangeValue) => {
+    setVal([val.min ?? min ?? 0, val.max ?? max ?? 0]);
+  };
+
   const onClose = () => {
     const [minVal, maxVal] = val;
     dispatch(
@@ -103,6 +118,12 @@ export function SelectedCriteria({
       }),
     );
     setOpened(false);
+  };
+
+  const onCardKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      onClose();
+    }
   };
 
   /*const onCriteriaValueChanged = (value: [number, number]) => {
@@ -123,6 +144,10 @@ export function SelectedCriteria({
         transitionDuration={0}
         onClose={onClose}
         onMouseDown={onClick}
+        arrowSize={12}
+        radius="md"
+        closeOnClickOutside={true}
+        // withCloseButton
         // closeO nClickOutside={false}
         // onMouseEnter={() => setOpened(true)}
         // onMouseLeave={() => setOpened(false)}
@@ -153,8 +178,12 @@ export function SelectedCriteria({
         position="top"
         withArrow
       >
-        <Card>
-          <Text>{label}</Text>
+        <Card onKeyDown={onCardKeyDown} style={{ padding: '0', margin: '0' }}>
+          <Center>
+            <Text size="md" weight="bolder">
+              {label}
+            </Text>
+          </Center>
           <Space h={20} />
           {/*<RangeSlider
             min={min}
@@ -166,15 +195,27 @@ export function SelectedCriteria({
             value={val}
             onChange={setVal}
           />*/}
-          <InputSliderRange
-            min={min ?? 0}
-            max={max ?? 0}
-            initialValue={[criteriaValue.minValue ?? min ?? 0, criteriaValue.maxValue ?? max ?? 0]}
-            //onBlur={onClose}
-            //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
-            //value={val}
-            onChange={(val) => setVal([val.min ?? min ?? 0, val.max ?? max ?? 0])}
-          />
+          {(min || max) && (
+            <InputSliderRange
+              min={min ?? 0}
+              max={max ?? 0}
+              placeholder="Examples: 46, 20-50, <=70"
+              initialValue={[criteriaValue.minValue ?? min ?? 0, criteriaValue.maxValue ?? max ?? 0]}
+              //onBlur={onClose}
+              //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
+              //value={val}
+              onChange={onValueChanged}
+            />
+          )}
+          <Space h={20} />
+          <Divider />
+          <Space h={10} />
+          <Group position="apart">
+            <Switch label="Enabled" checked={true} />
+            <ActionIcon color="orange" title="Save" onClick={onClose}>
+              <ImCheckmark />
+            </ActionIcon>
+          </Group>
         </Card>
       </Popover>
     </div>
