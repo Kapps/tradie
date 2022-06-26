@@ -2,9 +2,16 @@
   height: 1px;
   width: 100%;
   margin: 0 auto;
+  padding-top: 0;
+  padding-bottom: 0;
   background-color: rgba(0, 0, 0, 0);
   background-image: linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
   background-image: -o-linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
   background-image: -moz-linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
   background-image: -webkit-linear-gradient(left , transparent 25%, #AF5F1C 50%, transparent 75%);
 }
+
+/*.header {
+  background:
+    url('https://web.poecdn.com/protected/image/item/popup/header-gem-left.png?key=Msuu9QQfzbXDh3eQrPQwUA') top left no-repeat, url('https://web.poecdn.com/protected/image/item/popup/header-gem-right.png?key=3hhgiyMDfG_8GThSuPE8Ew') top right no-repeat, url('https://web.poecdn.com/protected/image/item/popup/header-gem-middle.png?key=h184nSfQVwyEK6NT6Gaa0Q') top center repeat-x;
+}*/

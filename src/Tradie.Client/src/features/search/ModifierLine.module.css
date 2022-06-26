@@ -1,5 +1,5 @@
 .normal {
-  font-weight: 400;
+  font-weight: 700;
   color: #C8C8C8;
 }
 
@@ -18,13 +18,10 @@
   font-weight: 800;
 }
 
-.normal {
-  color: #fff;
-}
-
 .corrupted {
   color: #d20000;
   font-weight: 800;
+  font-size: 0.8em;
 }
 
 .value {
@@ -47,7 +44,11 @@
   color: #d02090;
 }
 
-.enchant,
+.enchant {
+  color: #B8DAF1;
+  font-size: 0.8em;
+}
+
 .crafted {
   color: #B8DAF1;
 }
@@ -68,6 +69,12 @@
 
 .gem {
   color: #0DA29B;
+  font-weight: 700;
+}
+
+.relic {
+  color: #82ad6a;
+  font-weight: 800;
 }
 
 .note {
@@ -77,16 +84,26 @@
 }
 
 .name {
-  color: #fff;
-  font-weight: 700;
+  color: #dadada;
+  font-weight: 400;
+  font-size: 0.85em;
+  line-height: 1em;
 }
 
 .modifier {
   color: #8787FE;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap&text=01234567890.');
 .modifier, .fractured, .property, .enchant, .crafted {
   font-size: 13px;
-  line-height: 1.8em;
+  line-height: 1.7em;
   font-weight: 500;
+  font-family: 'Montserrat', 'Inter var', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;;
+}
+
+.enchant {
+  font-size: 12px;
 }

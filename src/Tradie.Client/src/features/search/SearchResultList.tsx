@@ -10,7 +10,7 @@ export function SearchResultList() {
 
   return (
     <Stack align="stretch" justify="center" spacing={0} >
-      <Title color='#FFF'  align="center">Displaying {searchResults.length} results</Title>
+      <Title style={{paddingTop: '10px', paddingBottom: '10px', fontSize: '16px', color: '#888'}} align="center">Displaying {searchResults.length} results</Title>
       {searchResults.map((item, i) => (
         <SearchResultCard index={i} item={item} key={item.rawId} />
       ))}

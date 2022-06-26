@@ -14,6 +14,8 @@ import { MouseEventHandler, useRef } from 'react';
 import { useState } from 'react';
 import { ImCross } from 'react-icons/im';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { InputSliderRange } from '../../common/InputSliderRange';
+import { getRangeDescription, substituteValuesInText } from '../../utils/textFormatters';
 import { AffixRangeEntityKind, ModKindCategory } from '../affixRanges/affixRange';
 import { selectAffixRange } from '../affixRanges/affixRangesSlice';
 import { CriteriaKind } from '../criteria/criteria';
@@ -22,46 +24,15 @@ import { selectCriteria } from '../criteria/criteriaSlice';
 import styles from './CriteriaList.module.css';
 import { clearCriteriaValues, CriteriaValue, selectCriteriaValue, updateCriteriaValue } from './criteriaValueSlice';
 
-const getRangeDescription = (text: string, minValue?: number, maxValue?: number) => {
-  if (minValue && maxValue && minValue === maxValue) {
-    return `${minValue}`;
-  }
-  if (minValue && maxValue) {
-    return `${minValue}-${maxValue}`;
-  }
-  if (minValue && !maxValue) {
-    return `>=${minValue}`;
-  }
-  if (!minValue && maxValue) {
-    return `<=${maxValue}`;
-  }
-  return '#';
-};
-
 const getMinMax = (criteriaId: string) => {
   const criteria = useAppSelector(selectCriteria(criteriaId))!;
   if (criteria.kind === CriteriaKind.MODIFIER) {
-    const range = useAppSelector(selectAffixRange(criteria.modifierHash!, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit));
+    const range = useAppSelector(
+      selectAffixRange(criteria.modifierHash!, AffixRangeEntityKind.Modifier, ModKindCategory.Explicit),
+    );
     return range ? [range?.minValue, range?.maxValue] : null;
   }
   return null;
-};
-
-
-export const substituteValuesInText = (text: string, min?: number, max?: number) => {
-  const numValues = text.split('').filter((c) => c === '#').length;
-  if (numValues === 0) {
-    return text;
-  }
-  if (numValues === 1) {
-    return text.replace(/#/, `${getRangeDescription(text, min, max)}`);
-  }
-  let usedValues = 0;
-  const vals = [min ?? '#', max ?? '#'];
-  return text
-    .split('')
-    .map((c) => (c === '#' ? `${vals[usedValues++]}` : c))
-    .join('');
 };
 
 export function ValueTextComponent({
@@ -74,7 +45,7 @@ export function ValueTextComponent({
   minValue?: number;
   maxValue?: number;
 }) {
-  const helpText = getRangeDescription(text, minValue, maxValue);
+  const helpText = getRangeDescription(minValue, maxValue);
   return (
     <div {...others}>
       <Center>
@@ -98,7 +69,10 @@ export function SelectedCriteria({
 }: MultiSelectValueProps & { value: string; allowPopover: boolean; criteriaId: string; kindLabel: string }) {
   const criteriaValue = useAppSelector(selectCriteriaValue(criteriaId))!;
   const [min, max] = getMinMax(criteriaId) ?? [0, 0];
-  const [val, setVal] = useState<[number, number]>([criteriaValue.minValue ?? min ?? -Infinity, criteriaValue.maxValue ?? max ?? Infinity]);
+  const [val, setVal] = useState<[number, number]>([
+    criteriaValue.minValue ?? min ?? -Infinity,
+    criteriaValue.maxValue ?? max ?? Infinity,
+  ]);
   const [opened, setOpened] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -180,18 +154,26 @@ export function SelectedCriteria({
         withArrow
       >
         <Card>
-          <Text>
-            {label} - {value}
-          </Text>
+          <Text>{label}</Text>
           <Space h={20} />
-          <RangeSlider
+          {/*<RangeSlider
             min={min}
             max={max}
             minRange={0}
+            labelAlwaysOn
             //onBlur={onClose}
             //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
             value={val}
             onChange={setVal}
+          />*/}
+          <InputSliderRange
+            min={min ?? 0}
+            max={max ?? 0}
+            initialValue={[criteriaValue.minValue ?? min ?? 0, criteriaValue.maxValue ?? max ?? 0]}
+            //onBlur={onClose}
+            //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
+            //value={val}
+            onChange={(val) => setVal([val.min ?? min ?? 0, val.max ?? max ?? 0])}
           />
         </Card>
       </Popover>

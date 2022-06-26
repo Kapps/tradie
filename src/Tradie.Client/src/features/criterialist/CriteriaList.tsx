@@ -4,44 +4,22 @@ import { useDispatch } from 'react-redux';
 import styles from './CriteriaList.module.css';
 import { getRandomDescriptionHint, getRandomPlaceholderHints } from '../criteria/criteriaApi';
 import { SelectedCriteria } from './SelectedCriteria';
-import { selectAvailableCriteria } from '../criteria/criteriaSlice';
+import { selectAvailableCriteria, selectCriteria } from '../criteria/criteriaSlice';
 import { useAppSelector } from '../../app/hooks';
 import { CriteriaGroup } from '../criteriagroups/criteriaGroupsSlice';
 import { useClickOutside } from '@mantine/hooks';
 import { addCriteriaValue, CriteriaValue, removeCriteriaValue, selectCriteriaValues } from './criteriaValueSlice';
 import uuid from '../../utils/uuid';
 import { Criteria, CriteriaKind, getLabelForCriteriaKind } from '../criteria/criteria';
+import { setDefaultLeague } from '../leagues/leaguesSlice';
+import { getMatchedCriteria } from './criteriaMatcher';
 
 export interface CriteriaListProps {
   group: CriteriaGroup;
 }
 
-const getMatchedCriteria = (criteria: Criteria[], selectedCriteriaValues: CriteriaValue[], searchText: string) => {
-  const selectedCriteria = selectedCriteriaValues.map(c => criteria.find(d => d.id === c.criteriaId)!);
-  const selectedLookup = new Set<Criteria>(selectedCriteria);
-  const searchLowerified = (searchText || '').toLowerCase();
-  const results = new Array<Criteria>();
-
-  for (const crit of criteria) {
-    if (crit.kind !== CriteriaKind.MODIFIER && selectedCriteria.some(c => c.kind === crit.kind)) {
-      continue;
-    }
-    if (crit.name.toLowerCase().includes(searchLowerified) || selectedLookup.has(crit)) {
-      results.push(crit);
-      selectedLookup.delete(crit);
-    }
-    if (results.length > 20) {
-      break;
-    }
-  }
-
-  for (const remaining of selectedLookup) {
-    results.push(remaining);
-  }
-
-
-  return results;
-};
+const maxSelectedValues = 8;
+const maxDropdownValues = 20;
 
 type CriteriaListEntry = ComponentPropsWithoutRef<'div'> &
   Criteria & {
@@ -68,23 +46,19 @@ export default function CriteriaList({ group }: CriteriaListProps) {
   const dispatch = useDispatch();
 
   const allCriteria = useAppSelector(selectAvailableCriteria);
-  //const selectedCriteria = useAppSelector(selectCriteriaGroup(group.id));
   const selectedCriteria = useAppSelector(selectCriteriaValues(group.id));
   const selectedValues = selectedCriteria?.map((c) => c.id.toString());
-  const availableCriteria = getMatchedCriteria(allCriteria, selectedCriteria, searchText).map((c) => ({
-  //const availableCriteria = allCriteria.map((c) => ({
+  const availableCriteria = getMatchedCriteria(allCriteria, selectedCriteria, searchText, maxDropdownValues).map((c) => ({
     label: c.name,
     value: c.id.toString(),
     criteriaId: c.id.toString(),
     group: `${getLabelForCriteriaKind(c.kind)}s`.toUpperCase(),
     kindLabel: getLabelForCriteriaKind(c.kind),
-    //disableSelection: selectedCriteria.some((d) => c.id.toString() === d.criteriaId),
-    //criteria: { criteriaId: c.id.toString(), id: c.id.toString(), groupId: group.id },
   }));
 
   const updateSearchText = (query: string) => {
-    //startTransition(() => setSearchText(query));
-    setSearchText(query);
+    startTransition(() => setSearchText(query));
+    //setSearchText(query);
   };
 
   const updateCriteriaValues = (values: string[]) => {
@@ -104,6 +78,10 @@ export default function CriteriaList({ group }: CriteriaListProps) {
           groupId: group.id,
         }),
       );
+      const criteria = allCriteria.find(c => c.id === added.criteriaId);
+      if (criteria?.kind === CriteriaKind.LEAGUE) {
+        dispatch(setDefaultLeague({ id: criteria.id }));
+      }
     }
   };
 
@@ -119,9 +97,7 @@ export default function CriteriaList({ group }: CriteriaListProps) {
       </div>
     ),
   );
-
   EntryItem.displayName = 'EntryItem';
-
 
   return (
     <div className={styles.filterBar}>
@@ -129,13 +105,12 @@ export default function CriteriaList({ group }: CriteriaListProps) {
         autoFocus
         searchable
         clearable
-        //onSearchChange={(query) => setSearchText(query)}
         onSearchChange={updateSearchText}
         data={availableCriteria}
         label="Filter Criteria"
         placeholder={`Try: ${placeholderHints.map((c) => c.hint).join(', ')}`}
-        maxSelectedValues={20}
-        limit={20}
+        maxSelectedValues={maxSelectedValues}
+        limit={maxDropdownValues}
         value={selectedValues}
         onChange={updateCriteriaValues}
         valueComponent={(props) => <SelectedCriteria {...props} allowPopover={!isOpen} />}

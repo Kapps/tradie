@@ -40,7 +40,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		}
 		
 		// Otherwise, if we are full, let's try to offload something to a sibling.
-		// Eventually...
+		// Eventually... also remember to update prices and affixes of both nodes. 
 		/*if(this._rightSibling?.Children is {HasSpaceBeforeSplit: true} && this._rightSibling.Parent == this.Parent) {
 			// We don't have room, but our right sibling can take over our maximum item.
 			var largestItem = this.Children.RemoveAt<Item>(this.Children.Count - 1);
@@ -70,13 +70,6 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		int insertIndex = this.Children.Items.BinarySearch(item);
 		if(insertIndex < 0)
 			insertIndex = ~insertIndex;
-		
-		/*var items = this.Children.Items;
-		while(insertIndex < this.Children.Count - 1) {
-			if(Math.Abs(items[insertIndex].ChaosEquivalentPrice - items[insertIndex + 1].ChaosEquivalentPrice) < 0.001 && items[insertIndex].ChaosEquivalentPrice < float.MaxValue) {
-				insertIndex++;
-			}
-		}*/
 		
 		return insertIndex;
 	}

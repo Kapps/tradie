@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace Tradie.Indexer.Storage;
 
+using AffixRangeList = HashedAffixRangeList;
+
 /// <summary>
 /// Indicates whether a block is a leaf (contains items) or node (contains other blocks).
 /// </summary>
@@ -25,7 +27,7 @@ public abstract class ItemTreeNode {
 	/// The affix range values contained within this block.
 	/// This reference should never be modified.
 	/// </summary>
-	public ref SortedAffixRangeList Affixes => ref this._affixes;
+	public ref AffixRangeList Affixes => ref this._affixes;
 
 	/*/// <summary>
 	/// Returns a copy of the affix ranges present in this node.
@@ -58,7 +60,7 @@ public abstract class ItemTreeNode {
 	/// </summary>
 	protected ItemTreeNode(NodeKind kind, ItemTree tree, NodeList? children = null) {
 		this.Kind = kind;
-		this.Affixes = SortedAffixRangeList.Empty();
+		this.Affixes = AffixRangeList.Empty();
 		this._children = children ?? new NodeList(kind);
 		this._affixes = new();
 		this.Tree = tree;
@@ -177,5 +179,5 @@ public abstract class ItemTreeNode {
 	// protected internal abstract ItemTreeLeafNode Add(Item item);
 
 	private NodeList _children;
-	private SortedAffixRangeList _affixes;
+	private AffixRangeList _affixes;
 }

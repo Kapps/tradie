@@ -31,6 +31,7 @@ export function FilterPanel() {
       variant="pills"
       className="tabBar"
       tabPadding={0}
+      style={{ position: 'sticky', top: '10px', marginTop: 'auto', marginBottom: 'auto', zIndex: 1 }}
       styles={(theme) => ({
         tabsListWrapper: {
           backgroundColor: darkMode.value ? theme.colors.dark[8] : theme.colors.gray[2],

@@ -3,8 +3,11 @@ import useDarkMode from 'use-dark-mode';
 import { ImSun, ImIcoMoon, ImPencil, ImPlus, ImFloppyDisk } from 'react-icons/im';
 import {
   ActionIcon,
+  Affix,
   AppShell,
+  Aside,
   Avatar,
+  Burger,
   Button,
   Card,
   Center,
@@ -14,6 +17,7 @@ import {
   Header,
   MantineProvider,
   MantineThemeOverride,
+  MediaQuery,
   Navbar,
   Space,
   Switch,
@@ -26,10 +30,10 @@ import CriteriaList from './features/criterialist/CriteriaList';
 import { CriteriaGroupCard } from './features/criteriagroups/CriteriaGroupCard';
 import { FilterPanel } from './features/filterpanel/FilterPanel';
 import { SearchResultList } from './features/search/SearchResultList';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loadCriteria } from './features/criteria/criteriaSlice';
-import { loadActiveLeagues } from './features/leagues/leaguesSlice';
+import { loadActiveLeagues, loadDefaultLeague } from './features/leagues/leaguesSlice';
 import { loadItemTypes } from './features/itemTypes/itemTypesSlice';
 import { NotificationsProvider } from '@mantine/notifications';
 import { loadModifiers } from './features/modifiers/modifiersSlice';
@@ -63,12 +67,14 @@ function App() {
   const darkMode = useDarkMode();
   const theme = darkMode.value ? darkTheme : lightTheme;
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(true);
   useEffect(() => {
     dispatch(loadCriteria());
     dispatch(loadActiveLeagues());
     dispatch(loadItemTypes());
     dispatch(loadModifiers());
     dispatch(loadAffixRanges());
+    dispatch(loadDefaultLeague());
   }, []);
   return (
     <MantineProvider theme={theme} withCSSVariables>
@@ -105,14 +111,26 @@ function App() {
               </Center>
             </Group>
           </Header>
-        }>
+        }> {/*
+          navbar={
+            <>
+              <Affix position={{ left: 20, top: 20 }}>
+                <Navbar p="md" height="100% !important" style={{ display: isOpen ? 'inherit' : 'none' }}>
+                  <FilterPanel />
+                </Navbar>
+              </Affix>
+            </>
+        }>*/}
           <Container fluid m={0}>
+            {/*<Card style={{paddingTop: 0}}>
+              <SearchResultList />
+            </Card>*/}
             <Grid>
-              <Grid.Col span={5}>
+              <Grid.Col span={5} style={{ position: 'sticky', top: 0, left: 0}}>
                 <FilterPanel />
               </Grid.Col>
               <Grid.Col span={7}>
-                <Card>
+                <Card style={{paddingTop: 0}}>
                   <SearchResultList />
                 </Card>
               </Grid.Col>

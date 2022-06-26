@@ -1,10 +1,10 @@
-import { Divider, Stack } from "@mantine/core";
-import { useSelector } from "react-redux";
-import { substituteValuesInText } from "../criterialist/SelectedCriteria";
-import { Affix } from "../item/itemProperties";
-import { selectModifier } from "../modifiers/modifiersSlice";
-import { ModifierLine, PropertyDisplay } from "./ModifierLine";
-import { ModKind } from "./search";
+import { Divider, Stack } from '@mantine/core';
+import { useSelector } from 'react-redux';
+import { substituteValuesInText } from '../../utils/textFormatters';
+import { Affix } from '../item/itemProperties';
+import { selectModifier } from '../modifiers/modifiersSlice';
+import { ModifierLine, PropertyDisplay } from './ModifierLine';
+import { ModKind } from './search';
 
 export interface ModifierSectionProps {
   modifiers: Affix[];
@@ -44,20 +44,26 @@ export function ModifierSection({ modifiers, section, includeSeparator }: Modifi
   }
 
   const local = modifiers
-    .filter(c => c.modifier.location === section)
-    .map(c => ({ affix: c, details: useSelector(selectModifier(c.modifier.modifier)) }));
+    .filter((c) => c.modifier.location === section)
+    .map((c) => ({ affix: c, details: useSelector(selectModifier(c.modifier.modifier)) }));
 
   if (local.length === 0) {
-    return (<></>);
+    return <></>;
   }
 
   return (
     <Stack spacing={0}>
-      {local.map((mod, i) =>
-        <ModifierLine key={i} parts={[
-          { text: substituteValuesInText(mod.details?.text ?? '???', mod.affix.value), display: getDisplayForSection(section) },
-        ]} />
-      )}
+      {local.map((mod, i) => (
+        <ModifierLine
+          key={i}
+          parts={[
+            {
+              text: substituteValuesInText(mod.details?.text ?? '???', mod.affix.value, mod.affix.value),
+              display: getDisplayForSection(section),
+            },
+          ]}
+        />
+      ))}
       {includeSeparator && <Divider size={0.05} />}
     </Stack>
   );

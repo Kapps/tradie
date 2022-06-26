@@ -59,7 +59,8 @@ public class SearchController : IAsyncDisposable {
 						Int = details.Requirements?.Int ?? 0,
 						Level = details.Requirements?.Level ?? 0,
 					},
-					IconPath = details.IconPath ?? ""
+					IconPath = details.IconPath ?? "",
+					Rarity = (uint)details.Rarity
 				}
 			});
 		}

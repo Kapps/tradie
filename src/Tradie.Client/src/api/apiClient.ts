@@ -8,6 +8,7 @@ export const get = async (path: string) => {
   const uri = `${baseUri}/${path}`;
   const resp = await fetch(uri, {
     method: 'GET',
+    credentials: 'omit',
     /*body: bytes,
     headers: {
       'Content-Type': 'application/protobuf',
@@ -28,6 +29,7 @@ export const post = async (path: string, payload: Message) => {
   const resp = await fetch(uri, {
     method: 'POST',
     body: bytes,
+    credentials: 'omit',
     headers: {
       'Content-Type': 'application/protobuf',
     },

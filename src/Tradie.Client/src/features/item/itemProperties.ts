@@ -41,6 +41,15 @@ export enum AnalyzerId {
   ItemDetails = 4,
 }
 
+export enum ItemRarity {
+  Normal = 0,
+  Magic = 1,
+  Rare = 2,
+  Unique = 3,
+  Gem = 4,
+  Relic = 9,
+}
+
 export class Affix {
   modifier: ModKey;
   value: number;
@@ -143,12 +152,14 @@ export class ItemDetailProperties {
   flags: ItemFlags;
   influences: Influences;
   itemLevel: number;
+  rarity: ItemRarity;
 
-  constructor(name: string, flags: ItemFlags, influences: Influences, itemLevel: number) {
+  constructor(name: string, flags: ItemFlags, influences: Influences, itemLevel: number, rarity: ItemRarity) {
     this.name = name;
     this.flags = flags;
     this.influences = influences;
     this.itemLevel = itemLevel;
+    this.rarity = rarity;
   }
 
   toProto(): ProtoItemDetailProperties {
@@ -157,6 +168,8 @@ export class ItemDetailProperties {
     proto.setFlags(this.flags);
     proto.setInfluences(this.influences);
     proto.setItemlevel(this.itemLevel);
+    proto.setRarity(this.rarity);
+
     return proto;
   }
 
@@ -165,7 +178,8 @@ export class ItemDetailProperties {
       proto.getName(),
       proto.getFlags(),
       proto.getInfluences(),
-      proto.getItemlevel()
+      proto.getItemlevel(),
+      proto.getRarity(),
     );
   }
 }

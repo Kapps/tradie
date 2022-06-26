@@ -1,4 +1,5 @@
 import { Text } from '@mantine/core';
+import { ItemRarity } from '../item/itemProperties';
 
 import styles from './ModifierLine.module.css';
 
@@ -17,12 +18,14 @@ export enum PropertyDisplay {
   Magic,
   Rare,
   Unique,
+  Relic,
   Currency,
   Corrupted,
   Note,
   Name,
   Modifier,
   Fractured,
+  Gem,
 }
 
 export type ModifierPart = {
@@ -33,6 +36,36 @@ export type ModifierPart = {
 export interface ModifierLineProps {
   parts: ModifierPart[];
 }
+
+export const getPropertyDisplayForRarity = (rarity: ItemRarity) => {
+  switch (rarity) {
+    case ItemRarity.Normal:
+      return PropertyDisplay.Normal;
+    case ItemRarity.Magic:
+      return PropertyDisplay.Magic;
+    case ItemRarity.Rare:
+      return PropertyDisplay.Rare;
+    case ItemRarity.Unique:
+      return PropertyDisplay.Unique;
+    case ItemRarity.Gem:
+      return PropertyDisplay.Normal;
+    case ItemRarity.Relic:
+      return PropertyDisplay.Relic;
+    default:
+      throw new Error('Out of range: ' + rarity);
+  }
+};
+
+export const getPropertyDisplayForCategory = (category: string) => {
+  switch (category) {
+    case 'gems':
+      return PropertyDisplay.Gem;
+    case 'currency':
+      return PropertyDisplay.Currency;
+    default:
+      return PropertyDisplay.Normal;
+  }
+};
 
 const getClassForDisplay = (display: PropertyDisplay) => {
   switch (display) {
@@ -74,6 +107,10 @@ const getClassForDisplay = (display: PropertyDisplay) => {
     return styles.name;
   case PropertyDisplay.Fractured:
     return styles.fractured;
+  case PropertyDisplay.Gem:
+      return styles.gem;
+  case PropertyDisplay.Relic:
+    return styles.relic;
   default:
     return styles.default;
   }
