@@ -36,7 +36,15 @@
   padding-top: 15px;
   padding-bottom: 15px;
   cursor: pointer;
-  /*background-color: rgb(153, 88, 8);*/
+  text-transform: unset;
+  font-weight: 700;
+  background-color: #0a0a16;
+}
+
+.disabled {
+  font-weight: 500;
+  color: #777;
+  border-color: #333;
 }
 
 .entryItemContainer {

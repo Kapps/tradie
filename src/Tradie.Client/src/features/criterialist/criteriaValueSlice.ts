@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 export interface CriteriaValueState {
-
   selectedValues: CriteriaValue[]
 }
 
@@ -16,6 +15,7 @@ export interface CriteriaValue {
   groupId: string;
   minValue?: number;
   maxValue?: number;
+  enabled: boolean;
 }
 
 export const criteriaValueSlice = createSlice({

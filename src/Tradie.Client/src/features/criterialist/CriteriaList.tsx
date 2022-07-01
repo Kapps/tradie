@@ -78,6 +78,7 @@ export default function CriteriaList({ group }: CriteriaListProps) {
           id: added.criteriaId.toString(),
           criteriaId: added.criteriaId,
           groupId: group.id,
+          enabled: true,
         }),
       );
       const criteria = allCriteria.find((c) => c.id === added.criteriaId);

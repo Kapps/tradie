@@ -14,7 +14,7 @@ import {
   Text,
 } from '@mantine/core';
 import { useClickOutside } from '@mantine/hooks';
-import { MouseEventHandler, useRef } from 'react';
+import { FormEventHandler, MouseEventHandler, useRef } from 'react';
 import { useState } from 'react';
 import { ImCheckboxChecked, ImCheckmark, ImCross, ImFloppyDisk } from 'react-icons/im';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -108,6 +108,10 @@ export function SelectedCriteria({
     setVal([val.min ?? min ?? 0, val.max ?? max ?? 0]);
   };
 
+  const onEnabledChanged: FormEventHandler<HTMLInputElement> = (e) => {
+    dispatch(updateCriteriaValue({ ...criteriaValue, enabled: e.currentTarget.checked }));
+  };
+
   const onClose = () => {
     const [minVal, maxVal] = val;
     dispatch(
@@ -148,21 +152,18 @@ export function SelectedCriteria({
         radius="md"
         closeOnClickOutside={true}
         // withCloseButton
-        // closeO nClickOutside={false}
+        // closeOnClickOutside={false}
         // onMouseEnter={() => setOpened(true)}
         // onMouseLeave={() => setOpened(false)}
         // trapFocus={false}
         target={
           //<Badge<typeof ValueTextComponent>
           <Badge
-            className={styles.modBadge}
+            className={`${styles.modBadge} ${criteriaValue.enabled ? '' : styles.disabled}`}
+            //variant={criteriaValue.enabled ? 'dot' : 'light'}
+            // className={`${styles.modBadge}`}
             variant="dot"
-            /*minValue={criteria.minValue}
-            maxValue={criteria.maxValue}
-            text={label}
-            component={ValueTextComponent}*/
-            /*color="gray"*/
-            sx={{ textTransform: 'unset', fontWeight: 700, backgroundColor: '#0a0a16' }}
+            color={criteriaValue.enabled ? undefined : 'gray'}
             size="lg"
             radius={0}
             rightSection={
@@ -195,23 +196,25 @@ export function SelectedCriteria({
             value={val}
             onChange={setVal}
           />*/}
-          {(min || max) && (
+          {min && max ? (
             <InputSliderRange
               min={min ?? 0}
               max={max ?? 0}
-              placeholder="Examples: 46, 20-50, <=70"
+              placeholder="Examples: 46, >=46, 20-50, <=70"
               initialValue={[criteriaValue.minValue ?? min ?? 0, criteriaValue.maxValue ?? max ?? 0]}
               //onBlur={onClose}
               //value={[criteria.minValue ?? 0, criteria.maxValue ?? Infinity]}
               //value={val}
               onChange={onValueChanged}
             />
+          ) : (
+            ''
           )}
           <Space h={20} />
           <Divider />
           <Space h={10} />
           <Group position="apart">
-            <Switch label="Enabled" checked={true} />
+            <Switch size="lg" offLabel="OFF" onLabel="ON" checked={criteriaValue.enabled} onChange={onEnabledChanged} />
             <ActionIcon color="orange" title="Save" onClick={onClose}>
               <ImCheckmark />
             </ActionIcon>

@@ -55,17 +55,13 @@ export function InputSliderRange({ min, max, onChange, initialValue, placeholder
   const [textValue, setTextValue] = useState(getRangeDescription(value.min, value.max, ''));
   const [isValidTextValue, setIsValidTextValue] = useState(true);
 
-  useEffect(() => {
-    // console.log('focusing');
-    textRef.current?.focus();
-  }, []);
-
   const onValueChanged = (val: SliderRangeValue) => {
     const cleaned = cleanRange(val, min, max);
-    if (cleaned.min || cleaned.max) {
-      // Don't set the text value in cases like where the min is 1 and you're trying to type 10.
-      setTextValue(getRangeDescription(cleaned.min, cleaned.max, ''));
-    }
+    // console.log('cleaned', cleaned);
+    // if (cleaned.min || cleaned.max) {
+    // Don't set the text value in cases like where the min is 1 and you're trying to type 10.
+    setTextValue(getRangeDescription(cleaned.min, cleaned.max, ''));
+    // }
     setIsValidTextValue(true);
     setValue(cleaned);
     onChange(cleaned);
@@ -74,14 +70,15 @@ export function InputSliderRange({ min, max, onChange, initialValue, placeholder
 
   const onTextChanged = (val: string) => {
     const extracted = extractRange(val);
+    // console.log('extracted', extracted);
     // console.log(extracted);
     if (extracted.success) {
       const cleaned = cleanRange({ min: extracted.min, max: extracted.max }, min, max);
       onValueChanged(cleaned);
-      if (cleaned.min === undefined && cleaned.max === undefined) {
-        setIsValidTextValue(false);
-        setTextValue(val);
-      }
+      // if (cleaned.min === undefined && cleaned.max === undefined) {
+      setIsValidTextValue(false);
+      setTextValue(val);
+      // }
     } else {
       setTextValue(val);
       setIsValidTextValue(false);
@@ -93,7 +90,7 @@ export function InputSliderRange({ min, max, onChange, initialValue, placeholder
       <TextInput
         // type="number"
         className={`${styles.rangeInput} ${isValidTextValue ? '' : styles.invalid}`}
-        autoFocus
+        // autoFocus
         size="xs"
         variant="unstyled"
         placeholder={placeholder}
@@ -110,7 +107,7 @@ export function InputSliderRange({ min, max, onChange, initialValue, placeholder
         // step={1}
         value={[value.min ?? min, value.max ?? max]}
         minRange={0}
-        label={null}
+        // label={null}
         //label={(val) => <TextInput value={val} />}
         // labelAlwaysOn
         onChange={([newMin, newMax]) => onValueChanged({ min: newMin, max: newMax })}
