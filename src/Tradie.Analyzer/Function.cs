@@ -70,6 +70,7 @@ public class Function {
 						.AddSingleton<IModifierRepository, ModifierDbRepository>()
 						.AddSingleton<IAffixRangeRepository, AffixRangeRepository>()
 						.AddSingleton<IPersistentEntityConverter<ItemType>, ItemTypeConverter>()
+						.AddSingleton<IPseudoModCalculator, PseudoModCalculator>()
 						.AddSingleton<IItemTypeRepository, ItemTypeDbRepository>()
 						.AddSingleton<IAnalyzedStashTabDispatcher, AnalyzedStashTabKinesisDispatcher>()
 						.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>();

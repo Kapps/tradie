@@ -10,13 +10,12 @@ internal static class QueryMatcher {
 			switch(group.Kind) {
 				case GroupKind.And:
 					foreach(var searchRange in group.Ranges) {
-						var range = item.FindAffix(searchRange.Key);
-						if(!range.HasValue) {
+						float sum = item.GetAffixValue(searchRange.Key);
+						if(sum == 0) {
 							return false;
 						}
 
-						var val = range.Value.Value;
-						if(val < searchRange.MinValue || val > searchRange.MaxValue)
+						if(sum < searchRange.MinValue || sum > searchRange.MaxValue)
 							return false;
 					}
 					break;

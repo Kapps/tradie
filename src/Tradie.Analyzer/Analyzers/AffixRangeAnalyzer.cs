@@ -8,26 +8,32 @@ using Tradie.Common;
 namespace Tradie.Analyzer.Analyzers;
 
 public class AffixRangeAnalyzer : IItemAnalyzer {
+	public int Order => 100;
+	
 	public AffixRangeAnalyzer(IAffixRangeRepository repo) {
 		this._repo = repo;
 	}
 
 	[SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
 	public async ValueTask AnalyzeItems(AnalyzedItem[] items) {
-		var raw = items.Select(c => c.RawItem);
-		var implicits = this.ExtractRanges(raw.SelectMany(c => c.ImplicitMods.ConcatMany(c.UtilityMods)), ModKind.Implicit);
-		var explicits = this.ExtractRanges(raw.SelectMany(c => c.ExplicitMods.ConcatMany(c.FracturedMods, c.VeiledMods, c.CraftedMods)),
-			ModKind.Explicit);
-		var enchants = this.ExtractRanges(raw.SelectMany(c => c.EnchantMods ?? Array.Empty<string>()), // Skip cosmetics
-			ModKind.Enchant);
-
-		var ranges = implicits.ConcatMany(explicits, enchants);
+		var modDetails = items.Select(c=>c.Analysis.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers)).ToArray();
+		//var raw = items.Select(c => c.RawItem);
+		var implicits = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
+			.Where(c => c.Kind == ModKind.Implicit || c.Kind == ModKind.Utility), ModKind.Implicit);
+		var explicits = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
+			.Where(c => c.Kind == ModKind.Explicit || c.Kind == ModKind.Fractured || c.Kind == ModKind.Crafted || c.Kind == ModKind.Veiled), ModKind.Explicit);
+		var enchants = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
+			.Where(c => c.Kind == ModKind.Enchant), ModKind.Enchant);
+		var pseudo = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
+			.Where(c => c.Kind == ModKind.Pseudo), ModKind.Pseudo); 
+		
+		var ranges = implicits.ConcatMany(explicits, enchants, pseudo);
 
 		await this._repo.UpsertRanges(ranges, CancellationToken.None);
 	}
 
-	private IEnumerable<AffixRange> ExtractRanges(IEnumerable<string> raw, ModKind kind) {
-		var affixes = ModParser.ExtractAffixes(raw, kind);
+	private IEnumerable<AffixRange> ExtractRanges(IEnumerable<Affix> affixes, ModKind kind) {
+		//var affixes = ModParser.ExtractAffixes(raw, kind);
 		return affixes.GroupBy(c => c.Hash).Select(c => c.Aggregate(
 			new AffixRange(c.Key, null, null, AffixRangeEntityKind.Modifier, kind.GetCategory()),
 			(a, b) => a with {

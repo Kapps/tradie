@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Npgsql;
 using Tradie.Analyzer.Entities;
+using Tradie.Analyzer.Models;
 using Tradie.Common;
 
 namespace Tradie.Analyzer.Repos;
@@ -100,6 +101,9 @@ public class AnalysisContext : DbContext {
 			.HasMethod("GIN");
 		modelBuilder.Entity<AffixRange>()
 			.HasKey(c => new { c.ModHash, c.ModCategory, c.EntityKind });
+		modelBuilder.Entity<Modifier>()
+			.HasData(PseudoMods.AllPseudoModifiers);
+		
 		base.OnModelCreating(modelBuilder);
 	}
 }

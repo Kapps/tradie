@@ -10,27 +10,33 @@ namespace Tradie.Analyzer.Analyzers;
 /// affixes and efficiently adding them to the analysis of each item.
 /// </summary>
 public class ModifierAnalyzer : IItemAnalyzer {
+	public int Order => 50;
+	
 	/// <summary>
 	/// Unique ID of this analyzer.
 	/// </summary>
-	public static ushort Id { get; } = (ushort)KnownAnalyzers.Modifiers;
+	public static ushort Id { get; } = KnownAnalyzers.Modifiers;
 
 	/// <summary>
 	/// Creates a new analyzer that uses the given converter to transform raw modifiers.
 	/// </summary>
-	public ModifierAnalyzer(IModConverter converter) {
+	public ModifierAnalyzer(IModConverter converter, IPseudoModCalculator pseudoModCalculator) {
 		this._converter = converter ?? throw new ArgumentNullException(nameof(converter));
+		this._pseudoModCalculator = pseudoModCalculator ?? throw new ArgumentNullException(nameof(pseudoModCalculator));
 	}
 
 	public async ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		await this._converter.ConvertModifiers(items.Select(c => c.RawItem));
 		
 		foreach(var item in items) {
-			var affixes = this._converter.ExtractAffixes(item.RawItem);
+			var affixes = this._converter.ExtractAffixes(item.RawItem).ToArray();
+			var pseudoMods = this._pseudoModCalculator.CalculatePseduoMods(item, affixes);
+			
 			byte prefixCount = (byte)(item.RawItem.ExtendedProperties?.Prefixes ?? 0);
 			byte suffixCount = (byte)(item.RawItem.ExtendedProperties?.Suffixes ?? 0);
+
 			//var props = new ItemAffixesAnalysis(affixes.ToDictionary(c=>new ModKey(c.Hash, c.Kind)));
-			var props = new ItemAffixesAnalysis(affixes.ToArray(), prefixCount, suffixCount);
+			var props = new ItemAffixesAnalysis(affixes.Concat(pseudoMods).ToArray(), prefixCount, suffixCount);
 			item.Analysis.PushAnalysis(Id, props);
 		}
 	}
@@ -40,6 +46,7 @@ public class ModifierAnalyzer : IItemAnalyzer {
 	}
 
 	private readonly IModConverter _converter;
+	private readonly IPseudoModCalculator _pseudoModCalculator;
 }
 
 /// <summary>

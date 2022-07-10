@@ -11,9 +11,10 @@ public class ModifierAnalyzerTests : TestBase {
 
 	[TestInitialize]
 	public void Initializer() {
-		this._analyzer = new ModifierAnalyzer(this._converter.Object);
+		this._analyzer = new ModifierAnalyzer(this._converter.Object, this._pseudoModCalculator.Object);
 	}
 
 	private ModifierAnalyzer _analyzer = null!;
 	private Mock<IModConverter> _converter = null!;
+	private Mock<IPseudoModCalculator> _pseudoModCalculator = null!;
 }

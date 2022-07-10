@@ -14,7 +14,9 @@ namespace Tradie.Analyzer.Analyzers;
 public class ItemDetailsAnalyzer : IItemAnalyzer {
 	
 	public static ushort Id { get; } = KnownAnalyzers.ItemDetails;
-	
+
+	public int Order => 10;
+
 	public ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		foreach(var item in items) {
 			var raw = item.RawItem;

@@ -1,6 +1,7 @@
 ﻿using DeepEqual.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Repos;
@@ -18,7 +19,7 @@ public class ModifierRepositoryTest : TestBase {
 	[TestMethod]
 	public async Task TestModifierRepo_EmptyDataSet() {
 		var results = await this._repo.RetrieveAll();
-		Assert.IsTrue(results.Length == 0);
+		Assert.AreEqual(0, results.Count(c=>c.Kind != ModifierKind.Pseudo));
 
 		results = await this._repo.LoadByModHash(new[] { 123UL, 456UL });
 		Assert.IsTrue(results.Length == 0);
@@ -52,7 +53,7 @@ public class ModifierRepositoryTest : TestBase {
 
 		await this._repo.Insert(new[] { mod });
 
-		var returned = await this._context.Modifiers.SingleAsync();
+		var returned = await this._context.Modifiers.SingleAsync(c=>c.Kind != ModifierKind.Pseudo);
 
 		returned.WithDeepEqual(mod)
 			.IgnoreProperty<Modifier>(c=>c.Id)

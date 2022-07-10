@@ -1,8 +1,7 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.Intrinsics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Models;
 
 namespace Tradie.Indexer.Storage;
 
@@ -40,7 +39,41 @@ public readonly struct Item : IComparable<Item> {
 		});
 	}
 
+	/// <summary>
+	/// Returns the value of the given modifier on this item, or zero if the modifier is not found.
+	/// </summary>
+	public float GetAffixValue(ModKey modifier) {
+		if(modifier.Kind == ModKind.Total) {
+			float sum = 0;
+			foreach(var affix in this.Affixes) {
+				if(affix.Modifier.ModHash == modifier.ModHash)
+					sum += affix.Value;
+			}
+
+			return sum;
+		}
+		
+		foreach(var affix in this.Affixes) {
+			if(affix.Modifier == modifier)
+				return affix.Value;
+		}
+
+		return 0;
+	}
+
+	/// <summary>
+	/// Returns the affix with the given key, or null if none was found.
+	/// In the case of a total modifier kind, it is not defined which affix will be returned if multiple match.
+	/// </summary>
 	public Affix? FindAffix(ModKey modifier) {
+		if(modifier.Kind == ModKind.Total) {
+			foreach(var affix in this.Affixes) {
+				if(affix.Modifier.ModHash == modifier.ModHash)
+					return affix;
+			}
+
+			return null;
+		}
 		foreach(var affix in this.Affixes) {
 			if(affix.Modifier == modifier)
 				return affix;

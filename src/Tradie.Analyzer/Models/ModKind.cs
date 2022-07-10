@@ -14,6 +14,8 @@ public enum ModKind : byte {
 	Cosmetic = 7,
 	Veiled = 8,
 	Crafted = 9,
+	Total = 10,
+	Pseudo = 11
 }
 
 /// <summary>
@@ -32,6 +34,10 @@ public enum ModKindCategory : byte {
 	/// Explicit modifiers. Includes fractured and veiled mods.
 	/// </summary>
 	Explicit,
+	/// <summary>
+	/// Pseudo modifiers that encompass all other modifiers or combinations of them.
+	/// </summary>
+	Pseudo
 }
 
 public static class ModKindExtensions {
@@ -50,6 +56,8 @@ public static class ModKindExtensions {
 			case ModKind.Crafted:
 			case ModKind.Unknown:
 				return ModKindCategory.Explicit;
+			case ModKind.Pseudo:
+				return ModKindCategory.Pseudo;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(kind));
 		}

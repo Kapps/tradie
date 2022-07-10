@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tradie.Analyzer;
@@ -12,9 +13,10 @@ using Tradie.Analyzer.Repos;
 namespace Tradie.Analyzer.Migrations
 {
     [DbContext(typeof(AnalysisContext))]
-    partial class AnalysisContextModelSnapshot : ModelSnapshot
+    [Migration("20220709230417_InsertPseudoMods")]
+    partial class InsertPseudoMods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,13 +224,6 @@ namespace Tradie.Analyzer.Migrations
                             Kind = 1,
                             ModHash = 13132978022138495920m,
                             ModifierText = "+# Total Elemental Resistances"
-                        },
-                        new
-                        {
-                            Id = 1890204000,
-                            Kind = 1,
-                            ModHash = 2780892169640653766m,
-                            ModifierText = "+# Total Chaos Resistance"
                         });
                 });
 

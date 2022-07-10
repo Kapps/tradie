@@ -13,6 +13,8 @@ namespace Tradie.Analyzer.Analyzers;
 /// An analyzer that scans for new base types and records them as they come in.
 /// </summary>
 public class ItemTypeAnalyzer : IItemAnalyzer {
+	public int Order => 10;
+	
 	private readonly ILogger<ItemTypeAnalyzer> _logger;
 	public static ushort Id { get; } = KnownAnalyzers.ItemType;
 

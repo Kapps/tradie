@@ -49,10 +49,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Analyzers\AffixRangeAnalyzerTests.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="Analyzers\AffixRangeAnalyzerTests.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
       <Content Include="SampleItems\rangetest.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

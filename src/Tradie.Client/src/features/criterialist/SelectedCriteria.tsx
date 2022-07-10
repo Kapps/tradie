@@ -214,7 +214,14 @@ export function SelectedCriteria({
           <Divider />
           <Space h={10} />
           <Group position="apart">
-            <Switch size="lg" offLabel="OFF" onLabel="ON" checked={criteriaValue.enabled} onChange={onEnabledChanged} />
+            <Switch
+              color="orange"
+              size="lg"
+              offLabel="OFF"
+              onLabel="ON"
+              checked={criteriaValue.enabled}
+              onChange={onEnabledChanged}
+            />
             <ActionIcon color="orange" title="Save" onClick={onClose}>
               <ImCheckmark />
             </ActionIcon>

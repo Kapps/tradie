@@ -27,7 +27,7 @@ public partial class Requirements {
 }
 
 public partial class ItemType {
-	public static implicit operator Entities.ItemType?(ItemType itemType) {
+	public static implicit operator Entities.ItemType(ItemType itemType) {
 		return new(itemType.Id, itemType.Name, itemType.Category, itemType.Subcategories?.ToArray() ?? Array.Empty<string>(),
 			itemType.Requirements, itemType.IconUrl, itemType.Width, itemType.Height);
 	}

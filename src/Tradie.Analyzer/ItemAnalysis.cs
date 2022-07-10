@@ -58,6 +58,12 @@ public struct ItemAnalysis {
 		}
 	}
 	
+	public ItemAnalysis(string itemId, params IAnalyzedProperties[] properties) : this(itemId) {
+		foreach(var prop in properties) {
+			this._properties.Add(KnownAnalyzers.GetAnalyzerIdForType(prop.GetType()), prop);
+		}
+	}
+	
 	/// <summary>
 	/// Appends an analyzed set of properties for this item to the properties collection.
 	/// </summary>

@@ -8,6 +8,8 @@ namespace Tradie.Analyzer.Analyzers;
 /// An Item Analyzer that extracts out basic properties from the raw item and analyzes the trade aspects, such as price.
 /// </summary>
 public class TradePropertiesAnalyzer : IItemAnalyzer {
+	public int Order => 100;
+	
 	public static ushort Id { get; } = (ushort)KnownAnalyzers.TradeAttributes;
 
 	public ValueTask AnalyzeItems(AnalyzedItem[] items) {
