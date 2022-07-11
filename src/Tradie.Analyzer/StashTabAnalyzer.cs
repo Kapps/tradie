@@ -19,7 +19,7 @@ public interface IStashTabAnalyzer {
 /// </summary>
 public class StashTabAnalyzer : IStashTabAnalyzer {
 	public StashTabAnalyzer(IItemAnalyzer[] analyzers) {
-		this._analyzers = analyzers;
+		this._analyzers = analyzers.OrderBy(c=>c.Order).ToArray();
 	}
 
 	public async ValueTask<AnalyzedStashTab> AnalyzeTab(RawStashTab tab) {
@@ -28,7 +28,7 @@ public class StashTabAnalyzer : IStashTabAnalyzer {
 				tab.AccountName, tab.League, tab.Type, Array.Empty<ItemAnalysis>());
 		}
 		
-		var items = tab.Items!.Select(c => new AnalyzedItem(c)).ToArray();
+		var items = tab.Items.Select(c => new AnalyzedItem(c)).ToArray();
 		
 		//await Parallel.ForEachAsync(this._analyzers, (c, token) => c.AnalyzeItems(items));
 		foreach(var analyzer in this._analyzers) {

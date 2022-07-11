@@ -77,7 +77,8 @@ proto.Modifier.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     hash: jspb.Message.getFieldWithDefault(msg, 2, "0"),
-    text: jspb.Message.getFieldWithDefault(msg, 3, "")
+    text: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    kind: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -126,6 +127,10 @@ proto.Modifier.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setText(value);
       break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setKind(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -173,6 +178,13 @@ proto.Modifier.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getKind();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
       f
     );
   }
@@ -230,6 +242,24 @@ proto.Modifier.prototype.getText = function() {
  */
 proto.Modifier.prototype.setText = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional int32 kind = 4;
+ * @return {number}
+ */
+proto.Modifier.prototype.getKind = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.Modifier} returns this
+ */
+proto.Modifier.prototype.setKind = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
 };
 
 

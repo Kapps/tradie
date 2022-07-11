@@ -53,6 +53,9 @@ export enum ModKind {
   Fractured = 6,
   Cosmetic = 7,
   Veiled = 8,
+  Crafted = 9,
+  Total = 10,
+  Pseudo = 11
 }
 
 export enum SearchGroupKind {

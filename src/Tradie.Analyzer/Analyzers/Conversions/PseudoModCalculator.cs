@@ -61,8 +61,8 @@ public class PseudoModCalculator : IPseudoModCalculator {
 				case 2655376461128714087: 
 					var itemDetails = item.Analysis.GetRequired<ItemDetailsAnalysis>(KnownAnalyzers.ItemDetails);
 					if(itemDetails.Flags.HasFlag(ItemFlags.Corrupted)) {
-						totalRes += affix.Scalar;
-						totalEleRes += affix.Scalar;
+						totalRes += affix.Scalar * 3;
+						totalEleRes += affix.Scalar * 3;
 					}
 					break;
 			}
@@ -78,5 +78,5 @@ public class PseudoModCalculator : IPseudoModCalculator {
 			yield return Create(PseudoMods.TotalEleRes, totalEleRes);
 	}
 
-	private static Affix Create(Modifier mod, double value) => new(mod.ModHash, value, ModKind.Total);
+	private static Affix Create(Modifier mod, double value) => new(mod.ModHash, value, ModKind.Pseudo);
 }

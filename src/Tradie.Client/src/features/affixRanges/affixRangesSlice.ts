@@ -20,7 +20,7 @@ export const loadAffixRanges = createAsyncThunk('affixRanges/loadRanges', async 
 export const selectAllRanges = (state: RootState) => state.affixRanges.ranges;
 
 export const selectAffixRange = (modHash: string, entityKind: AffixRangeEntityKind, category: ModKindCategory) =>
-  (state: RootState) => state.affixRanges.ranges.find(c => c.modHash === modHash && c.entityKind === entityKind && c.modKindCategory === category);
+  (state: RootState) => state.affixRanges.ranges.find(c => c.modHash === modHash && c.entityKind === entityKind && (c.modKindCategory === category || c.modKindCategory === ModKindCategory.Pseudo));
 
 export const affixRangesSlice = createSlice({
   name: 'affixRanges',

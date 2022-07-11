@@ -99,6 +99,11 @@ export function SearchResultCard({ item, index }: SearchResultCardProps) {
                   section={ModKind.Veiled}
                   includeSeparator={false}
                 />
+                <ModifierSection
+                  modifiers={affixProperties.affixes}
+                  section={ModKind.Pseudo}
+                  includeSeparator={false}
+                />
                 <ModifierSection modifiers={affixProperties.affixes} section={ModKind.Cosmetic} />
                 <div className={styles.separator} />
               </Stack>

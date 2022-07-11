@@ -12,6 +12,9 @@ export class Modifier extends jspb.Message {
   getText(): string;
   setText(value: string): Modifier;
 
+  getKind(): number;
+  setKind(value: number): Modifier;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Modifier.AsObject;
   static toObject(includeInstance: boolean, msg: Modifier): Modifier.AsObject;
@@ -25,6 +28,7 @@ export namespace Modifier {
     id: number,
     hash: string,
     text: string,
+    kind: number,
   }
 }
 

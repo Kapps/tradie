@@ -24,13 +24,14 @@ namespace Tradie.Analyzer.Proto {
     static ModifierReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CiRNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vTW9kaWZpZXIucHJvdG8iNgoITW9k",
+            "CiRNb2RlbHMvQW5hbHl6ZXIvUHJvdG8vTW9kaWZpZXIucHJvdG8iRAoITW9k",
             "aWZpZXISCgoCaWQYASABKAUSEAoEaGFzaBgCIAEoA0ICMAESDAoEdGV4dBgD",
-            "IAEoCUIYqgIVVHJhZGllLkFuYWx5emVyLlByb3RvYgZwcm90bzM="));
+            "IAEoCRIMCgRraW5kGAQgASgFQhiqAhVUcmFkaWUuQW5hbHl6ZXIuUHJvdG9i",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Modifier), global::Tradie.Analyzer.Proto.Modifier.Parser, new[]{ "Id", "Hash", "Text" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Modifier), global::Tradie.Analyzer.Proto.Modifier.Parser, new[]{ "Id", "Hash", "Text", "Kind" }, null, null, null, null)
           }));
     }
     #endregion
@@ -74,6 +75,7 @@ namespace Tradie.Analyzer.Proto {
       id_ = other.id_;
       hash_ = other.hash_;
       text_ = other.text_;
+      kind_ = other.kind_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -119,6 +121,18 @@ namespace Tradie.Analyzer.Proto {
       }
     }
 
+    /// <summary>Field number for the "kind" field.</summary>
+    public const int KindFieldNumber = 4;
+    private int kind_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Kind {
+      get { return kind_; }
+      set {
+        kind_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -137,6 +151,7 @@ namespace Tradie.Analyzer.Proto {
       if (Id != other.Id) return false;
       if (Hash != other.Hash) return false;
       if (Text != other.Text) return false;
+      if (Kind != other.Kind) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -147,6 +162,7 @@ namespace Tradie.Analyzer.Proto {
       if (Id != 0) hash ^= Id.GetHashCode();
       if (Hash != 0L) hash ^= Hash.GetHashCode();
       if (Text.Length != 0) hash ^= Text.GetHashCode();
+      if (Kind != 0) hash ^= Kind.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -177,6 +193,10 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(26);
         output.WriteString(Text);
       }
+      if (Kind != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Kind);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -199,6 +219,10 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(26);
         output.WriteString(Text);
       }
+      if (Kind != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Kind);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -217,6 +241,9 @@ namespace Tradie.Analyzer.Proto {
       }
       if (Text.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Text);
+      }
+      if (Kind != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Kind);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -238,6 +265,9 @@ namespace Tradie.Analyzer.Proto {
       }
       if (other.Text.Length != 0) {
         Text = other.Text;
+      }
+      if (other.Kind != 0) {
+        Kind = other.Kind;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -266,6 +296,10 @@ namespace Tradie.Analyzer.Proto {
             Text = input.ReadString();
             break;
           }
+          case 32: {
+            Kind = input.ReadInt32();
+            break;
+          }
         }
       }
     #endif
@@ -291,6 +325,10 @@ namespace Tradie.Analyzer.Proto {
           }
           case 26: {
             Text = input.ReadString();
+            break;
+          }
+          case 32: {
+            Kind = input.ReadInt32();
             break;
           }
         }

@@ -10,11 +10,14 @@ export class Modifier {
   hash: string;
   /** Human readable text for the modifier. */
   text: string;
+  /** Whether a standard modifier or pseudo modifier. */
+  kind: number;
 
-  constructor(id: number, hash: string, text: string) {
+  constructor(id: number, hash: string, text: string, kind: number) {
     this.id = id;
     this.hash = hash;
     this.text = text;
+    this.kind = kind;
   }
 
   toProto(): ProtoModifier {
@@ -22,6 +25,7 @@ export class Modifier {
     proto.setId(this.id);
     proto.setHash(this.hash);
     proto.setText(this.text);
+    proto.setKind(this.kind);
     return proto;
   }
 
@@ -30,6 +34,7 @@ export class Modifier {
       proto.getId(),
       proto.getHash(),
       proto.getText(),
+      proto.getKind(),
     );
   }
 }

@@ -26,6 +26,7 @@ export enum PropertyDisplay {
   Modifier,
   Fractured,
   Gem,
+  Pseudo,
 }
 
 export type ModifierPart = {
@@ -69,50 +70,52 @@ export const getPropertyDisplayForCategory = (category: string) => {
 
 const getClassForDisplay = (display: PropertyDisplay) => {
   switch (display) {
-  case PropertyDisplay.Value:
-    return styles.value;
-  case PropertyDisplay.Fire:
-    return styles.fire;
-  case PropertyDisplay.Cold:
-    return styles.cold;
-  case PropertyDisplay.Lightning:
-    return styles.lightning;
-  case PropertyDisplay.Chaos:
-    return styles.chaos;
-  case PropertyDisplay.Enchant:
-    return styles.enchant;
-  case PropertyDisplay.Modified:
-    return styles.modified;
-  case PropertyDisplay.Craft:
-    return styles.crafted;
-  case PropertyDisplay.Normal:
-    return styles.normal;
-  case PropertyDisplay.Magic:
-    return styles.magic;
-  case PropertyDisplay.Rare:
-    return styles.rare;
-  case PropertyDisplay.Unique:
-    return styles.unique;
-  case PropertyDisplay.Currency:
-    return styles.currency;
-  case PropertyDisplay.Property:
-    return styles.property;
-  case PropertyDisplay.Corrupted:
-    return styles.corrupted;
-  case PropertyDisplay.Note:
-    return styles.note;
-  case PropertyDisplay.Modifier:
-    return styles.modifier;
-  case PropertyDisplay.Name:
-    return styles.name;
-  case PropertyDisplay.Fractured:
-    return styles.fractured;
-  case PropertyDisplay.Gem:
+    case PropertyDisplay.Value:
+      return styles.value;
+    case PropertyDisplay.Fire:
+      return styles.fire;
+    case PropertyDisplay.Cold:
+      return styles.cold;
+    case PropertyDisplay.Lightning:
+      return styles.lightning;
+    case PropertyDisplay.Chaos:
+      return styles.chaos;
+    case PropertyDisplay.Enchant:
+      return styles.enchant;
+    case PropertyDisplay.Modified:
+      return styles.modified;
+    case PropertyDisplay.Craft:
+      return styles.crafted;
+    case PropertyDisplay.Normal:
+      return styles.normal;
+    case PropertyDisplay.Magic:
+      return styles.magic;
+    case PropertyDisplay.Rare:
+      return styles.rare;
+    case PropertyDisplay.Unique:
+      return styles.unique;
+    case PropertyDisplay.Currency:
+      return styles.currency;
+    case PropertyDisplay.Property:
+      return styles.property;
+    case PropertyDisplay.Corrupted:
+      return styles.corrupted;
+    case PropertyDisplay.Note:
+      return styles.note;
+    case PropertyDisplay.Modifier:
+      return styles.modifier;
+    case PropertyDisplay.Name:
+      return styles.name;
+    case PropertyDisplay.Fractured:
+      return styles.fractured;
+    case PropertyDisplay.Gem:
       return styles.gem;
-  case PropertyDisplay.Relic:
-    return styles.relic;
-  default:
-    return styles.default;
+    case PropertyDisplay.Relic:
+      return styles.relic;
+    case PropertyDisplay.Pseudo:
+      return styles.pseudo;
+    default:
+      return styles.default;
   }
 };
 

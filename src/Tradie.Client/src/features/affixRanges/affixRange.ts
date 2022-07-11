@@ -10,6 +10,7 @@ export enum ModKindCategory {
   Enchant = 0,
   Implicit = 1,
   Explicit = 2,
+  Pseudo = 3,
 }
 
 export class AffixRange {

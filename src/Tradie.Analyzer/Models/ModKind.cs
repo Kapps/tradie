@@ -56,6 +56,7 @@ public static class ModKindExtensions {
 			case ModKind.Crafted:
 			case ModKind.Unknown:
 				return ModKindCategory.Explicit;
+			case ModKind.Total:
 			case ModKind.Pseudo:
 				return ModKindCategory.Pseudo;
 			default:

@@ -1,3 +1,4 @@
+using System.Data;
 using System.Diagnostics;
 
 namespace Tradie.Indexer.Storage;
@@ -59,7 +60,6 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		// The resulting node gets added to this parent.
 
 		this.Split();
-		this.AssertExpectations();
 	}
 
 	protected internal override void VisitLeafs(Action<ItemTreeLeafNode> visitor) {
@@ -79,6 +79,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		this.Children.Insert(index, item);
 		this.UpdatePrices(item);
 		this.UpdateAffixes(item);
+		this.AssertExpectations();
 	}
 
 	private void Split() {
@@ -105,6 +106,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		this.RecalculateDimensions();
 		this._rightSibling.RecalculateDimensions();
 		this.AssertExpectations();
+		this._rightSibling.AssertExpectations();
 	}
 
 	
@@ -139,7 +141,11 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		} else {
 			var items = this.Children.Items;
 			for(int i = 1; i < items.Length; i++) {
-				Debug.Assert(items[i].ChaosEquivalentPrice >= items[i - 1].ChaosEquivalentPrice);
+				#if DEBUG
+				if(items[i].ChaosEquivalentPrice < items[i - 1].ChaosEquivalentPrice) {
+					throw new DataException("Items are not sorted by price: " + items[i].ChaosEquivalentPrice + " >= " + items[i - 1].ChaosEquivalentPrice);
+				}
+				#endif
 			}
 		}
 	}

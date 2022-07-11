@@ -83,7 +83,7 @@ public readonly struct Item : IComparable<Item> {
 	}
 	
 	int IComparable<Item>.CompareTo(Item other) {
-		if(Math.Abs(this.ChaosEquivalentPrice - other.ChaosEquivalentPrice) < 0.01) {
+		if(Math.Abs(this.ChaosEquivalentPrice - other.ChaosEquivalentPrice) < 0.0001) {
 			return String.Compare(this.Id, other.Id, StringComparison.Ordinal);
 		}
 
