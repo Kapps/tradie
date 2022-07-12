@@ -32,7 +32,7 @@ const getMinMax = (criteriaId: string) => {
   const criteria = useAppSelector(selectCriteria(criteriaId))!;
   if (criteria.kind === CriteriaKind.MODIFIER) {
     const range = useAppSelector(
-      selectAffixRange(criteria.modifierHash!, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo),
+      selectAffixRange(criteria.modifier!.hash!, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo),
     );
     return range ? [range?.minValue, range?.maxValue] : null;
   }

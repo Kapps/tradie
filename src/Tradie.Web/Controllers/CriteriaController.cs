@@ -71,7 +71,10 @@ public class CriteriaController : IAsyncDisposable {
 			Id = $"mod-{c.Id}",
 			Name = c.ModifierText,
 			Kind = CriteriaKind.Modifier,
-			ModifierHash = (long)c.ModHash
+			Modifier = new() {
+				Kind = (int)c.Kind,
+				ModifierHash = (long)c.ModHash
+			}
 			/*Modifier = new Modifier() {
 				Hash = (long)c.ModHash,
 				Id = c.Id,

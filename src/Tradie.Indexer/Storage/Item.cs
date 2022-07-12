@@ -43,6 +43,8 @@ public readonly struct Item : IComparable<Item> {
 	/// Returns the value of the given modifier on this item, or zero if the modifier is not found.
 	/// </summary>
 	public float GetAffixValue(ModKey modifier) {
+		// TODO: This should binary search.
+
 		if(modifier.Kind == ModKind.Total) {
 			float sum = 0;
 			foreach(var affix in this.Affixes) {
@@ -66,6 +68,7 @@ public readonly struct Item : IComparable<Item> {
 	/// In the case of a total modifier kind, it is not defined which affix will be returned if multiple match.
 	/// </summary>
 	public Affix? FindAffix(ModKey modifier) {
+		// TODO: This should binary search.
 		if(modifier.Kind == ModKind.Total) {
 			foreach(var affix in this.Affixes) {
 				if(affix.Modifier.ModHash == modifier.ModHash)

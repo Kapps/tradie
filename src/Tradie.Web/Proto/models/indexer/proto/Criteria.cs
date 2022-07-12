@@ -24,19 +24,21 @@ namespace Tradie.Analyzer.Proto {
     static CriteriaReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CiNNb2RlbHMvSW5kZXhlci9Qcm90by9Dcml0ZXJpYS5wcm90byK+AQoIQ3Jp",
+            "CiNNb2RlbHMvSW5kZXhlci9Qcm90by9Dcml0ZXJpYS5wcm90byLJAQoIQ3Jp",
             "dGVyaWESCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIbCgRraW5kGAMgASgO",
-            "Mg0uQ3JpdGVyaWFLaW5kEhoKDG1vZGlmaWVySGFzaBgKIAEoA0ICMAFIABIQ",
-            "CgZsZWFndWUYCyABKAlIABISCghjYXRlZ29yeRgMIAEoCUgAEhUKC3N1YmNh",
-            "dGVnb3J5GA0gASgJSAASFAoKaXRlbVR5cGVJZBgOIAEoBUgAQgwKCnVuZGVy",
-            "bHlpbmcqbwoMQ3JpdGVyaWFLaW5kEgsKB1VOS05PV04QABIMCghNT0RJRklF",
-            "UhABEgoKBkxFQUdVRRACEgwKCENBVEVHT1JZEAMSDwoLU1VCQ0FURUdPUlkQ",
-            "BBINCglJVEVNX1RZUEUQBRIKCgZVTklRVUUQBkIYqgIVVHJhZGllLkFuYWx5",
-            "emVyLlByb3RvYgZwcm90bzM="));
+            "Mg0uQ3JpdGVyaWFLaW5kEiUKCG1vZGlmaWVyGAogASgLMhEuTW9kaWZpZXJD",
+            "cml0ZXJpYUgAEhAKBmxlYWd1ZRgLIAEoCUgAEhIKCGNhdGVnb3J5GAwgASgJ",
+            "SAASFQoLc3ViY2F0ZWdvcnkYDSABKAlIABIUCgppdGVtVHlwZUlkGA4gASgF",
+            "SABCDAoKdW5kZXJseWluZyI6ChBNb2RpZmllckNyaXRlcmlhEhgKDG1vZGlm",
+            "aWVySGFzaBgBIAEoA0ICMAESDAoEa2luZBgCIAEoBSpvCgxDcml0ZXJpYUtp",
+            "bmQSCwoHVU5LTk9XThAAEgwKCE1PRElGSUVSEAESCgoGTEVBR1VFEAISDAoI",
+            "Q0FURUdPUlkQAxIPCgtTVUJDQVRFR09SWRAEEg0KCUlURU1fVFlQRRAFEgoK",
+            "BlVOSVFVRRAGQhiqAhVUcmFkaWUuQW5hbHl6ZXIuUHJvdG9iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Tradie.Analyzer.Proto.CriteriaKind), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Criteria), global::Tradie.Analyzer.Proto.Criteria.Parser, new[]{ "Id", "Name", "Kind", "ModifierHash", "League", "Category", "Subcategory", "ItemTypeId" }, new[]{ "Underlying" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.Criteria), global::Tradie.Analyzer.Proto.Criteria.Parser, new[]{ "Id", "Name", "Kind", "Modifier", "League", "Category", "Subcategory", "ItemTypeId" }, new[]{ "Underlying" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Analyzer.Proto.ModifierCriteria), global::Tradie.Analyzer.Proto.ModifierCriteria.Parser, new[]{ "ModifierHash", "Kind" }, null, null, null, null)
           }));
     }
     #endregion
@@ -94,8 +96,8 @@ namespace Tradie.Analyzer.Proto {
       name_ = other.name_;
       kind_ = other.kind_;
       switch (other.UnderlyingCase) {
-        case UnderlyingOneofCase.ModifierHash:
-          ModifierHash = other.ModifierHash;
+        case UnderlyingOneofCase.Modifier:
+          Modifier = other.Modifier.Clone();
           break;
         case UnderlyingOneofCase.League:
           League = other.League;
@@ -156,15 +158,15 @@ namespace Tradie.Analyzer.Proto {
       }
     }
 
-    /// <summary>Field number for the "modifierHash" field.</summary>
-    public const int ModifierHashFieldNumber = 10;
+    /// <summary>Field number for the "modifier" field.</summary>
+    public const int ModifierFieldNumber = 10;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public long ModifierHash {
-      get { return underlyingCase_ == UnderlyingOneofCase.ModifierHash ? (long) underlying_ : 0L; }
+    public global::Tradie.Analyzer.Proto.ModifierCriteria Modifier {
+      get { return underlyingCase_ == UnderlyingOneofCase.Modifier ? (global::Tradie.Analyzer.Proto.ModifierCriteria) underlying_ : null; }
       set {
         underlying_ = value;
-        underlyingCase_ = UnderlyingOneofCase.ModifierHash;
+        underlyingCase_ = value == null ? UnderlyingOneofCase.None : UnderlyingOneofCase.Modifier;
       }
     }
 
@@ -220,7 +222,7 @@ namespace Tradie.Analyzer.Proto {
     /// <summary>Enum of possible cases for the "underlying" oneof.</summary>
     public enum UnderlyingOneofCase {
       None = 0,
-      ModifierHash = 10,
+      Modifier = 10,
       League = 11,
       Category = 12,
       Subcategory = 13,
@@ -258,7 +260,7 @@ namespace Tradie.Analyzer.Proto {
       if (Id != other.Id) return false;
       if (Name != other.Name) return false;
       if (Kind != other.Kind) return false;
-      if (ModifierHash != other.ModifierHash) return false;
+      if (!object.Equals(Modifier, other.Modifier)) return false;
       if (League != other.League) return false;
       if (Category != other.Category) return false;
       if (Subcategory != other.Subcategory) return false;
@@ -274,7 +276,7 @@ namespace Tradie.Analyzer.Proto {
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Kind != global::Tradie.Analyzer.Proto.CriteriaKind.Unknown) hash ^= Kind.GetHashCode();
-      if (underlyingCase_ == UnderlyingOneofCase.ModifierHash) hash ^= ModifierHash.GetHashCode();
+      if (underlyingCase_ == UnderlyingOneofCase.Modifier) hash ^= Modifier.GetHashCode();
       if (underlyingCase_ == UnderlyingOneofCase.League) hash ^= League.GetHashCode();
       if (underlyingCase_ == UnderlyingOneofCase.Category) hash ^= Category.GetHashCode();
       if (underlyingCase_ == UnderlyingOneofCase.Subcategory) hash ^= Subcategory.GetHashCode();
@@ -310,9 +312,9 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(24);
         output.WriteEnum((int) Kind);
       }
-      if (underlyingCase_ == UnderlyingOneofCase.ModifierHash) {
-        output.WriteRawTag(80);
-        output.WriteInt64(ModifierHash);
+      if (underlyingCase_ == UnderlyingOneofCase.Modifier) {
+        output.WriteRawTag(82);
+        output.WriteMessage(Modifier);
       }
       if (underlyingCase_ == UnderlyingOneofCase.League) {
         output.WriteRawTag(90);
@@ -352,9 +354,9 @@ namespace Tradie.Analyzer.Proto {
         output.WriteRawTag(24);
         output.WriteEnum((int) Kind);
       }
-      if (underlyingCase_ == UnderlyingOneofCase.ModifierHash) {
-        output.WriteRawTag(80);
-        output.WriteInt64(ModifierHash);
+      if (underlyingCase_ == UnderlyingOneofCase.Modifier) {
+        output.WriteRawTag(82);
+        output.WriteMessage(Modifier);
       }
       if (underlyingCase_ == UnderlyingOneofCase.League) {
         output.WriteRawTag(90);
@@ -391,8 +393,8 @@ namespace Tradie.Analyzer.Proto {
       if (Kind != global::Tradie.Analyzer.Proto.CriteriaKind.Unknown) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Kind);
       }
-      if (underlyingCase_ == UnderlyingOneofCase.ModifierHash) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ModifierHash);
+      if (underlyingCase_ == UnderlyingOneofCase.Modifier) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Modifier);
       }
       if (underlyingCase_ == UnderlyingOneofCase.League) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(League);
@@ -428,8 +430,11 @@ namespace Tradie.Analyzer.Proto {
         Kind = other.Kind;
       }
       switch (other.UnderlyingCase) {
-        case UnderlyingOneofCase.ModifierHash:
-          ModifierHash = other.ModifierHash;
+        case UnderlyingOneofCase.Modifier:
+          if (Modifier == null) {
+            Modifier = new global::Tradie.Analyzer.Proto.ModifierCriteria();
+          }
+          Modifier.MergeFrom(other.Modifier);
           break;
         case UnderlyingOneofCase.League:
           League = other.League;
@@ -472,8 +477,13 @@ namespace Tradie.Analyzer.Proto {
             Kind = (global::Tradie.Analyzer.Proto.CriteriaKind) input.ReadEnum();
             break;
           }
-          case 80: {
-            ModifierHash = input.ReadInt64();
+          case 82: {
+            global::Tradie.Analyzer.Proto.ModifierCriteria subBuilder = new global::Tradie.Analyzer.Proto.ModifierCriteria();
+            if (underlyingCase_ == UnderlyingOneofCase.Modifier) {
+              subBuilder.MergeFrom(Modifier);
+            }
+            input.ReadMessage(subBuilder);
+            Modifier = subBuilder;
             break;
           }
           case 90: {
@@ -519,8 +529,13 @@ namespace Tradie.Analyzer.Proto {
             Kind = (global::Tradie.Analyzer.Proto.CriteriaKind) input.ReadEnum();
             break;
           }
-          case 80: {
-            ModifierHash = input.ReadInt64();
+          case 82: {
+            global::Tradie.Analyzer.Proto.ModifierCriteria subBuilder = new global::Tradie.Analyzer.Proto.ModifierCriteria();
+            if (underlyingCase_ == UnderlyingOneofCase.Modifier) {
+              subBuilder.MergeFrom(Modifier);
+            }
+            input.ReadMessage(subBuilder);
+            Modifier = subBuilder;
             break;
           }
           case 90: {
@@ -537,6 +552,232 @@ namespace Tradie.Analyzer.Proto {
           }
           case 112: {
             ItemTypeId = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ModifierCriteria : pb::IMessage<ModifierCriteria>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ModifierCriteria> _parser = new pb::MessageParser<ModifierCriteria>(() => new ModifierCriteria());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ModifierCriteria> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Tradie.Analyzer.Proto.CriteriaReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ModifierCriteria() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ModifierCriteria(ModifierCriteria other) : this() {
+      modifierHash_ = other.modifierHash_;
+      kind_ = other.kind_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ModifierCriteria Clone() {
+      return new ModifierCriteria(this);
+    }
+
+    /// <summary>Field number for the "modifierHash" field.</summary>
+    public const int ModifierHashFieldNumber = 1;
+    private long modifierHash_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long ModifierHash {
+      get { return modifierHash_; }
+      set {
+        modifierHash_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "kind" field.</summary>
+    public const int KindFieldNumber = 2;
+    private int kind_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Kind {
+      get { return kind_; }
+      set {
+        kind_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ModifierCriteria);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ModifierCriteria other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ModifierHash != other.ModifierHash) return false;
+      if (Kind != other.Kind) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ModifierHash != 0L) hash ^= ModifierHash.GetHashCode();
+      if (Kind != 0) hash ^= Kind.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ModifierHash != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(ModifierHash);
+      }
+      if (Kind != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Kind);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ModifierHash != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(ModifierHash);
+      }
+      if (Kind != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Kind);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ModifierHash != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ModifierHash);
+      }
+      if (Kind != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Kind);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ModifierCriteria other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ModifierHash != 0L) {
+        ModifierHash = other.ModifierHash;
+      }
+      if (other.Kind != 0) {
+        Kind = other.Kind;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            ModifierHash = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            Kind = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            ModifierHash = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            Kind = input.ReadInt32();
             break;
           }
         }

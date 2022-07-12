@@ -1,6 +1,4 @@
-import { Criteria as ProtoCriteria } from '../../protos/Models/Indexer/Proto/Criteria_pb';
-import { League } from '../leagues/league';
-import { Modifier } from '../modifiers/modifier';
+import { Criteria as ProtoCriteria, ModifierCriteria as ProtoModifierCriteria } from '../../protos/Models/Indexer/Proto/Criteria_pb';
 
 export enum CriteriaKind {
   UNKNOWN = 0,
@@ -16,16 +14,16 @@ export class Criteria {
   id: string;
   name: string;
   kind: CriteriaKind;
-  modifierHash?: string;
+  modifier?: CriteriaModifier;
   league?: string;
   category?: string;
   subcategory?: string;
 
-  constructor(id: string, name: string, kind: CriteriaKind, modifierHash: string, league?: string, category?: string, subcategory?: string) {
+  constructor(id: string, name: string, kind: CriteriaKind, modifier?: CriteriaModifier, league?: string, category?: string, subcategory?: string) {
     this.id = id;
     this.name = name;
     this.kind = kind;
-    this.modifierHash = modifierHash;
+    this.modifier = modifier;
     this.league = league;
     this.category = category;
     this.subcategory = subcategory;
@@ -36,7 +34,7 @@ export class Criteria {
       proto.getId(),
       proto.getName(),
       proto.getKind(),
-      proto.getModifierhash(),
+      proto.getModifier() ? CriteriaModifier.fromProto(proto.getModifier()!) : undefined,
       proto.getLeague(),
       proto.getCategory(),
       proto.getSubcategory(),
@@ -48,8 +46,8 @@ export class Criteria {
     proto.setId(this.id);
     proto.setName(this.name);
     proto.setKind(this.kind);
-    if (this.modifierHash) {
-      proto.setModifierhash(this.modifierHash);
+    if (this.modifier) {
+      proto.setModifier(this.modifier.toProto());
     }
     if (this.league) {
       proto.setLeague(this.league);
@@ -64,10 +62,10 @@ export class Criteria {
   }
 }
 
-export const getLabelForCriteriaKind = (kind: CriteriaKind): string => {
-  switch (kind) {
+export const getLabelForCriteriaKind = (criteria: Criteria): string => {
+  switch (criteria.kind) {
     case CriteriaKind.MODIFIER:
-      return 'Modifier';
+      return criteria.modifier?.kind === ModifierKind.Pseudo ? 'Pseudo' : 'Modifier';
     case CriteriaKind.LEAGUE:
       return 'League';
     case CriteriaKind.CATEGORY:
@@ -79,5 +77,34 @@ export const getLabelForCriteriaKind = (kind: CriteriaKind): string => {
     case CriteriaKind.UNIQUE:
       return 'Unique';
   }
-  throw new Error(`Unsupported criteria kind ${kind}`);
+  throw new Error(`Unsupported criteria kind ${criteria.kind}`);
 };
+
+export enum ModifierKind {
+  Standard = 0,
+  Pseudo = 1,
+}
+
+export class CriteriaModifier {
+  hash: string;
+  kind: ModifierKind;
+
+  constructor(hash: string, kind: ModifierKind) {
+    this.hash = hash;
+    this.kind = kind;
+  }
+
+  static fromProto(proto: ProtoModifierCriteria): CriteriaModifier {
+    return new CriteriaModifier(
+      proto.getModifierhash(),
+      proto.getKind(),
+    );
+  }
+
+  toProto(): ProtoModifierCriteria {
+    const modifier = new ProtoModifierCriteria();
+    modifier.setModifierhash(this.hash);
+    modifier.setKind(this.kind);
+    return modifier;
+  }
+}

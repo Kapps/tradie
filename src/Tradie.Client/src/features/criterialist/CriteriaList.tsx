@@ -53,8 +53,8 @@ export default function CriteriaList({ group }: CriteriaListProps) {
       label: c.name,
       value: c.id.toString(),
       criteriaId: c.id.toString(),
-      group: `${getLabelForCriteriaKind(c.kind)}s`.toUpperCase(),
-      kindLabel: getLabelForCriteriaKind(c.kind),
+      group: `${getLabelForCriteriaKind(c)}s`.toUpperCase(),
+      kindLabel: getLabelForCriteriaKind(c),
     }),
   );
 

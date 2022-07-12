@@ -12,8 +12,10 @@ export class Criteria extends jspb.Message {
   getKind(): CriteriaKind;
   setKind(value: CriteriaKind): Criteria;
 
-  getModifierhash(): string;
-  setModifierhash(value: string): Criteria;
+  getModifier(): ModifierCriteria | undefined;
+  setModifier(value?: ModifierCriteria): Criteria;
+  hasModifier(): boolean;
+  clearModifier(): Criteria;
 
   getLeague(): string;
   setLeague(value: string): Criteria;
@@ -42,7 +44,7 @@ export namespace Criteria {
     id: string,
     name: string,
     kind: CriteriaKind,
-    modifierhash: string,
+    modifier?: ModifierCriteria.AsObject,
     league: string,
     category: string,
     subcategory: string,
@@ -51,11 +53,33 @@ export namespace Criteria {
 
   export enum UnderlyingCase { 
     UNDERLYING_NOT_SET = 0,
-    MODIFIERHASH = 10,
+    MODIFIER = 10,
     LEAGUE = 11,
     CATEGORY = 12,
     SUBCATEGORY = 13,
     ITEMTYPEID = 14,
+  }
+}
+
+export class ModifierCriteria extends jspb.Message {
+  getModifierhash(): string;
+  setModifierhash(value: string): ModifierCriteria;
+
+  getKind(): number;
+  setKind(value: number): ModifierCriteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ModifierCriteria.AsObject;
+  static toObject(includeInstance: boolean, msg: ModifierCriteria): ModifierCriteria.AsObject;
+  static serializeBinaryToWriter(message: ModifierCriteria, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ModifierCriteria;
+  static deserializeBinaryFromReader(message: ModifierCriteria, reader: jspb.BinaryReader): ModifierCriteria;
+}
+
+export namespace ModifierCriteria {
+  export type AsObject = {
+    modifierhash: string,
+    kind: number,
   }
 }
 

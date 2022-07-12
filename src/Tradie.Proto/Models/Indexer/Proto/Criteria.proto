@@ -18,10 +18,15 @@ message Criteria {
   CriteriaKind kind = 3;
   
   oneof underlying {
-    int64 modifierHash = 10 [jstype=JS_STRING];
+    ModifierCriteria modifier = 10;
     string league = 11;
     string category = 12;
     string subcategory = 13;
     int32 itemTypeId = 14;
   }
+}
+
+message ModifierCriteria {
+  int64 modifierHash = 1 [jstype=JS_STRING];
+  int32 kind = 2;
 }

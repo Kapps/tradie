@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AppThunk, RootState } from "../../app/store";
-import { CriteriaKind } from "../criteria/criteria";
+import { CriteriaKind, ModifierKind } from "../criteria/criteria";
 import { selectCriteria } from "../criteria/criteriaSlice";
 import { selectCriteriaGroups } from "../criteriagroups/criteriaGroupsSlice";
 import { selectCriteriaValues } from "../criterialist/criteriaValueSlice";
@@ -36,7 +36,7 @@ export const performSearch = createAsyncThunk('search/performSearch', async (_, 
         .map(
           (c) =>
             new AffixRange(
-              new ModKey(c.criteria!.modifierHash!, ModKind.Explicit),
+              new ModKey(c.criteria!.modifier!.hash!, c.criteria?.modifier!.kind == ModifierKind.Pseudo ? ModKind.Pseudo : ModKind.Total),
               c.value.minValue,
               c.value.maxValue,
             ),
