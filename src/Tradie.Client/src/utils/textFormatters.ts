@@ -32,7 +32,7 @@ export const substituteValuesInText = (text: string, min?: number, max?: number)
   const vals = [min ?? '#', max ?? '#'];
   return text
     .split('')
-    .map((c) => (c === '#' ? `${vals[usedValues++]}` : c))
+    .map((c) => (c === '#' ? `${vals[usedValues++] ?? '?'}` : c))
     .join('');
 };
 

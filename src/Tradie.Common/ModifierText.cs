@@ -44,9 +44,39 @@ public static class ModifierText {
 	/// Otherwise, the average of all numbers in the modifier text is returned.
 	/// </summary>
 	public static double ExtractScalar(string modifierText) {
-		var values = NumericMatcher.Matches(modifierText);
-		return values.Count == 0 ? double.NaN : values.Select(c => int.Parse(c.ValueSpan)).Average();
+		try {
+			var values = NumericMatcher.Match(modifierText);
+			if(!values.Success)
+				return double.NaN;
+			//Console.WriteLine("ExtractScalar: " + modifierText + " -> " + String.Join(", ", values.Captures.Select(c=>c.ValueSpan.ToString())));
+			double sum = 0;
+			int count = 0;
+			for(int i = 2; i < values.Groups.Count; i++) {
+				if(!values.Groups[i].Success)
+					continue;
+				sum += double.Parse(values.Groups[i].ValueSpan.ToString());
+				count++;
+			}
+			if(count == 0)
+				return double.NaN;
+			return sum / count;
+		} catch(Exception ex) {
+			throw new FormatException("Error extracting scalar value from modifier text: " + modifierText, ex);
+		}
 	}
 
-	private static readonly Regex NumericMatcher = new Regex("([0-9]+)", RegexOptions.Compiled);
+	/*private static readonly Regex NumericMatcher = new(
+		//"(?:([\\-0-9\\.]+)(?:(?: to )|(?:\\-))([\\-0-9\\.]+))|([\\-0-9\\.]+)",
+		@"(?:([\-0-9\.]+)\sto\s([\-0-9\.]+))|(?:([\-0-9\.]+)-([\-0-9\.]+))|([\-0-9\.]+)",
+		RegexOptions.Compiled
+	);*/
+	
+	const string Number = "-?[0-9]+(?:\\.[0-9]+)?";
+
+	private static readonly Regex NumericMatcher = new(
+		//@"(?:([\-0-9\.]+)\sto\s([\-0-9\.]+))|(?:([\-0-9\.]+)-([\-0-9\.]+))|([\-0-9\.]+)",
+		$@"((?:({Number}) to ({Number}))|(?:({Number})-({Number}))|(?:({Number})))",
+		RegexOptions.Compiled
+	);
+	//private static readonly Regex NumericMatcher = new("([\\-0-9\\.])+(?:(?: to )|\\-([\\-0-9\\.]+))?", RegexOptions.Compiled);
 }
