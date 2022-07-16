@@ -26,15 +26,22 @@ export const substituteValuesInText = (text: string, min?: number, max?: number)
     return text;
   }
   if (numValues === 1) {
-    return text.replace(/#/, `${getRangeDescription(min, max)}`);
+    return text.replace(/#/, `${getRangeDescription(rounded(min), rounded(max))}`);
   }
   let usedValues = 0;
-  const vals = [min ?? '#', max ?? '#'];
+  const vals = [rounded(min) ?? '#', rounded(max) ?? '#'];
   return text
     .split('')
-    .map((c) => (c === '#' ? `${vals[usedValues++] ?? '?'}` : c))
+    .map((c) => (c === '#' ? `${vals[usedValues++]}` : c))
     .join('');
 };
+
+/**
+ * Returns a properly rounded version of the given number, or NaN if the number is undefined.
+ * @example rounded(0.5) => 0.5
+ * @example rounded(0.5121312) => 0.512
+ */
+export const rounded = (value?: number) => value === undefined ? NaN : Math.round(value * 100 - 1) / 100;
 
 /**
  * Extracts the range of numbers from a string.

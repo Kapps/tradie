@@ -10,7 +10,7 @@ namespace Tradie.Analyzer.Entities;
 /// </summary>
 [Table("Modifiers")]
 [Index(nameof(ModHash), IsUnique = true, Name = "idx_modifier_modhash")]
-[Index(nameof(ModifierText), IsUnique = true, Name = "idx_modifier_modtext")]	
+[Index(nameof(ModifierText), IsUnique = false, Name = "idx_modifier_modtext")]	
 public class Modifier {
 	/// <summary>
 	/// An auto-generated unique identifier for the modifier.
