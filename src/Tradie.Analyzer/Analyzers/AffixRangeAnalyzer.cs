@@ -25,7 +25,7 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 			.Where(c => c.Kind == ModKind.Enchant), ModKind.Enchant);
 		var pseudo = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
 			.Where(c => c.Kind == ModKind.Pseudo), ModKind.Pseudo);
-		var totals = this.ExtractTotalRange(modDetails.SelectMany(c => c.Affixes));
+		var totals = this.ExtractTotalRange(items);
 		
 		var ranges = implicits.ConcatMany(explicits, enchants, pseudo, totals);
 
@@ -42,15 +42,22 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 			})
 		);
 	}
-
-	private IEnumerable<AffixRange> ExtractTotalRange(IEnumerable<Affix> affixes) {
-		return affixes
-			.Where(c => c.Kind != ModKind.Pseudo)
-			.GroupBy(c => c.Hash)
-			.Select(c => {
-				float sum = (float)c.Sum(d => d.Scalar);
-				return new AffixRange(c.Key, sum, sum, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo);
-			});
+	
+	private IEnumerable<AffixRange> ExtractTotalRange(AnalyzedItem[] items) {
+		var totalAffixes = items.SelectMany(item => {
+			var modAnalysis = item.Analysis.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers);
+			return modAnalysis.Affixes
+				.Where(affix => affix.Kind != ModKind.Pseudo)
+				.GroupBy(affix => affix.Hash)
+				.Select(group => new Affix(group.Key, group.Sum(affix => affix.Scalar), ModKind.Total));
+		});
+		return totalAffixes.GroupBy(affix => affix.Hash)
+			.Select(group => group.Aggregate(
+				new AffixRange(group.Key, null, null, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo),
+				(a, b) => a with {
+					MinValue = Math.Min(a.MinValue ?? float.MaxValue, (float)b.Scalar),
+					MaxValue = Math.Max(a.MaxValue ?? float.MinValue, (float)b.Scalar)
+				}));
 	}
 
 	public async ValueTask DisposeAsync() {

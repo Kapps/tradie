@@ -58,7 +58,6 @@ export const memoizePersistent = async <T>(key: string, fn: () => Promise<T>): P
     return data;
   };
 
-  console.log('executing promise');
   const promise = executor();
   loadPromises.set(key, promise);
   return await promise;

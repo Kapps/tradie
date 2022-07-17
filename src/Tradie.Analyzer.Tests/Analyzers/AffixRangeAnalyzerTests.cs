@@ -70,7 +70,7 @@ public class AffixRangeAnalyzerTests : TestBase {
 		this._repo.Setup(c => c.UpsertRanges(expectedRanges.DeepMatcher<IEnumerable<AffixRange>>(), CancellationToken.None))
 			.Returns(Task.CompletedTask);
 
-		await this._analyzer.AnalyzeItems(new[] { item });
+		await this._analyzer.AnalyzeItems(new[] { item, item });
 	}
 
 	private AffixRangeAnalyzer _analyzer = null!;
