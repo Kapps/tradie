@@ -52,7 +52,19 @@ public class AffixRangeAnalyzerTests : TestBase {
 			),
 			new(
 				PseudoMods.TotalEleRes.ModHash, 69, 69, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
-			)
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("20% increased Movement Speed"),
+				50, 50, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("+23% to Cold Resistance"),
+				69, 69, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("Immune to Freeze"),
+				0, 0, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
+			),
 		};
 
 		this._repo.Setup(c => c.UpsertRanges(expectedRanges.DeepMatcher<IEnumerable<AffixRange>>(), CancellationToken.None))

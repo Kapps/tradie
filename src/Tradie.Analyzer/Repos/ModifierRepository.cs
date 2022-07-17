@@ -31,7 +31,7 @@ public class ModifierDbRepository : IModifierRepository {
 	}
 	
 	public Task<Modifier[]> RetrieveAll(CancellationToken cancellationToken = default) {
-		return this._context.Modifiers.OrderBy(c=>c.Kind).ToArrayAsync(cancellationToken);
+		return this._context.Modifiers.OrderBy(c=>c.Kind).ThenBy(c=>c.Id).ToArrayAsync(cancellationToken);
 	}
 
 	public Task<Modifier[]> LoadByModHash(ulong[] hashes, CancellationToken cancellationToken = default) {

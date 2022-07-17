@@ -21,7 +21,7 @@ public class PseudoModCalculatorTests : TestBase {
 		
 		var results = this._calculator.CalculatePseduoMods(default, affixes).ToArray();
 		CollectionAssert.AreEqual(new Affix[] {
-			new(PseudoMods.TotalMaxLife.ModHash, 28, ModKind.Total)
+			new(PseudoMods.TotalMaxLife.ModHash, 28, ModKind.Pseudo)
 		}, results);
 	}
 
@@ -38,9 +38,9 @@ public class PseudoModCalculatorTests : TestBase {
 		Assert.AreEqual(3, results.Length);
 		
 		CollectionAssert.AreEqual(new Affix[] {
-			new(PseudoMods.TotalResists.ModHash, 67, ModKind.Total),
-			new(PseudoMods.TotalChaosRes.ModHash, 15, ModKind.Total),
-			new(PseudoMods.TotalEleRes.ModHash, 52, ModKind.Total)
+			new(PseudoMods.TotalResists.ModHash, 67, ModKind.Pseudo),
+			new(PseudoMods.TotalChaosRes.ModHash, 15, ModKind.Pseudo),
+			new(PseudoMods.TotalEleRes.ModHash, 52, ModKind.Pseudo)
 		}, results);
 	}
 	

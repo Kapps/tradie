@@ -14,7 +14,6 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 		this._repo = repo;
 	}
 
-	[SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
 	public async ValueTask AnalyzeItems(AnalyzedItem[] items) {
 		var modDetails = items.Select(c=>c.Analysis.GetRequired<ItemAffixesAnalysis>(KnownAnalyzers.Modifiers)).ToArray();
 		//var raw = items.Select(c => c.RawItem);
@@ -25,9 +24,10 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 		var enchants = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
 			.Where(c => c.Kind == ModKind.Enchant), ModKind.Enchant);
 		var pseudo = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
-			.Where(c => c.Kind == ModKind.Pseudo), ModKind.Pseudo); 
+			.Where(c => c.Kind == ModKind.Pseudo), ModKind.Pseudo);
+		var totals = this.ExtractTotalRange(modDetails.SelectMany(c => c.Affixes));
 		
-		var ranges = implicits.ConcatMany(explicits, enchants, pseudo);
+		var ranges = implicits.ConcatMany(explicits, enchants, pseudo, totals);
 
 		await this._repo.UpsertRanges(ranges, CancellationToken.None);
 	}
@@ -41,6 +41,16 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 				MaxValue = Math.Max(a.MaxValue ?? float.MinValue, (float)b.Scalar)
 			})
 		);
+	}
+
+	private IEnumerable<AffixRange> ExtractTotalRange(IEnumerable<Affix> affixes) {
+		return affixes
+			.Where(c => c.Kind != ModKind.Pseudo)
+			.GroupBy(c => c.Hash)
+			.Select(c => {
+				float sum = (float)c.Sum(d => d.Scalar);
+				return new AffixRange(c.Key, sum, sum, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo);
+			});
 	}
 
 	public async ValueTask DisposeAsync() {

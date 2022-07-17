@@ -5,16 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tradie.Analyzer.Tests.Analyzers;
 using Tradie.Common.RawModels;
+using Tradie.TestUtils;
 
 namespace Tradie.Analyzer.Tests; 
 
 [TestClass]
-public class StashTabAnalyzerTests {
+public class StashTabAnalyzerTests : TestBase {
 	[TestMethod]
 	public async Task TestAnalyze_NoItems() {
-		var mockAnalyzer = Mock.Of<IItemAnalyzer>(MockBehavior.Strict);
+		this._itemAnalyzer.SetupGet(c => c.Order).Returns(10);
 		var tab = new RawStashTab("foo", false, null, null, null, "", "Scourge", Array.Empty<Item>());
-		var tabAnalyzer = new StashTabAnalyzer(new[] {mockAnalyzer});
+		var tabAnalyzer = new StashTabAnalyzer(new[] {this._itemAnalyzer.Object});
 
 		var analyzed = await tabAnalyzer.AnalyzeTab(tab);
 		Assert.AreEqual("foo", analyzed.StashTabId);
@@ -27,20 +28,22 @@ public class StashTabAnalyzerTests {
 			await ItemUtils.ReadTestItem("boots")
 		};
 		
-		var mockAnalyzer = new Mock<IItemAnalyzer>(MockBehavior.Strict);
-		mockAnalyzer.Setup(c => c.AnalyzeItems(
+		this._itemAnalyzer.SetupGet(c => c.Order).Returns(10);
+		this._itemAnalyzer.Setup(c => c.AnalyzeItems(
 			It.Is<AnalyzedItem[]>(c=>c.Length == 1 && c[0].RawItem == rawItems[0] && !c[0].Analysis.Properties.Any()))
 		).Returns(ValueTask.CompletedTask);
 
 		
 		var rawTab = new RawStashTab("foo", true, "account", "char", "stash", "standard", "Scourge", rawItems);
-		var tabAnalyzer = new StashTabAnalyzer(new[] {mockAnalyzer.Object});
+		var tabAnalyzer = new StashTabAnalyzer(new[] {this._itemAnalyzer.Object});
 
 		var analyzed = await tabAnalyzer.AnalyzeTab(rawTab);
 		
 		Assert.AreEqual("foo", analyzed.StashTabId);
 		Assert.AreEqual(1, analyzed.Items.Length);
 		
-		mockAnalyzer.VerifyAll();
+		this._itemAnalyzer.VerifyAll();
 	}
+
+	private Mock<IItemAnalyzer> _itemAnalyzer = null!;
 }

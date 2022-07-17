@@ -26,12 +26,13 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 
 		var conn = await this._context.GetOpenedConnection<NpgsqlConnection>(CancellationToken.None);
 
-		var comm = new NpgsqlCommand(@"
+		string query = @"
 			SELECT ""PackedItems"", ""Id"", ""RawId"", ""Name"",  ""LastCharacterName"", ""Owner"", ""League"", ""Kind""
 			FROM ""StashTabs""
 			WHERE ""Id"" > $1 AND ($2 IS NULL OR ""League"" = $2 OR ""League"" IS NULL)
-			ORDER BY ""Id"" DESC LIMIT 100000
-		", conn) {
+			--ORDER BY ""Id"" DESC LIMIT 100000
+		";
+		var comm = new NpgsqlCommand(query, conn) {
 			Parameters = {
 				new NpgsqlParameter {Value = previousId, NpgsqlDbType = NpgsqlDbType.Bigint},
 				new NpgsqlParameter {Value = (object?)TradieConfig.League ?? DBNull.Value, NpgsqlDbType = NpgsqlDbType.Text}

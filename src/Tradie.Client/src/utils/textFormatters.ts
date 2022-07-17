@@ -41,7 +41,7 @@ export const substituteValuesInText = (text: string, min?: number, max?: number)
  * @example rounded(0.5) => 0.5
  * @example rounded(0.5121312) => 0.512
  */
-export const rounded = (value?: number) => value === undefined ? NaN : Math.round(value * 100 - 1) / 100;
+export const rounded = (value?: number) => value === undefined ? NaN : Math.round(value * 100) / 100;
 
 /**
  * Extracts the range of numbers from a string.
