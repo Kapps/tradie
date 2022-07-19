@@ -1,3 +1,5 @@
+using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Models;
 using Tradie.Indexer.Storage;
 
 namespace Tradie.Indexer.Search;
@@ -10,7 +12,7 @@ internal static class QueryMatcher {
 			switch(group.Kind) {
 				case GroupKind.And:
 					foreach(var searchRange in group.Ranges) {
-						float sum = item.GetAffixValue(searchRange.Key);
+						float sum = item.GetAffixValue(new ModKey(searchRange.ModHash, ModKind.Total));
 						if(sum == 0) {
 							return false;
 						}
@@ -23,7 +25,7 @@ internal static class QueryMatcher {
 					// For sums, we'll consider it a match if we have any mod being searched for.
 					bool any = false;
 					foreach(var searchRange in group.Ranges) {
-						var range = item.FindAffix(searchRange.Key);
+						var range = item.FindAffix(new ModKey(searchRange.ModHash, ModKind.Total));
 						if(range.HasValue) {
 							any = true;
 							break;
@@ -46,7 +48,7 @@ internal static class QueryMatcher {
 			switch(group.Kind) {
 				case GroupKind.And:
 					foreach(var searchRange in group.Ranges) {
-						var range = treeNode.Affixes.Get(searchRange.Key);
+						var range = treeNode.Affixes.Get(new ModKey(searchRange.ModHash, ModKind.Total));
 						if(searchRange.MinValue > range.MaxValue || searchRange.MaxValue < range.MinValue)
 							return false;
 					}
@@ -55,8 +57,8 @@ internal static class QueryMatcher {
 					// For sums, we'll consider it a match if we have any mod being searched for.
 					bool any = false;
 					foreach(var searchRange in group.Ranges) {
-						var range = treeNode.Affixes.Get(searchRange.Key);
-						if(range.Key != default) {
+						var range = treeNode.Affixes.Get(new ModKey(searchRange.ModHash, ModKind.Total));
+						if(range.ModHash != 0) {
 							any = true;
 							break;
 						}

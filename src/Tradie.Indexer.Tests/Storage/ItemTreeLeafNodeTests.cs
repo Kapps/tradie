@@ -142,7 +142,7 @@ public class ItemTreeLeafNodeTests : TestBase {
 			new Affix(new ModKey(16, ModKind.Implicit), 100)
 		}));
 
-		var affixes = node.Affixes.ToArray().OrderBy(c=>c.Key.ModHash).ThenBy(c=>c.Key.Kind).ToArray();
+		var affixes = node.Affixes.ToArray().OrderBy(c=>c.ModHash).ToArray();
 		Console.WriteLine(affixes);
 		affixes.ShouldDeepEqual(new AffixRange[] {
 			new(12, 32, new ModKey(12, ModKind.Explicit)),

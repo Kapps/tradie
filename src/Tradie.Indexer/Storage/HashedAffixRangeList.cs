@@ -39,7 +39,7 @@ public sealed class HashedAffixRangeList : IDisposable {
     }
 
     public void Add(AffixRange value) {
-	    this._affixRanges.Add(value.Key, value);
+	    this._affixRanges.Add(value.ModHash, value);
     }
 
     public void Clear() {
@@ -54,11 +54,11 @@ public sealed class HashedAffixRangeList : IDisposable {
     }*/
 
     public ref AffixRange GetWithAddingDefault(ModKey searchKey, out bool exists) {
-	    return ref CollectionsMarshal.GetValueRefOrAddDefault(this._affixRanges, searchKey, out exists);
+	    return ref CollectionsMarshal.GetValueRefOrAddDefault(this._affixRanges, searchKey.ModHash, out exists);
     }
 
     public AffixRange Get(ModKey searchKey) {
-	    if(this._affixRanges.TryGetValue(searchKey, out var val))
+	    if(this._affixRanges.TryGetValue(searchKey.ModHash, out var val))
 		    return val;
 	    return default;
     }
@@ -73,5 +73,5 @@ public sealed class HashedAffixRangeList : IDisposable {
 	    return this._affixRanges.Values.ToArray();
     }
 
-    private Dictionary<ModKey, AffixRange> _affixRanges = new();
+    private Dictionary<ulong, AffixRange> _affixRanges = new();
 }

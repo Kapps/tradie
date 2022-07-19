@@ -1,6 +1,8 @@
 using MessagePack;
 using System.Diagnostics;
 using System.Linq;
+using Tradie.Analyzer.Analyzers;
+using Tradie.Analyzer.Models;
 
 namespace Tradie.Indexer.Storage;
 
@@ -103,13 +105,14 @@ public abstract class ItemTreeNode {
 				var affixes = block._affixes;
 				for(int i = 0; i < affixes.Count; i++) {
 					var affix = affixes[i];
-					ref var ours = ref this._affixes.GetWithAddingDefault(affix.Key, out _);
+					var key = new ModKey(affix.ModHash, ModKind.Total);
+					ref var ours = ref this._affixes.GetWithAddingDefault(key, out _);
 					if(affix.MinValue < ours.MinValue) {
-						UpdateAffixIfNeeded(new Affix(affix.Key, affix.MinValue));
+						UpdateAffixIfNeeded(new Affix(key, affix.MinValue));
 					}
 
 					if(affix.MaxValue > ours.MaxValue) {
-						UpdateAffixIfNeeded(new Affix(affix.Key, affix.MaxValue));
+						UpdateAffixIfNeeded(new Affix(key, affix.MaxValue));
 					}
 				}
 			}

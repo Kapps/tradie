@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Tradie.Analyzer.Analyzers;
 
 namespace Tradie.Indexer.Storage;
@@ -7,21 +8,26 @@ namespace Tradie.Indexer.Storage;
 /// </summary>
 public struct AffixRange {
 	/// <summary>
-	/// The lowest value found on an item in this range.
+	/// The size of the AffixRange struct, in bytes, including alignment.
+	/// </summary>
+	public static readonly int StructSize = Marshal.SizeOf<AffixRange>();
+
+	/// <summary>
+	/// The lowest total value found on an item in this range.
 	/// </summary>
 	public float MinValue;
 	/// <summary>
-	/// The highest value found on an item in this range.
+	/// The highest total value found on an item in this range.
 	/// </summary>
 	public float MaxValue;
 	/// <summary>
-	/// The location for the affix.
+	/// The hash of the modifier for this affix.
 	/// </summary>
-	public ModKey Key;
-
-	public AffixRange(float minValue, float maxValue, ModKey key) {
+	public ulong ModHash;
+	
+	public AffixRange(float minValue, float maxValue, ulong modHash) {
 		this.MinValue = minValue;
 		this.MaxValue = maxValue;
-		this.Key = key;
+		this.ModHash = modHash;
 	}
 }

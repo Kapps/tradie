@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -185,3 +185,4 @@ public sealed unsafe class SortedAffixRangeList : IDisposable {
     private int _capacity;
     private int _size;
 }
+*/
