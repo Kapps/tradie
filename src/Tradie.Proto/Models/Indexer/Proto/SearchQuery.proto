@@ -11,7 +11,7 @@ message SearchQuery {
 
 message SearchGroup {
   int32 GroupKind = 1;
-  repeated AffixRange Ranges = 2;
+  repeated SearchRange Ranges = 2;
 }
 
 message SortOrder {
@@ -19,7 +19,7 @@ message SortOrder {
   ModKey Modifier = 2;
 }
 
-message AffixRange {
+message SearchRange {
   ModKey Key = 1;
   float MinValue = 2;
   float MaxValue = 3;

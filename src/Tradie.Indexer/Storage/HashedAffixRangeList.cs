@@ -53,12 +53,15 @@ public sealed class HashedAffixRangeList : IDisposable {
 	    return ref elements[index];
     }*/
 
-    public ref AffixRange GetWithAddingDefault(ModKey searchKey, out bool exists) {
-	    return ref CollectionsMarshal.GetValueRefOrAddDefault(this._affixRanges, searchKey.ModHash, out exists);
+    public ref AffixRange GetWithAddingDefault(ulong modHash, out bool exists) {
+	    ref var res = ref CollectionsMarshal.GetValueRefOrAddDefault(this._affixRanges, modHash, out exists);
+	    if(!exists)
+		    res = new AffixRange(modHash);
+	    return ref res;
     }
 
-    public AffixRange Get(ModKey searchKey) {
-	    if(this._affixRanges.TryGetValue(searchKey.ModHash, out var val))
+    public AffixRange Get(ulong modHash) {
+	    if(this._affixRanges.TryGetValue(modHash, out var val))
 		    return val;
 	    return default;
     }

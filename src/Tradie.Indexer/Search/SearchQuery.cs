@@ -20,7 +20,17 @@ public record struct SearchGroup(
 	[property:DataMember(Order = 1)]
 	GroupKind Kind,
 	[property:DataMember(Order = 2)]
-	AffixRange[] Ranges
+	SearchRange[] Ranges
+);
+
+[DataContract]
+public record struct SearchRange(
+	[property:DataMember(Order = 1)]
+	ModKey Modifier,
+	[property:DataMember(Order = 2)]
+	float MinValue,
+	[property:DataMember(Order = 3)]
+	float MaxValue
 );
 
 public enum GroupKind {

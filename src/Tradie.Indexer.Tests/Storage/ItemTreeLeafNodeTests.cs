@@ -143,11 +143,18 @@ public class ItemTreeLeafNodeTests : TestBase {
 		}));
 
 		var affixes = node.Affixes.ToArray().OrderBy(c=>c.ModHash).ToArray();
-		Console.WriteLine(affixes);
+
 		affixes.ShouldDeepEqual(new AffixRange[] {
-			new(12, 32, new ModKey(12, ModKind.Explicit)),
-			new(100, 100, new ModKey(16, ModKind.Implicit)),
-			new(16, 16, new ModKey(16, ModKind.Explicit))
+			new(12) {
+				Explicit = new(12, 32),
+				Total = new(12, 32),
+				Implicit = FloatRange.NaN,
+			},
+			new(16) {
+				Explicit = new(16, 16),
+				Implicit = new(100, 100),
+				Total = new(16, 100)
+			}
 		});
 	}
 }

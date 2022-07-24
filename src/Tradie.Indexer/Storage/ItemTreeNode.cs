@@ -97,7 +97,7 @@ public abstract class ItemTreeNode {
 		if(this.Kind == NodeKind.Leaf) {
 			foreach(ref var item in this._children.Items) {
 				foreach(var affix in item.Affixes) {
-					UpdateAffixIfNeeded(affix);
+					UpdateAffixIfNeeded(item, affix);
 				}
 			}
 		} else {
@@ -105,34 +105,41 @@ public abstract class ItemTreeNode {
 				var affixes = block._affixes;
 				for(int i = 0; i < affixes.Count; i++) {
 					var affix = affixes[i];
-					var key = new ModKey(affix.ModHash, ModKind.Total);
-					ref var ours = ref this._affixes.GetWithAddingDefault(key, out _);
-					if(affix.MinValue < ours.MinValue) {
+					for(var curr = this; curr != null; curr = curr.Parent) {
+						ref var ours = ref this._affixes.GetWithAddingDefault(affix.ModHash, out _);
+
+						bool updated = ours.Implicit.Expand(affix.Implicit)
+						               || ours.Explicit.Expand(affix.Explicit)
+						               || ours.Total.Expand(affix.Total);
+						
+						if(!updated) {
+							break;
+						}
+					}
+					/*if(affix.MinValue < ours.MinValue) {
 						UpdateAffixIfNeeded(new Affix(key, affix.MinValue));
 					}
 
 					if(affix.MaxValue > ours.MaxValue) {
 						UpdateAffixIfNeeded(new Affix(key, affix.MaxValue));
-					}
+					}*/
 				}
 			}
 		}
 	}
 
-	protected void UpdateAffixIfNeeded(Affix affix) {
-		ref var range = ref this._affixes.GetWithAddingDefault(affix.Modifier, out var exists);
-		if(!exists || range.MinValue > affix.Value) {
-			range.MinValue = affix.Value;
-			if(Parent != null) {
-				Parent.UpdateAffixIfNeeded(affix);
-			}
-		}
+	
+	protected void UpdateAffixIfNeeded(Item item, Affix affix) {
+		ref var affixRange = ref this._affixes.GetWithAddingDefault(affix.Modifier.ModHash, out var exists);
+		ref var valueRange = ref affixRange.GetRangeForModKind(affix.Modifier.Kind);
+		bool updated = valueRange.Expand(new(affix.Value, affix.Value));
 
-		if(!exists || range.MaxValue < affix.Value) {
-			range.MaxValue = affix.Value;
-			if(Parent != null) {
-				Parent.UpdateAffixIfNeeded(affix);
-			}
+		var total = item.GetAffixValue(affix.Modifier with {Kind = ModKind.Total});
+		ref var totalRange = ref affixRange.Total;
+		updated |= totalRange.Expand(new(total, total));
+		
+		if((!exists || updated) && this.Parent != null) {
+			this.Parent.UpdateAffixIfNeeded(item, affix);
 		}
 	}
 

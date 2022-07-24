@@ -4,15 +4,15 @@ using Tradie.Indexer.Search;
 
 namespace Tradie.Indexer.Proto;
 
-public partial class AffixRange {
-	public static implicit operator Tradie.Indexer.Storage.AffixRange(AffixRange range) {
-		return new(range.MinValue, range.MaxValue, range.Key);
+public partial class SearchRange {
+	public static implicit operator Tradie.Indexer.Search.SearchRange(SearchRange range) {
+		return new(range.Key, range.MinValue, range.MaxValue);
 	}
 }
 
 public partial class SearchGroup {
 	public static implicit operator Tradie.Indexer.Search.SearchGroup(SearchGroup group) {
-		return new((GroupKind)group.GroupKind, group.Ranges.Select(c=>(Tradie.Indexer.Storage.AffixRange)c).ToArray());
+		return new((GroupKind)group.GroupKind, group.Ranges.Select(c=>(Tradie.Indexer.Search.SearchRange)c).ToArray());
 	}
 }
 

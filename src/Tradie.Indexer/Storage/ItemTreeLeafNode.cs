@@ -152,7 +152,7 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 
 	private void UpdateAffixes(Item item) {
 		foreach(var affix in item.Affixes) {
-			UpdateAffixIfNeeded(affix);
+			UpdateAffixIfNeeded(item, affix);
 		}
 	}
 

@@ -12,7 +12,7 @@ internal static class QueryMatcher {
 			switch(group.Kind) {
 				case GroupKind.And:
 					foreach(var searchRange in group.Ranges) {
-						float sum = item.GetAffixValue(new ModKey(searchRange.ModHash, ModKind.Total));
+						float sum = item.GetAffixValue(searchRange.Modifier);
 						if(sum == 0) {
 							return false;
 						}
@@ -25,7 +25,7 @@ internal static class QueryMatcher {
 					// For sums, we'll consider it a match if we have any mod being searched for.
 					bool any = false;
 					foreach(var searchRange in group.Ranges) {
-						var range = item.FindAffix(new ModKey(searchRange.ModHash, ModKind.Total));
+						var range = item.FindAffix(searchRange.Modifier);
 						if(range.HasValue) {
 							any = true;
 							break;
@@ -48,16 +48,21 @@ internal static class QueryMatcher {
 			switch(group.Kind) {
 				case GroupKind.And:
 					foreach(var searchRange in group.Ranges) {
-						var range = treeNode.Affixes.Get(new ModKey(searchRange.ModHash, ModKind.Total));
-						if(searchRange.MinValue > range.MaxValue || searchRange.MaxValue < range.MinValue)
+						var affixRange = treeNode.Affixes.Get(searchRange.Modifier.ModHash);
+						if(affixRange.ModHash == 0)
+							return false;
+						
+						ref var valueRange = ref affixRange.GetRangeForModKind(searchRange.Modifier.Kind);
+						if(searchRange.MinValue > valueRange.MaxValue || searchRange.MaxValue < valueRange.MinValue)
 							return false;
 					}
 					break;
 				case GroupKind.Sum:
 					// For sums, we'll consider it a match if we have any mod being searched for.
+					// This should actually be a match if it contains a value greater than the lowest value in the set.
 					bool any = false;
 					foreach(var searchRange in group.Ranges) {
-						var range = treeNode.Affixes.Get(new ModKey(searchRange.ModHash, ModKind.Total));
+						var range = treeNode.Affixes.Get(searchRange.Modifier.ModHash);
 						if(range.ModHash != 0) {
 							any = true;
 							break;

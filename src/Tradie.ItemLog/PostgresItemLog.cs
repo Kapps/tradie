@@ -30,7 +30,7 @@ public class PostgresItemLog : IItemLog, IAsyncDisposable {
 			SELECT ""PackedItems"", ""Id"", ""RawId"", ""Name"",  ""LastCharacterName"", ""Owner"", ""League"", ""Kind""
 			FROM ""StashTabs""
 			WHERE ""Id"" > $1 AND ($2 IS NULL OR ""League"" = $2 OR ""League"" IS NULL)
-			ORDER BY ""Id"" DESC LIMIT 100000
+			--ORDER BY ""Id"" DESC LIMIT 100000
 		";
 		var comm = new NpgsqlCommand(query, conn) {
 			Parameters = {
