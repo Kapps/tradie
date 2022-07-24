@@ -33,10 +33,10 @@ export class SearchGroup extends jspb.Message {
   getGroupkind(): number;
   setGroupkind(value: number): SearchGroup;
 
-  getRangesList(): Array<AffixRange>;
-  setRangesList(value: Array<AffixRange>): SearchGroup;
+  getRangesList(): Array<SearchRange>;
+  setRangesList(value: Array<SearchRange>): SearchGroup;
   clearRangesList(): SearchGroup;
-  addRanges(value?: AffixRange, index?: number): AffixRange;
+  addRanges(value?: SearchRange, index?: number): SearchRange;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SearchGroup.AsObject;
@@ -49,7 +49,7 @@ export class SearchGroup extends jspb.Message {
 export namespace SearchGroup {
   export type AsObject = {
     groupkind: number,
-    rangesList: Array<AffixRange.AsObject>,
+    rangesList: Array<SearchRange.AsObject>,
   }
 }
 
@@ -77,27 +77,27 @@ export namespace SortOrder {
   }
 }
 
-export class AffixRange extends jspb.Message {
+export class SearchRange extends jspb.Message {
   getKey(): Models_Analyzer_Proto_ModifierTypes_pb.ModKey | undefined;
-  setKey(value?: Models_Analyzer_Proto_ModifierTypes_pb.ModKey): AffixRange;
+  setKey(value?: Models_Analyzer_Proto_ModifierTypes_pb.ModKey): SearchRange;
   hasKey(): boolean;
-  clearKey(): AffixRange;
+  clearKey(): SearchRange;
 
   getMinvalue(): number;
-  setMinvalue(value: number): AffixRange;
+  setMinvalue(value: number): SearchRange;
 
   getMaxvalue(): number;
-  setMaxvalue(value: number): AffixRange;
+  setMaxvalue(value: number): SearchRange;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AffixRange.AsObject;
-  static toObject(includeInstance: boolean, msg: AffixRange): AffixRange.AsObject;
-  static serializeBinaryToWriter(message: AffixRange, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AffixRange;
-  static deserializeBinaryFromReader(message: AffixRange, reader: jspb.BinaryReader): AffixRange;
+  toObject(includeInstance?: boolean): SearchRange.AsObject;
+  static toObject(includeInstance: boolean, msg: SearchRange): SearchRange.AsObject;
+  static serializeBinaryToWriter(message: SearchRange, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SearchRange;
+  static deserializeBinaryFromReader(message: SearchRange, reader: jspb.BinaryReader): SearchRange;
 }
 
-export namespace AffixRange {
+export namespace SearchRange {
   export type AsObject = {
     key?: Models_Analyzer_Proto_ModifierTypes_pb.ModKey.AsObject,
     minvalue: number,

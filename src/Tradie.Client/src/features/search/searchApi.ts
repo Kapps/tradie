@@ -1,10 +1,5 @@
 import { post } from '../../api/apiClient';
-import { appConfig } from '../../app/config';
-import { ModKey } from '../../protos/Models/Analyzer/Proto/ModifierTypes_pb';
-import { AffixRange, SearchGroup, SearchQuery as ProtoSearchQuery, SortOrder } from '../../protos/Models/Indexer/Proto/SearchQuery_pb';
-import { SearchServiceClient } from '../../protos/Services/Web/Proto/SearchServiceServiceClientPb';
 import { SearchRequest, SearchResponse as SearchResponseProto } from '../../protos/Services/Web/Proto/SearchService_pb';
-import { Criteria } from '../criteria/criteria';
 import { Item } from '../item/item';
 import { SearchQuery } from './search';
 

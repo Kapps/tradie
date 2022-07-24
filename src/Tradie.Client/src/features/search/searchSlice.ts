@@ -6,7 +6,7 @@ import { selectCriteriaGroups } from "../criteriagroups/criteriaGroupsSlice";
 import { selectCriteriaValues } from "../criterialist/criteriaValueSlice";
 import { Item } from "../item/item";
 import { notifyError } from "../notifications/notifications";
-import { AffixRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from "./search";
+import { SearchRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from "./search";
 import { search } from "./searchApi";
 
 export interface SearchState {
@@ -35,7 +35,7 @@ export const performSearch = createAsyncThunk('search/performSearch', async (_, 
         .filter((c) => c.criteria?.kind === CriteriaKind.MODIFIER)
         .map(
           (c) =>
-            new AffixRange(
+            new SearchRange(
               new ModKey(c.criteria!.modifier!.hash!, c.criteria?.modifier!.kind == ModifierKind.Pseudo ? ModKind.Pseudo : ModKind.Total),
               c.value.minValue,
               c.value.maxValue,

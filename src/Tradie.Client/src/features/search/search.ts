@@ -1,5 +1,5 @@
 import {
-  AffixRange as ProtoAffixRange,
+  SearchRange as ProtoSearchRange,
   SearchGroup as ProtoSearchGroup,
   SearchQuery as ProtoSearchQuery,
   SortOrder as ProtoSortOrder,
@@ -84,7 +84,7 @@ export class ModKey {
   }
 }
 
-export class AffixRange {
+export class SearchRange {
   modifier: ModKey;
   minValue?: number;
   maxValue?: number;
@@ -95,16 +95,16 @@ export class AffixRange {
     this.maxValue = maxValue;
   }
 
-  toProto(): ProtoAffixRange {
-    const proto = new ProtoAffixRange();
+  toProto(): ProtoSearchRange {
+    const proto = new ProtoSearchRange();
     proto.setKey(this.modifier.toProto());
     proto.setMinvalue(this.minValue ?? -Infinity);
     proto.setMaxvalue(this.maxValue ?? Infinity);
     return proto;
   }
 
-  static fromProto(proto: ProtoAffixRange): AffixRange {
-    return new AffixRange(
+  static fromProto(proto: ProtoSearchRange): SearchRange {
+    return new SearchRange(
       ModKey.fromProto(proto.getKey()!),
       proto.getMinvalue(),
       proto.getMaxvalue(),
@@ -114,9 +114,9 @@ export class AffixRange {
 
 export class SearchGroup {
   kind: SearchGroupKind;
-  ranges: AffixRange[];
+  ranges: SearchRange[];
 
-  constructor(kind: SearchGroupKind, ranges: AffixRange[]) {
+  constructor(kind: SearchGroupKind, ranges: SearchRange[]) {
     this.kind = kind;
     this.ranges = ranges;
   }
@@ -131,7 +131,7 @@ export class SearchGroup {
   static fromProto(proto: ProtoSearchGroup): SearchGroup {
     return new SearchGroup(
       <SearchGroupKind>proto.getGroupkind(),
-      proto.getRangesList().map(r => AffixRange.fromProto(r))
+      proto.getRangesList().map(r => SearchRange.fromProto(r))
     );
   }
 }

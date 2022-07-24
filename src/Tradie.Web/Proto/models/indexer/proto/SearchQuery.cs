@@ -27,19 +27,19 @@ namespace Tradie.Indexer.Proto {
             "CiZNb2RlbHMvSW5kZXhlci9Qcm90by9TZWFyY2hRdWVyeS5wcm90bxopTW9k",
             "ZWxzL0FuYWx5emVyL1Byb3RvL01vZGlmaWVyVHlwZXMucHJvdG8iRQoLU2Vh",
             "cmNoUXVlcnkSHAoGR3JvdXBzGAEgAygLMgwuU2VhcmNoR3JvdXASGAoEU29y",
-            "dBgCIAEoCzIKLlNvcnRPcmRlciI9CgtTZWFyY2hHcm91cBIRCglHcm91cEtp",
-            "bmQYASABKAUSGwoGUmFuZ2VzGAIgAygLMgsuQWZmaXhSYW5nZSI4CglTb3J0",
-            "T3JkZXISEAoIU29ydEtpbmQYASABKAUSGQoITW9kaWZpZXIYAiABKAsyBy5N",
-            "b2RLZXkiRgoKQWZmaXhSYW5nZRIUCgNLZXkYASABKAsyBy5Nb2RLZXkSEAoI",
-            "TWluVmFsdWUYAiABKAISEAoITWF4VmFsdWUYAyABKAJCF6oCFFRyYWRpZS5J",
-            "bmRleGVyLlByb3RvYgZwcm90bzM="));
+            "dBgCIAEoCzIKLlNvcnRPcmRlciI+CgtTZWFyY2hHcm91cBIRCglHcm91cEtp",
+            "bmQYASABKAUSHAoGUmFuZ2VzGAIgAygLMgwuU2VhcmNoUmFuZ2UiOAoJU29y",
+            "dE9yZGVyEhAKCFNvcnRLaW5kGAEgASgFEhkKCE1vZGlmaWVyGAIgASgLMgcu",
+            "TW9kS2V5IkcKC1NlYXJjaFJhbmdlEhQKA0tleRgBIAEoCzIHLk1vZEtleRIQ",
+            "CghNaW5WYWx1ZRgCIAEoAhIQCghNYXhWYWx1ZRgDIAEoAkIXqgIUVHJhZGll",
+            "LkluZGV4ZXIuUHJvdG9iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Tradie.Analyzer.Proto.ModifierTypesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchQuery), global::Tradie.Indexer.Proto.SearchQuery.Parser, new[]{ "Groups", "Sort" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchGroup), global::Tradie.Indexer.Proto.SearchGroup.Parser, new[]{ "GroupKind", "Ranges" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SortOrder), global::Tradie.Indexer.Proto.SortOrder.Parser, new[]{ "SortKind", "Modifier" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.AffixRange), global::Tradie.Indexer.Proto.AffixRange.Parser, new[]{ "Key", "MinValue", "MaxValue" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchRange), global::Tradie.Indexer.Proto.SearchRange.Parser, new[]{ "Key", "MinValue", "MaxValue" }, null, null, null, null)
           }));
     }
     #endregion
@@ -329,12 +329,12 @@ namespace Tradie.Indexer.Proto {
 
     /// <summary>Field number for the "Ranges" field.</summary>
     public const int RangesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::Tradie.Indexer.Proto.AffixRange> _repeated_ranges_codec
-        = pb::FieldCodec.ForMessage(18, global::Tradie.Indexer.Proto.AffixRange.Parser);
-    private readonly pbc::RepeatedField<global::Tradie.Indexer.Proto.AffixRange> ranges_ = new pbc::RepeatedField<global::Tradie.Indexer.Proto.AffixRange>();
+    private static readonly pb::FieldCodec<global::Tradie.Indexer.Proto.SearchRange> _repeated_ranges_codec
+        = pb::FieldCodec.ForMessage(18, global::Tradie.Indexer.Proto.SearchRange.Parser);
+    private readonly pbc::RepeatedField<global::Tradie.Indexer.Proto.SearchRange> ranges_ = new pbc::RepeatedField<global::Tradie.Indexer.Proto.SearchRange>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::Tradie.Indexer.Proto.AffixRange> Ranges {
+    public pbc::RepeatedField<global::Tradie.Indexer.Proto.SearchRange> Ranges {
       get { return ranges_; }
     }
 
@@ -720,16 +720,16 @@ namespace Tradie.Indexer.Proto {
 
   }
 
-  public sealed partial class AffixRange : pb::IMessage<AffixRange>
+  public sealed partial class SearchRange : pb::IMessage<SearchRange>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<AffixRange> _parser = new pb::MessageParser<AffixRange>(() => new AffixRange());
+    private static readonly pb::MessageParser<SearchRange> _parser = new pb::MessageParser<SearchRange>(() => new SearchRange());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<AffixRange> Parser { get { return _parser; } }
+    public static pb::MessageParser<SearchRange> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -745,7 +745,7 @@ namespace Tradie.Indexer.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public AffixRange() {
+    public SearchRange() {
       OnConstruction();
     }
 
@@ -753,7 +753,7 @@ namespace Tradie.Indexer.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public AffixRange(AffixRange other) : this() {
+    public SearchRange(SearchRange other) : this() {
       key_ = other.key_ != null ? other.key_.Clone() : null;
       minValue_ = other.minValue_;
       maxValue_ = other.maxValue_;
@@ -762,8 +762,8 @@ namespace Tradie.Indexer.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public AffixRange Clone() {
-      return new AffixRange(this);
+    public SearchRange Clone() {
+      return new SearchRange(this);
     }
 
     /// <summary>Field number for the "Key" field.</summary>
@@ -805,12 +805,12 @@ namespace Tradie.Indexer.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as AffixRange);
+      return Equals(other as SearchRange);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(AffixRange other) {
+    public bool Equals(SearchRange other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -909,7 +909,7 @@ namespace Tradie.Indexer.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(AffixRange other) {
+    public void MergeFrom(SearchRange other) {
       if (other == null) {
         return;
       }

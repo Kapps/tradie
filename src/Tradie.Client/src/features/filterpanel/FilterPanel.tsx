@@ -7,7 +7,7 @@ import { selectCriteria } from '../criteria/criteriaSlice';
 import { CriteriaGroupCard } from '../criteriagroups/CriteriaGroupCard';
 import { clearCriteriaGroups, selectCriteriaGroups } from '../criteriagroups/criteriaGroupsSlice';
 import { selectCriteriaValues } from '../criterialist/criteriaValueSlice';
-import { AffixRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from '../search/search';
+import { SearchRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from '../search/search';
 import { search } from '../search/searchApi';
 import { performSearch } from '../search/searchSlice';
 
