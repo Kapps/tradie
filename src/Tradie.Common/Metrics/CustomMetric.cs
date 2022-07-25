@@ -1,4 +1,4 @@
-namespace Tradie.Common;
+namespace Tradie.Common.Metrics;
 
 /// <summary>
 /// Represents a numeric metric in that has values pushed to it at a specific timeframe.

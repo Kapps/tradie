@@ -4,6 +4,7 @@ using Amazon.Runtime.Internal;
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using Tradie.Common;
+using Tradie.Common.Metrics;
 
 namespace Tradie.ItemLog;
 
@@ -29,7 +30,7 @@ public interface IKinesisRecordReader {
 /// </summary>
 public class KinesisRecordReader : IKinesisRecordReader {
 
-	private bool IsThrottling => DateTime.Now - LastThrottle <= TimeSpan.FromSeconds(10);
+	private bool IsThrottling => DateTime.Now - this._lastThrottle <= TimeSpan.FromSeconds(10);
 	
 	public KinesisRecordReader(IAmazonKinesis kinesisClient, IMetricPublisher metricPublisher, ILogger<KinesisRecordReader> logger) {
 		this._kinesisClient = kinesisClient;
@@ -85,7 +86,13 @@ public class KinesisRecordReader : IKinesisRecordReader {
 				_logger.LogWarning("Encountering throughput limitations while reading {limit} records at a time; slowing down", limit);
 				
 				await Task.Delay(1000, cancellationToken);
-				this.LastThrottle = DateTime.Now;
+				
+				await this._metricPublisher.PublishMetric(ItemLogMetrics.KinesisStreamThrottles, new CustomMetricDimension[] {
+					new("Stream Name", streamReference.StreamName),
+					new("Shard Id", streamReference.ShardId)
+				}, 1, cancellationToken);
+				
+				this._lastThrottle = DateTime.Now;
 				
 				if(limit <= 1) {
 					throw new InvalidDataException(
@@ -109,7 +116,7 @@ public class KinesisRecordReader : IKinesisRecordReader {
 		return resp.ShardIterator;
 	}
 	
-	private DateTime LastThrottle = DateTime.MinValue;
+	private DateTime _lastThrottle = DateTime.MinValue;
 	private readonly IAmazonKinesis _kinesisClient;
 	private readonly IMetricPublisher _metricPublisher;
 	private readonly ILogger<KinesisRecordReader> _logger;

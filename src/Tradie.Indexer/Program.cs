@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.Common.Metrics;
 using Tradie.Indexer;
 using Tradie.Indexer.Pricing;
 using Tradie.Indexer.Search;

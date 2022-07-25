@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tradie.Common;
+using Tradie.Common.Metrics;
 using Tradie.TestUtils;
 
 namespace Tradie.ItemLog.Tests; 

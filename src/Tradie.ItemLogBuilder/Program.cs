@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.Common.Metrics;
 using Tradie.ItemLog;
 using Tradie.ItemLogBuilder;
 using Tradie.ItemLogBuilder.Postgres;
