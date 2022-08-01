@@ -24,10 +24,19 @@ export const selectSearchResults = (state: RootState) => state.search.results;
 export const performSearch = createAsyncThunk('search/performSearch', async (_, thunkAPI) => {
   const state = thunkAPI.getState() as RootState;
   const criteriaGroups = selectCriteriaGroups(state);
+  let league = '';
 
   const searchGroups = criteriaGroups.map((group) => {
     const criteriaValues = selectCriteriaValues(group.id)(state);
     const criteria = criteriaValues.filter(c => c.enabled).map((c) => ({ value: c, criteria: selectCriteria(c.id)(state) }));
+
+    const leagueCriteria = criteria.find(c => c.criteria?.kind === CriteriaKind.LEAGUE);
+    if (leagueCriteria) {
+      if (league) {
+        throw new Error('Multiple leagues selected');
+      }
+      league = leagueCriteria.criteria!.league!;
+    }
 
     return new SearchGroup(
       group.kind,
@@ -44,7 +53,12 @@ export const performSearch = createAsyncThunk('search/performSearch', async (_, 
     );
   });
 
-  const searchQuery = new SearchQuery(searchGroups, new SortOrder(SortKind.Price));
+  if (!league) {
+    notifyError('You must select a league to search.');
+    return [];
+  }
+
+  const searchQuery = new SearchQuery(searchGroups, new SortOrder(SortKind.Price), league);
 
   const response = await search(searchQuery);
   return response.results;

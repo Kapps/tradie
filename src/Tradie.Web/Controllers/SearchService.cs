@@ -10,6 +10,7 @@ using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Proto;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.Common.Services;
 using Tradie.Web.Proto;
 
 namespace Tradie.Web.Controllers;
@@ -17,15 +18,9 @@ namespace Tradie.Web.Controllers;
 [ApiController]
 [Route("/search")]
 public class SearchController : IAsyncDisposable {
-	public SearchController(AnalysisContext context) {
-		AppContext.SetSwitch(
-			"System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-		this._channel = GrpcChannel.ForAddress(TradieConfig.IndexerGrpcAddress, new GrpcChannelOptions() {
-			HttpHandler = new HttpClientHandler() {
-				ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-			}
-		});
+	public SearchController(AnalysisContext context, IGrpcServicePool grpcServicePool) {
 		this._context = context;
+		this._grpcServicePool = grpcServicePool;
 	}
 	
 	[HttpPost]
@@ -110,7 +105,11 @@ public class SearchController : IAsyncDisposable {
 	}
 
 	private async Task<string[]> PerformSearch(Tradie.Indexer.Proto.SearchQuery query) {
-		var client = new Indexer.Proto.SearchService.SearchServiceClient(this._channel);
+		var channel = await this._grpcServicePool.GetChannelForService(TradieConfig.DiscoveryServiceIndexerName, new() {
+			{"TRADIE_LEAGUE", query.League}
+		}, CancellationToken.None);
+		
+		var client = new Indexer.Proto.SearchService.SearchServiceClient(channel);
 		var request = new Indexer.Proto.SearchRequest() {
 			Query = query
 		};
@@ -120,10 +119,9 @@ public class SearchController : IAsyncDisposable {
 	}
 	
 	public async ValueTask DisposeAsync() {
-		this._channel.Dispose();
 		await this._context.DisposeAsync();
 	}
 
-	private GrpcChannel _channel;
 	private readonly AnalysisContext _context;
+	private readonly IGrpcServicePool _grpcServicePool;
 }

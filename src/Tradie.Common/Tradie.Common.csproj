@@ -20,6 +20,7 @@
     <PackageReference Include="AWSSDK.CloudWatch" Version="3.7.4.13" />
     <PackageReference Include="AWSSDK.ServiceDiscovery" Version="3.7.3.152" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.17.6" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />

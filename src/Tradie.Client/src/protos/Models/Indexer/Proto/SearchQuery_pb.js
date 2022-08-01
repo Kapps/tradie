@@ -152,7 +152,8 @@ proto.SearchQuery.toObject = function(includeInstance, msg) {
   var f, obj = {
     groupsList: jspb.Message.toObjectList(msg.getGroupsList(),
     proto.SearchGroup.toObject, includeInstance),
-    sort: (f = msg.getSort()) && proto.SortOrder.toObject(includeInstance, f)
+    sort: (f = msg.getSort()) && proto.SortOrder.toObject(includeInstance, f),
+    league: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -199,6 +200,10 @@ proto.SearchQuery.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.SortOrder.deserializeBinaryFromReader);
       msg.setSort(value);
       break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setLeague(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -242,6 +247,13 @@ proto.SearchQuery.serializeBinaryToWriter = function(message, writer) {
       2,
       f,
       proto.SortOrder.serializeBinaryToWriter
+    );
+  }
+  f = message.getLeague();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
     );
   }
 };
@@ -319,6 +331,24 @@ proto.SearchQuery.prototype.clearSort = function() {
  */
 proto.SearchQuery.prototype.hasSort = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string League = 3;
+ * @return {string}
+ */
+proto.SearchQuery.prototype.getLeague = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.SearchQuery} returns this
+ */
+proto.SearchQuery.prototype.setLeague = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

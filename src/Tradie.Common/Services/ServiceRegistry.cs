@@ -2,7 +2,6 @@
 using Amazon.ServiceDiscovery.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Net;
 
 namespace Tradie.Common.Services;
 
@@ -37,28 +36,28 @@ public class CloudMapServiceRegistry : IServiceRegistry {
 	
 	public async Task<AvailableService> DiscoverService(string service, Dictionary<string, string> requiredAttributes, CancellationToken cancellationToken) {
 		var req = new DiscoverInstancesRequest() {
-			NamespaceName = TradieConfig.DiscoveryNamespace,
+			NamespaceName = TradieConfig.DiscoveryNamespaceName,
 			ServiceName = service,
 			QueryParameters = new(
 				new KeyValuePair<string, string>[] {
 					new("TRADIE_ENVIRONMENT", this._environment.EnvironmentName),
 				}.Concat(requiredAttributes)
 			),
-			//QueryParameters = requiredAttributes,
-			HealthStatus = HealthStatusFilter.ALL,
+			HealthStatus = HealthStatusFilter.ALL
 		};
+
 		var resp = await this._serviceDiscoveryClient.DiscoverInstancesAsync(req, cancellationToken);
 		if (resp.Instances.Count == 0) {
 			throw new ServiceNotFoundException($"No available instances found for service {service}");
 		}
 		
 		var instance = resp.Instances.First();
-		
-		return new AvailableService(
+		var result = new AvailableService(
 			instance.Attributes["ENDPOINT"],
 			instance.InstanceId,
 			FromHealthStatus(instance.HealthStatus)
 		);
+		return result;
 	}
 
 	private ServiceHealth FromHealthStatus(HealthStatus status) {
@@ -81,25 +80,29 @@ public class CloudMapServiceRegistry : IServiceRegistry {
 					new("ENDPOINT", properties.Endpoint),
 					new("AWS_INSTANCE_PORT", endpoint.Port.ToString()),
 					new("AWS_INSTANCE_CNAME", endpoint.Host),
+					new("AWS_INSTANCE_IPV4", "51.161.119.211"), //"127.0.0.1"),
 					new("TRADIE_ENVIRONMENT", this._environment.EnvironmentName),
 				}.Concat(properties.CustomAttributes)
 			),
 			ServiceId = service,
 			InstanceId = properties.InstanceId,
-			//CreatorRequestId = null
 			CreatorRequestId = creatorId.ToString(),
 		}, cancellationToken);
 
 		await WaitForSuccess(registerResponse.OperationId, cancellationToken);
+		
+		this._logger.LogInformation($"Registered instance of {service} with instance ID {properties.InstanceId} at {properties.Endpoint}");
 	}
 
 	public async Task DeregisterService(string service, string instanceId, CancellationToken cancellationToken) {
 		var resp = await this._serviceDiscoveryClient.DeregisterInstanceAsync(new DeregisterInstanceRequest() {
 			ServiceId = service,
-			InstanceId = instanceId,
+			InstanceId = instanceId
 		}, cancellationToken);
 
 		await WaitForSuccess(resp.OperationId, cancellationToken);
+
+		this._logger.LogInformation($"Deregistered instance of {service} with instance ID {instanceId}.");
 	}
 
 	private async Task WaitForSuccess(string operationId, CancellationToken cancellationToken) {

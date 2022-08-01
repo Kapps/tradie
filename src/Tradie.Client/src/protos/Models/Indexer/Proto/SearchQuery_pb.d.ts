@@ -14,6 +14,9 @@ export class SearchQuery extends jspb.Message {
   hasSort(): boolean;
   clearSort(): SearchQuery;
 
+  getLeague(): string;
+  setLeague(value: string): SearchQuery;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SearchQuery.AsObject;
   static toObject(includeInstance: boolean, msg: SearchQuery): SearchQuery.AsObject;
@@ -26,6 +29,7 @@ export namespace SearchQuery {
   export type AsObject = {
     groupsList: Array<SearchGroup.AsObject>,
     sort?: SortOrder.AsObject,
+    league: string,
   }
 }
 

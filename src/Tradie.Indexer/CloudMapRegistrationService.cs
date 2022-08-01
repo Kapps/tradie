@@ -24,13 +24,12 @@ public class CloudMapRegistrationService : IHostedService {
 	
 	public async Task StartAsync(CancellationToken cancellationToken) {
 		await this._serviceRegistry.RegisterService(
-			TradieConfig.DiscoveryServiceIndexer,
+			TradieConfig.DiscoveryServiceIndexerId,
 			new(
 				this._listenAddress,
 				InstanceId,
 				new Dictionary<string, string>() {
-					{ "TRADIE_LEAGUE", TradieConfig.League! },
-					{ "TRADIE_ENVIRONMENT", this._hostEnvironment.EnvironmentName }
+					{ "TRADIE_LEAGUE", TradieConfig.League! }
 				}
 			),
 			cancellationToken
@@ -39,7 +38,7 @@ public class CloudMapRegistrationService : IHostedService {
 
 	public async Task StopAsync(CancellationToken cancellationToken) {
 		await this._serviceRegistry.DeregisterService(
-			TradieConfig.DiscoveryServiceIndexer,
+			TradieConfig.DiscoveryServiceIndexerId,
 			InstanceId,
 			cancellationToken
 		);

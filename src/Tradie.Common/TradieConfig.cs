@@ -97,11 +97,6 @@ namespace Tradie.Common {
 			if(logLevelEnv != null) {
 				LogLevel = Enum.Parse<LogLevel>(logLevelEnv, true);
 			}
-
-			var indexerAddress = System.Environment.GetEnvironmentVariable("INDEXER_ADDRESS");
-			if(indexerAddress != null) {
-				IndexerGrpcAddress = indexerAddress;
-			}
 		}
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -218,14 +213,22 @@ namespace Tradie.Common {
 		public static int LogBuilderBatchSize { get; set; }
 
 		/// <summary>
-		/// The name of the CloudMap namespace used for discovering Tradie services within this environment.
+		/// The ID of the CloudMap namespace used for discovering Tradie services within this environment.
 		/// </summary>
-		public static string DiscoveryNamespace { get; set; }
+		public static string DiscoveryNamespaceId { get; set; }
+		/// <summary>
+		/// The name of the namespace corresponding to DiscoveryNamespceId.
+		/// </summary>
+		public static string DiscoveryNamespaceName { get; set; }
 
 		/// <summary>
-		/// The service name for the indexer service within the discovery namespace.
+		/// The ID of the service for the indexer service within the discovery namespace.
 		/// </summary>
-		public static string DiscoveryServiceIndexer { get; set; }
+		public static string DiscoveryServiceIndexerId { get; set; }
+		/// <summary>
+		/// The name of the serivce corresponding to DiscoveryServiceIndexerId.
+		/// </summary>
+		public static string DiscoveryServiceIndexerName { get; set; }
 
 		/// <summary>
 		/// The log level to use for built-in logging.

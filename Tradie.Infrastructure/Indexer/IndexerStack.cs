@@ -11,12 +11,6 @@ public class IndexerStack : StackBase {
 		var build = packagedBuild.GetPublishedPackage()
 			.GetAwaiter().GetResult();
 
-		_ = new SsmParameter(this, "indexer-host-ssm", new SsmParameterConfig() {
-			Name = "Config.IndexerGrpcAddress",
-			Type = "String",
-			Value = "https://srv.tradie.io:5000"
-		});
-
 		var cloudMapService = new ServiceDiscoveryService(this, "indexer-discovery", new ServiceDiscoveryServiceConfig() {
 			NamespaceId = foundation.CloudMap.CloudMapNamespace.Id,
 			Name = "indexer",
@@ -26,9 +20,15 @@ public class IndexerStack : StackBase {
 		});
 
 		_ = new SsmParameter(this, "indexer-discovery-ssm", new SsmParameterConfig() {
-			Name = "Config.DiscoveryServiceIndexer",
+			Name = "Config.DiscoveryServiceIndexerId",
 			Type = "String",
 			Value = cloudMapService.Id
+		});
+		
+		_ = new SsmParameter(this, "indexer-discovery-name-ssm", new SsmParameterConfig() {
+			Name = "Config.DiscoveryServiceIndexerName",
+			Type = "String",
+			Value = cloudMapService.Name
 		});
 	}
 }

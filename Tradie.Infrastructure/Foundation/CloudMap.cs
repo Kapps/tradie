@@ -13,9 +13,15 @@ public class CloudMap {
 		});
 		
 		_ = new SsmParameter(stack, "cloudmap-ssm", new SsmParameterConfig() {
-			Name = "Config.DiscoveryNamespace",
+			Name = "Config.DiscoveryNamespaceId",
 			Type = "String",
 			Value = this.CloudMapNamespace.Id
+		});
+		
+		_ = new SsmParameter(stack, "cloudmap-name-ssm", new SsmParameterConfig() {
+			Name = "Config.DiscoveryNamespaceName",
+			Type = "String",
+			Value = this.CloudMapNamespace.Name
 		});
 	}
 }

@@ -66,7 +66,7 @@ public class ServiceRegistryTests : TestBase {
 			},
 			ServiceName = "some-service",
 			HealthStatus = HealthStatusFilter.ALL,
-			NamespaceName = TradieConfig.DiscoveryNamespace,
+			NamespaceName = TradieConfig.DiscoveryNamespaceId,
 		}.DeepMatcher(), ct)).ReturnsAsync(new DiscoverInstancesResponse() {
 			Instances = new() {
 				new HttpInstanceSummary() {
@@ -86,6 +86,14 @@ public class ServiceRegistryTests : TestBase {
 		);
 		
 		resp.ShouldDeepEqual(new AvailableService(endpoint, "some-instance", ServiceHealth.Healthy));
+
+		await this._serviceRegistry.DiscoverService(
+			"some-service",
+			new() {{"SOME_ATTRIBUTE", "foo"}},
+			ct
+		);
+
+		this._serviceDiscoveryClient.Verify(c => c.DiscoverInstancesAsync(It.IsAny<DiscoverInstancesRequest>(), ct), Times.Once);
 	}
 	
 	[TestMethod]

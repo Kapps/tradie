@@ -7,25 +7,19 @@ using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Proto;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
+using Tradie.Common.Services;
 using Tradie.Web.Proto;
 
 namespace Tradie.Web.Services;
 
 public class SearchService : Proto.SearchService.SearchServiceBase {
-	public SearchService(AnalysisContext context) {
-		AppContext.SetSwitch(
-			"System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-		this._channel = GrpcChannel.ForAddress(TradieConfig.IndexerGrpcAddress, new GrpcChannelOptions() {
-			
-			HttpHandler = new HttpClientHandler() {
-				ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-			}
-		});
+	public SearchService(AnalysisContext context, IGrpcServicePool servicePool) {
 		this._context = context;
+		this._servicePool = servicePool;
 	}
 	
 	public override async Task<SearchResponse> SearchGear(SearchRequest request, ServerCallContext context) {
-		var ids = await PerformSearch(request.Query);
+		var ids = await PerformSearch(request.Query, context.CancellationToken);
 		var items = await this._context.LoggedItems.Where(c => ids.Contains(c.RawId)).ToArrayAsync();
 		
 		var resp = new SearchResponse();
@@ -102,8 +96,12 @@ public class SearchService : Proto.SearchService.SearchServiceBase {
 		return res;
 	}
 
-	private async Task<string[]> PerformSearch(Tradie.Indexer.Proto.SearchQuery query) {
-		var client = new Indexer.Proto.SearchService.SearchServiceClient(this._channel);
+	private async Task<string[]> PerformSearch(Tradie.Indexer.Proto.SearchQuery query, CancellationToken cancellationToken) {
+		var channel = await this._servicePool.GetChannelForService(TradieConfig.DiscoveryServiceIndexerName, new() {
+			{"TRADIE_LEAGUE", query.League}
+		}, cancellationToken);
+		
+		var client = new Indexer.Proto.SearchService.SearchServiceClient(channel);
 		var request = new Indexer.Proto.SearchRequest() {
 			Query = query
 		};
@@ -112,6 +110,6 @@ public class SearchService : Proto.SearchService.SearchServiceBase {
 		return indexerResponse.Ids.ToArray();
 	}
 
-	private GrpcChannel _channel;
 	private readonly AnalysisContext _context;
+	private readonly IGrpcServicePool _servicePool;
 }

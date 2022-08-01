@@ -139,16 +139,19 @@ export class SearchGroup {
 export class SearchQuery {
   groups: SearchGroup[];
   sort: SortOrder;
+  league: string;
 
-  constructor(groups: SearchGroup[], sort: SortOrder) {
+  constructor(groups: SearchGroup[], sort: SortOrder, league: string) {
     this.groups = groups;
     this.sort = sort;
+    this.league = league;
   }
 
   toProto(): ProtoSearchQuery {
     const proto = new ProtoSearchQuery();
     this.groups.forEach(g => proto.addGroups(g.toProto()));
     proto.setSort(this.sort.toProto());
+    proto.setLeague(this.league);
     return proto;
   }
 
@@ -156,6 +159,7 @@ export class SearchQuery {
     return new SearchQuery(
       proto.getGroupsList().map(c => SearchGroup.fromProto(c)),
       proto.hasSort() ? SortOrder.fromProto(proto.getSort()!) : new SortOrder(SortKind.Price),
+      proto.getLeague(),
     );
   }
 }
