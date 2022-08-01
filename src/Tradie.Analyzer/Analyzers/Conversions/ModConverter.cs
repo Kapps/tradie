@@ -26,11 +26,28 @@ public interface IModConverter : IAsyncDisposable {
 /// An IModConverter that analyzes all modifiers and inserts missing ones into a repository.
 /// </summary>
 public class AnalyzingModConverter : IModConverter {
+	private static HashSet<string> skippedCategories = new(StringComparer.InvariantCultureIgnoreCase) {
+		"cards", "currency"
+	};
+	
 	public AnalyzingModConverter(IModifierRepository repo) {
 		this._repo = repo;
 	}
+
+	private bool ShouldHandle(Item item) {
+		var props = item.ExtendedProperties.GetValueOrDefault();
+		if(!String.IsNullOrWhiteSpace(props.Category) && skippedCategories.Contains(props.Category)) {
+			// Things like cards and currency shouldn't be parsed.
+			return false;
+		}
+
+		return true;
+	}
 	
 	public IEnumerable<Affix> ExtractAffixes(Item item) {
+		if(!ShouldHandle(item))
+			return Enumerable.Empty<Affix>();
+
 		var affixes = MapValues(item.CosmeticMods, ModKind.Cosmetic).ConcatMany(
 			MapValues(item.EnchantMods, ModKind.Enchant),
 			MapValues(item.ExplicitMods, ModKind.Explicit),
@@ -39,7 +56,11 @@ public class AnalyzingModConverter : IModConverter {
 			MapValues(item.ImplicitMods, ModKind.Implicit),
 			MapValues(item.ScourgeMods, ModKind.Scourge),
 			MapValues(item.UtilityMods, ModKind.Utility),
-			MapValues(item.VeiledMods, ModKind.Veiled)
+			MapValues(item.VeiledMods, ModKind.Veiled),
+			ExtractProperties(item.Properties),
+			ExtractProperties(item.AdditionalProperties),
+			ExtractProperties(item.NotableProperties),
+			ExtractProperties(item.NextLevelRequirements)
 		);
 
 		return affixes;
@@ -47,6 +68,20 @@ public class AnalyzingModConverter : IModConverter {
 	
 	public ValueTask DisposeAsync() {
 		return this._repo.DisposeAsync();
+	}
+
+	private static IEnumerable<Affix>? ExtractProperties(ItemProperty[]? properties) {
+		if(properties == null || properties.Length == 0) {
+			return null;
+		}
+		return properties.Where(c=>!String.IsNullOrWhiteSpace(c.Name)).Select(c => {
+			var hash = ModifierText.CalculateValueIndependentHash(c.Name);
+			var scalar = c.Values
+				.Select(c => ModifierText.ExtractScalar(c.Value))
+				.DefaultIfEmpty(0)
+				.Average();
+			return new Affix(hash, scalar, ModKind.Property);
+		});
 	}
 
 	private static IEnumerable<Affix>? MapValues(string[]? itemAffixes, ModKind kind) {
@@ -65,10 +100,13 @@ public class AnalyzingModConverter : IModConverter {
 	}
 
 	public async ValueTask<IEnumerable<Modifier>> ConvertModifiers(IEnumerable<Item> items) {
-		var modTexts = items.SelectMany(c => c.EnchantMods.ConcatMany(
-			c.ExplicitMods, c.FracturedMods, c.ImplicitMods,
-			c.ScourgeMods, c.UtilityMods, c.VeiledMods
-		)).Where(c=>!String.IsNullOrWhiteSpace(c));
+		var modTexts = items
+			.Where(this.ShouldHandle)
+			.SelectMany(c => c.EnchantMods.ConcatMany(
+				c.ExplicitMods, c.FracturedMods, c.ImplicitMods,
+				c.ScourgeMods, c.UtilityMods, c.VeiledMods,
+				c.Properties.Select(d=>d.Name)
+			)).Where(c=>!String.IsNullOrWhiteSpace(c));
 
 		var modifiers = modTexts.Select(c => new Modifier(
 			ModifierText.CalculateValueIndependentHash(c),

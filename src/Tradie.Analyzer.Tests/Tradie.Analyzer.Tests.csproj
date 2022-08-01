@@ -26,6 +26,9 @@
 
     <ItemGroup>
       <None Remove="SampleItems\rangetest.json" />
+      <None Update="SampleItems\exaltshard.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <ItemGroup>
       <None Update="Analyzers\json\jewel.json">

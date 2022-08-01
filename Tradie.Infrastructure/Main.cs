@@ -57,7 +57,7 @@ var analyzer = new AnalyzerStack(app, "analyzer", config, foundation, scanner, n
 var web = new WebStack(app, "web", config, foundation, new(packager, "Tradie.Web/Dockerfile", "web", "linux/amd64") {
 	IsDirty = config.StacksToDeploy.Contains("web")	
 });
-var indexer = new IndexerStack(app, "indexer", config, new(packager, "Tradie.Indexer/Dockerfile", "indexer", "linux/amd64") {
+var indexer = new IndexerStack(app, "indexer", config, foundation, new(packager, "Tradie.Indexer/Dockerfile", "indexer", "linux/amd64") {
 	IsDirty = config.StacksToDeploy.Contains("indexer")	
 });
 var client = new ClientStack(app, "client", config, foundation);

@@ -32,10 +32,10 @@ public static class TestUtils {
 	/// <summary>
 	/// Returns a matcher that indicates whether a value deep equals the expected value. 
 	/// </summary>
-	public static T DeepMatcher<T>(this T expected) {
+	public static T DeepMatcher<T>(this T expected, params string[] ignoredProperties) {
 		bool Validate(T actual) {
 			return actual.WithDeepEqual(expected)
-				.IgnoreProperty(reader => reader.Name == "Id")
+				.IgnoreProperty(reader => reader.Name == "Id" || ignoredProperties.Contains(reader.Name))
 				.WithCustomComparison(new DateClosenessComparer())
 				.WithCustomComparison(new StreamComparer())
 				.Compare();

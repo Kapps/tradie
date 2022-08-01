@@ -55,17 +55,6 @@
       ],
       "displayMode": 0,
       "type": 16
-    },
-    {
-      "name": "Evasion Rating",
-      "values": [
-        [
-          "155",
-          1
-        ]
-      ],
-      "displayMode": 0,
-      "type": 17
     }
   ],
   "requirements": [

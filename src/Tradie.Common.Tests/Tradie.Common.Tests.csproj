@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tradie.Common\Tradie.Common.csproj" />
+    <ProjectReference Include="..\Tradie.TestUtils\Tradie.TestUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

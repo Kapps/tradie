@@ -30,6 +30,8 @@ public class AffixRangeAnalyzerTests : TestBase {
 			new(ModifierText.CalculateValueIndependentHash("Immune to Freeze"), 0, ModKind.Explicit),
 			new(ModifierText.CalculateValueIndependentHash("10% increased Movement Speed"), 10, ModKind.Enchant),
 			new(ModifierText.CalculateValueIndependentHash("20% increased Movement Speed"), 20, ModKind.Scourge),
+			new(ModifierText.CalculateValueIndependentHash("Armour"), 132, ModKind.Property),
+			new(ModifierText.CalculateValueIndependentHash("Evasion Rating"), 155, ModKind.Property),
 			new(PseudoMods.TotalEleRes.ModHash, 69, ModKind.Pseudo)
 		}, 2, 2));
 		
@@ -64,6 +66,14 @@ public class AffixRangeAnalyzerTests : TestBase {
 			new(
 				ModifierText.CalculateValueIndependentHash("Immune to Freeze"),
 				0, 0, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("Armour"),
+				132, 132, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
+			),
+			new(
+				ModifierText.CalculateValueIndependentHash("Evasion Rating"),
+				155, 155, AffixRangeEntityKind.Modifier, ModKindCategory.Pseudo
 			),
 		};
 

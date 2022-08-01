@@ -7,6 +7,7 @@ option csharp_namespace = "Tradie.Indexer.Proto";
 message SearchQuery {
   repeated SearchGroup Groups = 1;
   SortOrder Sort = 2;
+  string League = 3;
 }
 
 message SearchGroup {

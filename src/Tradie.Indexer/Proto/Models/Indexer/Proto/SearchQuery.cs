@@ -25,18 +25,18 @@ namespace Tradie.Indexer.Proto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZNb2RlbHMvSW5kZXhlci9Qcm90by9TZWFyY2hRdWVyeS5wcm90bxopTW9k",
-            "ZWxzL0FuYWx5emVyL1Byb3RvL01vZGlmaWVyVHlwZXMucHJvdG8iRQoLU2Vh",
+            "ZWxzL0FuYWx5emVyL1Byb3RvL01vZGlmaWVyVHlwZXMucHJvdG8iVQoLU2Vh",
             "cmNoUXVlcnkSHAoGR3JvdXBzGAEgAygLMgwuU2VhcmNoR3JvdXASGAoEU29y",
-            "dBgCIAEoCzIKLlNvcnRPcmRlciI+CgtTZWFyY2hHcm91cBIRCglHcm91cEtp",
-            "bmQYASABKAUSHAoGUmFuZ2VzGAIgAygLMgwuU2VhcmNoUmFuZ2UiOAoJU29y",
-            "dE9yZGVyEhAKCFNvcnRLaW5kGAEgASgFEhkKCE1vZGlmaWVyGAIgASgLMgcu",
-            "TW9kS2V5IkcKC1NlYXJjaFJhbmdlEhQKA0tleRgBIAEoCzIHLk1vZEtleRIQ",
-            "CghNaW5WYWx1ZRgCIAEoAhIQCghNYXhWYWx1ZRgDIAEoAkIXqgIUVHJhZGll",
-            "LkluZGV4ZXIuUHJvdG9iBnByb3RvMw=="));
+            "dBgCIAEoCzIKLlNvcnRPcmRlchIOCgZMZWFndWUYAyABKAkiPgoLU2VhcmNo",
+            "R3JvdXASEQoJR3JvdXBLaW5kGAEgASgFEhwKBlJhbmdlcxgCIAMoCzIMLlNl",
+            "YXJjaFJhbmdlIjgKCVNvcnRPcmRlchIQCghTb3J0S2luZBgBIAEoBRIZCghN",
+            "b2RpZmllchgCIAEoCzIHLk1vZEtleSJHCgtTZWFyY2hSYW5nZRIUCgNLZXkY",
+            "ASABKAsyBy5Nb2RLZXkSEAoITWluVmFsdWUYAiABKAISEAoITWF4VmFsdWUY",
+            "AyABKAJCF6oCFFRyYWRpZS5JbmRleGVyLlByb3RvYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Tradie.Analyzer.Proto.ModifierTypesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchQuery), global::Tradie.Indexer.Proto.SearchQuery.Parser, new[]{ "Groups", "Sort" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchQuery), global::Tradie.Indexer.Proto.SearchQuery.Parser, new[]{ "Groups", "Sort", "League" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchGroup), global::Tradie.Indexer.Proto.SearchGroup.Parser, new[]{ "GroupKind", "Ranges" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SortOrder), global::Tradie.Indexer.Proto.SortOrder.Parser, new[]{ "SortKind", "Modifier" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Tradie.Indexer.Proto.SearchRange), global::Tradie.Indexer.Proto.SearchRange.Parser, new[]{ "Key", "MinValue", "MaxValue" }, null, null, null, null)
@@ -82,6 +82,7 @@ namespace Tradie.Indexer.Proto {
     public SearchQuery(SearchQuery other) : this() {
       groups_ = other.groups_.Clone();
       sort_ = other.sort_ != null ? other.sort_.Clone() : null;
+      league_ = other.league_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -114,6 +115,18 @@ namespace Tradie.Indexer.Proto {
       }
     }
 
+    /// <summary>Field number for the "League" field.</summary>
+    public const int LeagueFieldNumber = 3;
+    private string league_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string League {
+      get { return league_; }
+      set {
+        league_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -131,6 +144,7 @@ namespace Tradie.Indexer.Proto {
       }
       if(!groups_.Equals(other.groups_)) return false;
       if (!object.Equals(Sort, other.Sort)) return false;
+      if (League != other.League) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -140,6 +154,7 @@ namespace Tradie.Indexer.Proto {
       int hash = 1;
       hash ^= groups_.GetHashCode();
       if (sort_ != null) hash ^= Sort.GetHashCode();
+      if (League.Length != 0) hash ^= League.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -163,6 +178,10 @@ namespace Tradie.Indexer.Proto {
         output.WriteRawTag(18);
         output.WriteMessage(Sort);
       }
+      if (League.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(League);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -178,6 +197,10 @@ namespace Tradie.Indexer.Proto {
         output.WriteRawTag(18);
         output.WriteMessage(Sort);
       }
+      if (League.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(League);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -191,6 +214,9 @@ namespace Tradie.Indexer.Proto {
       size += groups_.CalculateSize(_repeated_groups_codec);
       if (sort_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Sort);
+      }
+      if (League.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(League);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -210,6 +236,9 @@ namespace Tradie.Indexer.Proto {
           Sort = new global::Tradie.Indexer.Proto.SortOrder();
         }
         Sort.MergeFrom(other.Sort);
+      }
+      if (other.League.Length != 0) {
+        League = other.League;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -237,6 +266,10 @@ namespace Tradie.Indexer.Proto {
             input.ReadMessage(Sort);
             break;
           }
+          case 26: {
+            League = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -261,6 +294,10 @@ namespace Tradie.Indexer.Proto {
               Sort = new global::Tradie.Indexer.Proto.SortOrder();
             }
             input.ReadMessage(Sort);
+            break;
+          }
+          case 26: {
+            League = input.ReadString();
             break;
           }
         }

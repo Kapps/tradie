@@ -23,6 +23,8 @@ public class AffixRangeAnalyzer : IItemAnalyzer {
 			.Where(c => c.Kind == ModKind.Explicit || c.Kind == ModKind.Fractured || c.Kind == ModKind.Crafted || c.Kind == ModKind.Veiled), ModKind.Explicit);
 		var enchants = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
 			.Where(c => c.Kind == ModKind.Enchant), ModKind.Enchant);
+		//var properties = this.ExtractRanges(modDetails.SelectMany(c=>c.Affixes)
+		//	.Where(c=>c.Kind == ModKind.Property), ModKind.Property);
 		var pseudo = this.ExtractRanges(modDetails.SelectMany(c => c.Affixes)
 			.Where(c => c.Kind == ModKind.Pseudo), ModKind.Pseudo);
 		var totals = this.ExtractTotalRange(items);

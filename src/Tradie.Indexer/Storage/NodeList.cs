@@ -46,7 +46,7 @@ public struct NodeList {
 	public Span<Item> Items =>
 		this.Kind == NodeKind.Leaf ? this._items.AsSpan(0, this._count) : Span<Item>.Empty;
 	
-	internal ArraySegment<Item> ItemsSegment => new ArraySegment<Item>(this._items, 0, this._count);
+	internal ArraySegment<Item> ItemsSegment => new ArraySegment<Item>(this._items!, 0, this._count);
 	
 	/// <summary>
 	/// The child blocks contained by this block, unless it's a leaf; otherwise an empty span.
@@ -54,7 +54,7 @@ public struct NodeList {
 	public Span<ItemTreeNode> Blocks =>
 		this.Kind == NodeKind.Block ? this._children.AsSpan(0, this._count) : Span<ItemTreeNode>.Empty;
 
-	internal ArraySegment<ItemTreeNode> BlocksSegment => new ArraySegment<ItemTreeNode>(this._children, 0, this._count);
+	internal ArraySegment<ItemTreeNode> BlocksSegment => new ArraySegment<ItemTreeNode>(this._children!, 0, this._count);
 
 	/// <summary>
 	/// Indicates whether this block has room for more children (either items or blocks depending on Kind) without splitting.

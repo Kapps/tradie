@@ -15,7 +15,8 @@ public enum ModKind : byte {
 	Veiled = 8,
 	Crafted = 9,
 	Total = 10,
-	Pseudo = 11
+	Pseudo = 11,
+	Property = 12
 }
 
 /// <summary>
@@ -36,6 +37,7 @@ public enum ModKindCategory : byte {
 	Explicit,
 	/// <summary>
 	/// Pseudo modifiers that encompass all other modifiers or combinations of them.
+	/// Also includes properties in their modified "pseudo" form, such as armour after a % armour mod is applied.
 	/// </summary>
 	Pseudo
 }
@@ -56,6 +58,7 @@ public static class ModKindExtensions {
 			case ModKind.Crafted:
 			case ModKind.Unknown:
 				return ModKindCategory.Explicit;
+			case ModKind.Property:
 			case ModKind.Total:
 			case ModKind.Pseudo:
 				return ModKindCategory.Pseudo;

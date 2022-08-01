@@ -218,6 +218,16 @@ namespace Tradie.Common {
 		public static int LogBuilderBatchSize { get; set; }
 
 		/// <summary>
+		/// The name of the CloudMap namespace used for discovering Tradie services within this environment.
+		/// </summary>
+		public static string DiscoveryNamespace { get; set; }
+
+		/// <summary>
+		/// The service name for the indexer service within the discovery namespace.
+		/// </summary>
+		public static string DiscoveryServiceIndexer { get; set; }
+
+		/// <summary>
 		/// The log level to use for built-in logging.
 		/// Can also be overriden with the LOG_LEVEL environment variable.
 		/// </summary>

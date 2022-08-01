@@ -33,9 +33,11 @@ public static class ModifierText {
 
 	/// <summary>
 	/// Returns a value-independent version of this modifier text.
+	/// Removes any tags that were part of the item to get a clean string.
 	/// </summary>
 	public static string MakeValueIndependent(string modifierText) {
-		return NumericMatcher.Replace(modifierText, "#");
+		string cleanText = CleanText(modifierText);
+		return NumericMatcher.Replace(cleanText, "#");
 	}
 
 	/// <summary>
@@ -45,7 +47,8 @@ public static class ModifierText {
 	/// </summary>
 	public static double ExtractScalar(string modifierText) {
 		try {
-			var values = NumericMatcher.Match(modifierText);
+			string cleanText = CleanText(modifierText);
+			var values = NumericMatcher.Match(cleanText);
 			if(!values.Success)
 				return double.NaN;
 			//Console.WriteLine("ExtractScalar: " + modifierText + " -> " + String.Join(", ", values.Captures.Select(c=>c.ValueSpan.ToString())));
@@ -54,7 +57,8 @@ public static class ModifierText {
 			for(int i = 2; i < values.Groups.Count; i++) {
 				if(!values.Groups[i].Success)
 					continue;
-				sum += double.Parse(values.Groups[i].ValueSpan.ToString());
+				string value = values.Groups[i].ValueSpan.ToString();
+				sum += double.Parse(value);
 				count++;
 			}
 			if(count == 0)
@@ -65,18 +69,29 @@ public static class ModifierText {
 		}
 	}
 
-	/*private static readonly Regex NumericMatcher = new(
-		//"(?:([\\-0-9\\.]+)(?:(?: to )|(?:\\-))([\\-0-9\\.]+))|([\\-0-9\\.]+)",
-		@"(?:([\-0-9\.]+)\sto\s([\-0-9\.]+))|(?:([\-0-9\.]+)-([\-0-9\.]+))|([\-0-9\.]+)",
-		RegexOptions.Compiled
-	);*/
+	private static string CleanText(string text) {
+		string clean = text;
+		while(true) {
+			string next = TagCleaner.Replace(clean, "$1");
+			if(next == clean)
+				break;
+			clean = next;
+		}
+
+		return clean;
+	}
 	
-	const string Number = "-?[0-9]+(?:\\.[0-9]+)?";
+	const string Number = "\\{?-?[0-9]+(?:\\.[0-9]+)?\\}?"; // Matches a number, optionally wrapped in curly braces.
 
 	private static readonly Regex NumericMatcher = new(
-		//@"(?:([\-0-9\.]+)\sto\s([\-0-9\.]+))|(?:([\-0-9\.]+)-([\-0-9\.]+))|([\-0-9\.]+)",
 		$@"((?:({Number}) to ({Number}))|(?:({Number})-({Number}))|(?:({Number})))",
 		RegexOptions.Compiled
 	);
+
+	private static readonly Regex TagCleaner = new(
+		@"<[^>]*>\{([^\}]*)\}",
+		RegexOptions.Compiled
+	);
+	
 	//private static readonly Regex NumericMatcher = new("([\\-0-9\\.])+(?:(?: to )|\\-([\\-0-9\\.]+))?", RegexOptions.Compiled);
 }

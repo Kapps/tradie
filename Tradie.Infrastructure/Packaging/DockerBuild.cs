@@ -63,6 +63,5 @@ public class DockerBuild {
 	}
 
 	private string _imageId;
-	private string _manifest;
 	private List<JSONError> errors = new();
 }

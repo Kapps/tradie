@@ -2,8 +2,10 @@
 
 using Amazon.CloudWatch;
 using Amazon.S3;
+using Amazon.ServiceDiscovery;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.Metrics;
+using Tradie.Common.Services;
 using Tradie.Indexer;
 using Tradie.Indexer.Pricing;
 using Tradie.Indexer.Search;
@@ -34,6 +37,9 @@ Console.WriteLine($"Starting Indexer with build hash {Environment.GetEnvironment
 if(String.IsNullOrWhiteSpace(TradieConfig.League)) {
 	throw new ArgumentException("Indexer must be started with a league to index.");
 }
+
+string hostAddress = Environment.GetEnvironmentVariable("LISTEN_ADDR")
+	?? throw new ArgumentException("No listen address set.");
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -70,8 +76,9 @@ services.AddLogging(builder => {
 
 services.AddSingleton<IParameterStore, SsmParameterStore>()
 	.AddSingleton<IAmazonSimpleSystemsManagement>(ssmClient)
+	.AddSingleton<IAmazonServiceDiscovery, AmazonServiceDiscoveryClient>()
 	.AddSingleton<IAmazonS3>(s3Client)
-	.AddSingleton<IAmazonCloudWatch>(new AmazonCloudWatchClient())
+	.AddSingleton<IAmazonCloudWatch, AmazonCloudWatchClient>()
 	.AddSingleton<IMetricPublisher, CloudWatchMetricPublisher>()
 	.AddSingleton<IItemLog, PostgresItemLog>()
 	.AddSingleton<ItemTree>()
@@ -79,7 +86,16 @@ services.AddSingleton<IParameterStore, SsmParameterStore>()
 	.AddSingleton<IPriceCache, S3PriceCache>()
 	.AddSingleton<IPricingService, NinjaPricingService>()
 	.AddSingleton<IBlockSearcher, PriceSortedBlockSearcher>()
-	.AddHostedService<ItemTreeLoaderService>();
+	.AddSingleton<IServiceRegistry, CloudMapServiceRegistry>()
+	.AddHostedService<ItemTreeLoaderService>()
+	.AddHostedService(provider =>
+		new CloudMapRegistrationService(
+			provider.GetRequiredService<IServiceRegistry>(),
+			hostAddress,
+			provider.GetRequiredService<ILogger<CloudMapRegistrationService>>(),
+			provider.GetRequiredService<IHostEnvironment>()
+		)
+	);
 
 services.AddDbContext<AnalysisContext>(ServiceLifetime.Singleton);
 builder.WebHost.ConfigureKestrel(options => {
@@ -89,6 +105,8 @@ builder.WebHost.ConfigureKestrel(options => {
 		Console.WriteLine("Using local env");
 		options.ListenLocalhost(5000, o => o.Protocols =
 			HttpProtocols.Http2);
+	} else {
+		options.Listen(new UriEndPoint(new Uri(hostAddress)));
 	}
 });
 

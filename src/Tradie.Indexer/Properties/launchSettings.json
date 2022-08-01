@@ -6,7 +6,8 @@
         "TRADIE_ENV":"dev",
         "TRADIE_LEAGUE": "Standard",
         "AWS_PROFILE": "resolver",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "LISTEN_ADDR": "http://localhost:5000"
       },
       "hotReloadEnabled": true
     }

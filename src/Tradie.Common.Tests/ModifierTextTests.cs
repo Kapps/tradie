@@ -20,6 +20,10 @@ public class ModHashTests {
 	[DataRow("1.1% of Physical Attack Damage Leeched as Life", "#% of Physical Attack Damage Leeched as Life")]
 	[DataRow("Immune to Physical Damage", "Immune to Physical Damage")]
 	[DataRow("Gain +2% to Critical Strike Chance for 2 seconds after Spending a total of 800 Mana", "Gain +#% to Critical Strike Chance for # seconds after Spending a total of # Mana")]
+	[DataRow("Empowers: {0} enemies", "Empowers: # enemies")]
+	[DataRow("<currencyitem>{7x Exalted Orb}", "#x Exalted Orb")]
+	[DataRow("<size:31>{<magicitem>{Bloodthirsty Eternal Sword}}", "Bloodthirsty Eternal Sword")]
+	[DataRow("<whiteitem>{Item}", "Item")]
 	public void TestMakeValueIndependent(string input, string expected) {
 		string actual = ModifierText.MakeValueIndependent(input);
 		Assert.AreEqual(expected, actual);
@@ -34,6 +38,9 @@ public class ModHashTests {
 	[DataRow("2.36% of Physical Attack Damage Leeched as Life", 2.36)]
 	[DataRow("Gain +2% to Critical Strike Chance for 2 seconds after Spending a total of 800 Mana", 2.0)]
 	[DataRow("Destroys two Armours to create a new Armour with a combination of their properties. Sometimes, the resultant item is modified unpredictably", double.NaN)]
+	[DataRow("<currencyitem>{7x Exalted Orb}", 7)]
+	[DataRow("<size:31>{<magicitem>{Bloodthirsty Eternal Sword}}", double.NaN)]
+	[DataRow("<whiteitem>{Item}", double.NaN)]
 	public void TestExtractScalar(string input, double expected) {
 		double actual = ModifierText.ExtractScalar(input);
 		Assert.AreEqual(expected, actual);

@@ -28,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AWSSDK.ServiceDiscovery" Version="3.7.3.152" />
       <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
       <PackageReference Include="Grpc.AspNetCore.Web" Version="2.46.0" />
     </ItemGroup>

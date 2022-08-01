@@ -169,23 +169,23 @@ namespace Tradie.Common.RawModels {
 		public readonly Influence? Influences;
 
 		[DataMember(Name = "utilityMods")]
-		public readonly string[]? UtilityMods;
+		public readonly string[] UtilityMods;
 		[DataMember(Name = "enchantMods")]
-		public readonly string[]? EnchantMods;
+		public readonly string[] EnchantMods;
 		[DataMember(Name = "scourgeMods")]
-		public readonly string[]? ScourgeMods;
+		public readonly string[] ScourgeMods;
 		[DataMember(Name = "implicitMods")]
-		public readonly string[]? ImplicitMods;
+		public readonly string[] ImplicitMods;
 		[DataMember(Name = "craftedMods")]
-		public readonly string[]? CraftedMods;
+		public readonly string[] CraftedMods;
 		[DataMember(Name = "explicitMods")]
-		public readonly string[]? ExplicitMods;
+		public readonly string[] ExplicitMods;
 		[DataMember(Name = "fracturedMods")]
-		public readonly string[]? FracturedMods;
+		public readonly string[] FracturedMods;
 		[DataMember(Name = "cosmeticMods")]
-		public readonly string[]? CosmeticMods;
+		public readonly string[] CosmeticMods;
 		[DataMember(Name = "veiledMods")]
-		public readonly string[]? VeiledMods;
+		public readonly string[] VeiledMods;
 		// TODO: logbookMods
 		// TODO: ultimatumMods
 
@@ -218,15 +218,15 @@ namespace Tradie.Common.RawModels {
 		public readonly Item[]? SocketedItems;
 
         [DataMember(Name = "properties")]
-        public readonly ItemProperty[]? Properties;
+        public readonly ItemProperty[] Properties;
         [DataMember(Name = "notableProperties")]
-        public readonly ItemProperty[]? NotableProperties;
+        public readonly ItemProperty[] NotableProperties;
         [DataMember(Name = "additionalProperties")]
-        public readonly ItemProperty[]? AdditionalProperties;
+        public readonly ItemProperty[] AdditionalProperties;
         [DataMember(Name = "requirements")]
-        public readonly ItemProperty[]? Requirements;
+        public readonly ItemProperty[] Requirements;
         [DataMember(Name = "nextLevelRequirements")]
-        public readonly ItemProperty[]? NextLevelRequirements;
+        public readonly ItemProperty[] NextLevelRequirements;
 
         [JsonConstructor]
         public Item(
@@ -283,26 +283,26 @@ namespace Tradie.Common.RawModels {
 	        this.SecondaryDescription = secondaryDescription;
 	        this.FlavourText = flavourText;
 	        this.FlavourTextParsed = flavourTextParsed;
-	        this.UtilityMods = utilityMods;
-	        this.EnchantMods = enchantMods;
-	        this.ScourgeMods = scourgeMods;
-	        this.ImplicitMods = implicitMods;
-	        this.ExplicitMods = explicitMods;
-			this.CraftedMods = craftedMods;
-	        this.FracturedMods = fracturedMods;
-	        this.CosmeticMods = cosmeticMods;
-	        this.VeiledMods = veiledMods;
+	        this.UtilityMods = utilityMods ?? Array.Empty<string>();
+	        this.EnchantMods = enchantMods ?? Array.Empty<string>();
+	        this.ScourgeMods = scourgeMods ?? Array.Empty<string>();
+	        this.ImplicitMods = implicitMods ?? Array.Empty<string>();
+	        this.ExplicitMods = explicitMods ?? Array.Empty<string>();
+			this.CraftedMods = craftedMods ?? Array.Empty<string>();
+	        this.FracturedMods = fracturedMods ?? Array.Empty<string>();
+	        this.CosmeticMods = cosmeticMods ?? Array.Empty<string>();
+	        this.VeiledMods = veiledMods ?? Array.Empty<string>();
 	        this.ProphecyText = prophecyText;
 	        this.FrameType = frameType;
 	        this.ArtFilename = artFilename;
 	        this.InventoryId = inventoryId;
 	        this.Socket = socket;
 	        this.Colour = colour;
-	        this.Properties = properties;
-	        this.NotableProperties = notableProperties;
-	        this.AdditionalProperties = additionalProperties;
-	        this.Requirements = requirements;
-	        this.NextLevelRequirements = nextLevelRequirements;
+	        this.Properties = properties ?? Array.Empty<ItemProperty>();
+	        this.NotableProperties = notableProperties ?? Array.Empty<ItemProperty>();
+	        this.AdditionalProperties = additionalProperties ?? Array.Empty<ItemProperty>();
+	        this.Requirements = requirements ?? Array.Empty<ItemProperty>();
+	        this.NextLevelRequirements = nextLevelRequirements ?? Array.Empty<ItemProperty>();
 	        this.Synthesized = synthesized;
 	        this.Delve = delve;
 	        this.AbyssJewel = abyssJewel;

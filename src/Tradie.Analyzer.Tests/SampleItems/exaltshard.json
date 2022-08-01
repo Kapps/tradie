@@ -1,0 +1,36 @@
+{
+  "verified": false,
+  "w": 1,
+  "h": 1,
+  "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvRXhhbHRlZFNoYXJkIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/a919870741/ExaltedShard.png",
+  "stackSize": 17,
+  "maxStackSize": 20,
+  "league": "Sentinel",
+  "id": "ed29a6c476b83b6726d4f798e8300a22859bd0ecc038790eff2650ae726d7d1c",
+  "name": "",
+  "typeLine": "Exalted Shard",
+  "baseType": "Exalted Shard",
+  "identified": true,
+  "ilvl": 0,
+  "properties": [
+    {
+      "name": "Stack Size",
+      "values": [
+        [
+          "17/20",
+          0
+        ]
+      ],
+      "displayMode": 0,
+      "type": 32
+    }
+  ],
+  "descrText": "A stack of 20 shards becomes an Exalted Orb.",
+  "frameType": 5,
+  "extended": {
+    "category": "currency"
+  },
+  "x": 51,
+  "y": 0,
+  "inventoryId": "Stash15"
+}
