@@ -63,7 +63,7 @@ public static class ModKindExtensions {
 			case ModKind.Pseudo:
 				return ModKindCategory.Pseudo;
 			default:
-				throw new ArgumentOutOfRangeException(nameof(kind));
+				throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
 		}
 	}
 }

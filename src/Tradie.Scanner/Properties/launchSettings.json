@@ -5,11 +5,11 @@
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
         "TRADIE_ENV": "dev"
-      },
-      "dotnetRunMessages": true
+      }
     },
     "Docker": {
-      "commandName": "Docker"
+      "commandName": "Docker",
+      "environmentVariables": {}
     }
   }
 }

@@ -1,5 +1,6 @@
 import { Card, Center, Container, Divider, Grid, Image, Space, Stack, Text } from '@mantine/core';
 import { useSelector } from 'react-redux';
+import { rounded, substituteValuesInText } from '../../utils/textFormatters';
 import { Item } from '../item/item';
 import {
   AnalyzerId,
@@ -11,11 +12,12 @@ import {
 } from '../item/itemProperties';
 import { selectItemType } from '../itemTypes/itemTypesSlice';
 import { Modifier } from '../modifiers/modifier';
-import { selectAllModifiers } from '../modifiers/modifiersSlice';
+import { selectAllModifiers, selectModifier } from '../modifiers/modifiersSlice';
 import {
   getPropertyDisplayForCategory,
   getPropertyDisplayForRarity,
   ModifierLine,
+  ModifierPart,
   PropertyDisplay,
 } from './ModifierLine';
 import { ModifierSection } from './ModifierSection';
@@ -43,7 +45,7 @@ export function SearchResultCard({ item, index }: SearchResultCardProps) {
       style={{ height: '100%', margin: 0 }}
     >
       <Grid>
-        <Grid.Col span={3}>
+        <Grid.Col span={2}>
           <Center style={{ height: '100%' }}>
             <Image src={itemType.iconUrl} alt={itemType.name} />
           </Center>
@@ -68,7 +70,42 @@ export function SearchResultCard({ item, index }: SearchResultCardProps) {
                     />
                   </>
                 )}
-                <Space h={8} />
+              </Stack>
+              <div className={styles.separator} />
+              <Stack spacing={0}>
+                {affixProperties.affixes
+                  .filter((c) => c.modifier.location === ModKind.Property)
+                  .map((affix, i) => {
+                    const modText = useSelector(selectModifier(affix.modifier.modifier))?.text ?? '<unknown modifier>';
+                    let parts: ModifierPart[];
+                    if (modText.indexOf('#') >= 0) {
+                      parts = [
+                        {
+                          text: substituteValuesInText(modText, affix.value, affix.value),
+                          display: PropertyDisplay.Value,
+                        }
+                      ];
+                    } else if (affix.value) {
+                      parts = [
+                        {
+                          text: modText,
+                          display: PropertyDisplay.Property,
+                        },
+                        { text: ': ', display: PropertyDisplay.Property },
+                        { text: rounded(affix.value).toString(), display: PropertyDisplay.Value },
+                      ];
+                    } else {
+                      parts =
+                        [{
+                          text: modText,
+                          display: PropertyDisplay.Property,
+                        }];
+                    }
+                    return (<ModifierLine
+                      key={i}
+                      parts={parts} />);
+                  })
+                }
               </Stack>
               <Stack spacing={2}>
                 <ModifierSection
@@ -101,6 +138,11 @@ export function SearchResultCard({ item, index }: SearchResultCardProps) {
                 />
                 <ModifierSection
                   modifiers={affixProperties.affixes}
+                  section={ModKind.Crafted}
+                  includeSeparator={false}
+                />
+                <ModifierSection
+                  modifiers={affixProperties.affixes}
                   section={ModKind.Pseudo}
                   includeSeparator={false}
                 />
@@ -116,6 +158,11 @@ export function SearchResultCard({ item, index }: SearchResultCardProps) {
                 )}
               </Stack>
             </Stack>
+          </Center>
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <Center style={{ height: '100%' }}>
+            <Image src={itemType.iconUrl} alt={itemType.name} />
           </Center>
         </Grid.Col>
       </Grid>

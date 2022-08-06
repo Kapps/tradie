@@ -55,7 +55,8 @@ export enum ModKind {
   Veiled = 8,
   Crafted = 9,
   Total = 10,
-  Pseudo = 11
+  Pseudo = 11,
+  Property = 12
 }
 
 export enum SearchGroupKind {

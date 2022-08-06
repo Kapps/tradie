@@ -1,4 +1,5 @@
 using MessagePack;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -17,7 +18,7 @@ public readonly record struct ItemPrice(
 	[property: DataMember, Key(1)] float Amount,
 	[property: DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<BuyoutKind>))] BuyoutKind Kind
 ) {
-	
+
 	/// <summary>
 	/// Attempts to parse an ItemPrice from a note, such as "~b/o 3.5 exalts".
 	/// </summary>
@@ -89,7 +90,6 @@ public readonly record struct ItemPrice(
 			{"kalandra", Currency.Mirror},
 			{"mirrors", Currency.Mirror},
 			{"mir", Currency.Mirror}
-		
 		};
 }
 

@@ -8,8 +8,6 @@ using Tradie.Common.Services;
 namespace Tradie.Indexer;
 
 public class CloudMapRegistrationService : IHostedService {
-	private static readonly string InstanceId = $"indexer-{TradieConfig.League}";
-	
 	public CloudMapRegistrationService(
 		IServiceRegistry serviceRegistry,
 		string listenAddress,
@@ -20,6 +18,8 @@ public class CloudMapRegistrationService : IHostedService {
 		this._listenAddress = listenAddress;
 		this._logger = logger;
 		this._hostEnvironment = hostEnvironment;
+		this._instanceId = $"indexer-{TradieConfig.League}-{this._hostEnvironment.EnvironmentName}";
+
 	}
 	
 	public async Task StartAsync(CancellationToken cancellationToken) {
@@ -27,7 +27,7 @@ public class CloudMapRegistrationService : IHostedService {
 			TradieConfig.DiscoveryServiceIndexerId,
 			new(
 				this._listenAddress,
-				InstanceId,
+				this._instanceId,
 				new Dictionary<string, string>() {
 					{ "TRADIE_LEAGUE", TradieConfig.League! }
 				}
@@ -39,7 +39,7 @@ public class CloudMapRegistrationService : IHostedService {
 	public async Task StopAsync(CancellationToken cancellationToken) {
 		await this._serviceRegistry.DeregisterService(
 			TradieConfig.DiscoveryServiceIndexerId,
-			InstanceId,
+			this._instanceId,
 			cancellationToken
 		);
 	}
@@ -48,4 +48,5 @@ public class CloudMapRegistrationService : IHostedService {
 	private readonly string _listenAddress;
 	private readonly ILogger<CloudMapRegistrationService> _logger;
 	private readonly IHostEnvironment _hostEnvironment;
+	private readonly string _instanceId;
 }

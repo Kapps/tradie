@@ -2,6 +2,7 @@
 using Amazon.ServiceDiscovery.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace Tradie.Common.Services;
 
@@ -73,6 +74,16 @@ public class CloudMapServiceRegistry : IServiceRegistry {
 
 	public async Task RegisterService(string service, ServiceProperties properties, CancellationToken cancellationToken) {
 		var endpoint = new Uri(properties.Endpoint);
+		var hostEntry = await Dns.GetHostEntryAsync(endpoint.Host, cancellationToken);
+		
+		string ipv4Address = hostEntry.AddressList.FirstOrDefault(
+			c => c.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork
+		)!.ToString();
+		if(this._environment.IsDevelopment()) {
+			ipv4Address = "8.8.8.8";
+		}
+		
+		this._logger.LogInformation($"Resolved {endpoint} to {hostEntry.AddressList.Length} addresses; using {ipv4Address}");
 		var creatorId = Guid.NewGuid();
 		var registerResponse = await this._serviceDiscoveryClient.RegisterInstanceAsync(new RegisterInstanceRequest() {
 			Attributes = new(
@@ -80,7 +91,7 @@ public class CloudMapServiceRegistry : IServiceRegistry {
 					new("ENDPOINT", properties.Endpoint),
 					new("AWS_INSTANCE_PORT", endpoint.Port.ToString()),
 					new("AWS_INSTANCE_CNAME", endpoint.Host),
-					new("AWS_INSTANCE_IPV4", "51.161.119.211"), //"127.0.0.1"),
+					new("AWS_INSTANCE_IPV4", ipv4Address),
 					new("TRADIE_ENVIRONMENT", this._environment.EnvironmentName),
 				}.Concat(properties.CustomAttributes)
 			),

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Npgsql;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Models;
 using Tradie.Common;
@@ -36,6 +37,11 @@ public class AnalysisContext : DbContext {
 	/// Returns the set of affix ranges in the context.
 	/// </summary>
 	public DbSet<AffixRange> AffixRanges { get; set; } = null!;
+
+	/// <summary>
+	/// Returns the set of item price histories in the context.
+	/// </summary>
+	public DbSet<ItemPriceHistory> ItemPriceHistories { get; set; } = null!;
 
 	/// <summary>
 	/// Returns a connection string that can be used to connect to the analysis database.
@@ -103,7 +109,14 @@ public class AnalysisContext : DbContext {
 			.HasKey(c => new { c.ModHash, c.ModCategory, c.EntityKind });
 		modelBuilder.Entity<Modifier>()
 			.HasData(PseudoMods.AllPseudoModifiers);
-		
+		modelBuilder.Entity<ItemPriceHistory>()
+			.HasIndex(nameof(ItemPriceHistory.ItemId), nameof(ItemPriceHistory.RecordedTime))
+			.HasSortOrder(SortOrder.Ascending, SortOrder.Descending);
+		modelBuilder.Entity<ItemPriceHistory>()
+			.HasKey(nameof(ItemPriceHistory.ItemId), nameof(ItemPriceHistory.RecordedTime));
+		modelBuilder.Entity<ItemPriceHistory>()
+			.Property(c => c.RecordedTime);
+
 		base.OnModelCreating(modelBuilder);
 	}
 }

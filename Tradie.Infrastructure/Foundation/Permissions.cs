@@ -75,6 +75,22 @@ public class Permissions {
 						"cloudwatch:PutMetricData"
 					},
 					Resource = new[] {"*"}
+				},
+				new {
+					Effect = "Allow",
+					Action = new[] {
+						"servicediscovery:DiscoverInstances",
+						"servicediscovery:GetInstance",
+						"servicediscovery:GetInstancesHealthStatus",
+						"servicediscovery:GetOperation",
+						"servicediscovery:RegisterInstance",
+						"servicediscovery:DeregisterInstance",
+						"route53:GetHealthCheck",
+						"route53:DeleteHealthCheck",
+						"route53:UpdateHealthCheck",
+						"route53:ChangeResourceRecordSets"
+					},
+					Resource = new[] {"*"}
 				}
 			}
 		})

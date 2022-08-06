@@ -9,7 +9,6 @@ import { Modifier } from "./modifier";
 
 export const getModifiers = () => {
   return memoizePersistent('modifiers', async () => {
-    const request = new ListModifiersRequest();
     const body = await get('modifiers');
     const response = ListModifiersResponse.deserializeBinary(body);
     const modifiers = await response.getModifiersList().map(c => Modifier.fromProto(c));

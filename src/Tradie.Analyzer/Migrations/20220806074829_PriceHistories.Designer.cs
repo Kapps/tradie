@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tradie.Analyzer;
@@ -12,9 +13,10 @@ using Tradie.Analyzer.Repos;
 namespace Tradie.Analyzer.Migrations
 {
     [DbContext(typeof(AnalysisContext))]
-    partial class AnalysisContextModelSnapshot : ModelSnapshot
+    [Migration("20220806074829_PriceHistories")]
+    partial class PriceHistories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,9 +58,6 @@ namespace Tradie.Analyzer.Migrations
                     b.Property<string>("ItemId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("RecordedTime")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
@@ -68,15 +67,16 @@ namespace Tradie.Analyzer.Migrations
                     b.Property<byte>("Kind")
                         .HasColumnType("smallint");
 
-                    b.HasKey("ItemId", "RecordedTime");
+                    b.Property<DateTime>("RecordedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ItemId");
 
                     b.HasIndex("ItemId");
 
-                    b.HasIndex("ItemId", "RecordedTime");
+                    b.HasIndex("RecordedTime");
 
-                    NpgsqlIndexBuilderExtensions.HasSortOrder(b.HasIndex("ItemId", "RecordedTime"), new[] { SortOrder.Ascending, SortOrder.Descending });
-
-                    b.ToTable("ItemPriceHistory");
+                    b.ToTable("PriceHistory");
                 });
 
             modelBuilder.Entity("Tradie.Analyzer.Entities.ItemType", b =>

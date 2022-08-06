@@ -122,11 +122,11 @@ const getClassForDisplay = (display: PropertyDisplay) => {
 export function ModifierLine({ parts }: ModifierLineProps) {
   return (
     <div>
-      {parts.map((part, index) => (
-        <Text align="center" className={getClassForDisplay(part.display)} key={index}>
-          {part.text}
-        </Text>
-      ))}
+      <Text align="center">
+        {parts.map((part, index) => (
+          <span key={index} className={getClassForDisplay(part.display)}>{part.text}</span>
+        ))}
+      </Text>
     </div>
   );
 }

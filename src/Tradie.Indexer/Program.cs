@@ -6,9 +6,12 @@ using Amazon.ServiceDiscovery;
 using Amazon.SimpleSystemsManagement;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
@@ -16,6 +19,8 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
@@ -26,6 +31,7 @@ using Tradie.Indexer.Pricing;
 using Tradie.Indexer.Search;
 using Tradie.Indexer.Storage;
 using Tradie.ItemLog;
+using HealthStatus = Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus;
 
 var ssmClient = new AmazonSimpleSystemsManagementClient();
 var s3Client = new AmazonS3Client();
@@ -106,7 +112,10 @@ builder.WebHost.ConfigureKestrel(options => {
 		options.ListenLocalhost(5000, o => o.Protocols =
 			HttpProtocols.Http2);
 	} else {
-		options.Listen(new UriEndPoint(new Uri(hostAddress)));
+		options.ListenAnyIP(new Uri(hostAddress).Port, o => {
+			//o.Protocols = HttpProtocols.Http2;
+			o.UseHttps();
+		});
 	}
 });
 
@@ -115,9 +124,20 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder => {
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
-})); 
+}));
+
+builder.Services.AddHealthChecks().AddCheck("Basic", () => HealthCheckResult.Healthy());
 
 var app = builder.Build();
+
+app.UseHealthChecks("/health", new HealthCheckOptions() {
+	ResponseWriter = async (context, report) => {
+		context.Response.ContentType = "application/json";
+		await context.Response.WriteAsync(JsonSerializer.Serialize(report, new JsonSerializerOptions() {
+			WriteIndented = true
+		}));
+	}
+});
 
 //app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
 app.UseCors();

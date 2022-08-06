@@ -1,5 +1,3 @@
-using Grpc.Core;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -25,14 +23,19 @@ public class SearchController : IAsyncDisposable {
 	
 	[HttpPost]
 	public async Task<SearchResponse> Post(SearchRequest request) {
-		Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions() { WriteIndented = true, NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals}));
+		//Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions() { WriteIndented = true, NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals}));
 		var ids = await PerformSearch(request.Query);
 		var items = await this._context.LoggedItems.Where(c => ids.Contains(c.RawId)).ToArrayAsync();
 		var sorted = items.OrderBy(c => Array.IndexOf(ids, c.RawId));
 		var resp = new SearchResponse();
-		resp.Items.AddRange(sorted.Select(FromAnalysis));
+		resp.Items.AddRange(sorted.Select(this.FromAnalysis));
 		
 		return resp;
+	}
+
+	[HttpGet]
+	public async Task GetWhisperMessage(string itemId) {
+		
 	}
 
 	private Item FromAnalysis(LoggedItem item) {

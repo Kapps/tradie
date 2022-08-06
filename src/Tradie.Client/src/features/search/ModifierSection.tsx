@@ -27,6 +27,7 @@ const getDisplayForSection = (section: ModKind) => {
     case ModKind.Unknown:
       return PropertyDisplay.Rare;
     case ModKind.Utility:
+    case ModKind.Property:
       return PropertyDisplay.Property;
     case ModKind.Veiled:
     case ModKind.Crafted:
