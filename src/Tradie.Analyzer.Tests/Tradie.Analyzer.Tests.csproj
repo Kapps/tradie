@@ -30,6 +30,9 @@
       <None Update="SampleItems\exaltshard.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="SampleItems\nobuyout.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <ItemGroup>
       <None Update="Analyzers\json\jewel.json">

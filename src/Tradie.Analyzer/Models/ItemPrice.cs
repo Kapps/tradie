@@ -18,12 +18,16 @@ public readonly record struct ItemPrice(
 	[property: DataMember, Key(1)] float Amount,
 	[property: DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<BuyoutKind>))] BuyoutKind Kind
 ) {
+	/// <summary>
+	/// Returns an ItemPrice for items that have no price set.
+	/// </summary>
+	public static ItemPrice None => new(Currency.None, 0, BuyoutKind.None);
 
 	/// <summary>
 	/// Attempts to parse an ItemPrice from a note, such as "~b/o 3.5 exalts".
 	/// </summary>
 	public static bool TryParse(string? note, out ItemPrice itemPrice) {
-		itemPrice = default;
+		itemPrice = None;
 		if(String.IsNullOrWhiteSpace(note)) {
 			return false;
 		}
