@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "Models/Indexer/Proto/SearchQuery.proto";
 import "Models/Analyzer/Proto/Item.proto";
+import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Tradie.Web.Proto";
 
@@ -13,6 +14,15 @@ message SearchRequest {
   SearchQuery Query = 1;
 }
 
+message SearchResultEntry {
+  Item item = 1;
+  google.protobuf.Timestamp firstSeen = 2;
+  string lastCharacterName = 3;
+  float chaosEquivalentPrice = 4;
+  int32 timesRequested = 5;
+  string tabName = 6;
+}
+
 message SearchResponse {
-  repeated Item items = 1;
+  repeated SearchResultEntry results = 1;
 }

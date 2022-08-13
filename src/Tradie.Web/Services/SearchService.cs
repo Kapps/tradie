@@ -1,4 +1,4 @@
-using Grpc.Core;
+/*using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
 using Tradie.Analyzer;
@@ -112,4 +112,4 @@ public class SearchService : Proto.SearchService.SearchServiceBase {
 
 	private readonly AnalysisContext _context;
 	private readonly IGrpcServicePool _servicePool;
-}
+}*/

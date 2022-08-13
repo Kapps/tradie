@@ -4,15 +4,13 @@ using Npgsql;
 using NpgsqlTypes;
 using System;
 using Tradie.Analyzer.Entities;
-using Tradie.Analyzer.Models;
-using Tradie.Common;
 
 namespace Tradie.Analyzer.Repos;
 
 /// <summary>
 /// Repository for storing price histories for items as they change over time.
 /// </summary>
-public interface IPriceHistoryRepository {
+public interface IPriceHistoryRepository : IAsyncDisposable, IDisposable {
 	/// <summary>
 	/// Loads the previous price history entries for a set of item ids.
 	/// </summary>
@@ -68,7 +66,7 @@ public class PriceHistoryRepository : IPriceHistoryRepository {
 			FROM ""ItemPriceHistory""
 			WHERE ""ItemId"" = ANY({0})
 			ORDER BY ""ItemId"", ""RecordedTime"" DESC
-		", new object[] { itemIds }).ToArrayAsync(cancellation);
+		", new object[] { itemIds.ToArray() }).ToArrayAsync(cancellation);
 		
 		return result;
 	}
@@ -84,6 +82,14 @@ public class PriceHistoryRepository : IPriceHistoryRepository {
 	public async Task RecordPriceHistories(IEnumerable<ItemPriceHistory> priceHistory, CancellationToken cancellation) {
 		await this._context.ItemPriceHistories.AddRangeAsync(priceHistory, cancellation);
 		await this._context.SaveChangesAsync(cancellation);
+	}
+
+	public void Dispose() {
+		this._context.Dispose();
+	}
+
+	public ValueTask DisposeAsync() {
+		return this._context.DisposeAsync();
 	}
 
 	private readonly AnalysisContext _context;

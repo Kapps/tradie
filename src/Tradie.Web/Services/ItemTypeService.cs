@@ -1,4 +1,4 @@
-using Grpc.Core;
+/*using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Tradie.Analyzer.Analyzers;
 using Tradie.Analyzer.Proto;
@@ -40,4 +40,4 @@ public class ItemTypeService : Proto.ItemTypeService.ItemTypeServiceBase {
 	}
 
 	private readonly AnalysisContext _context;
-}
+}*/

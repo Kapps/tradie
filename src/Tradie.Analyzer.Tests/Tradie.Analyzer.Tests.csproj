@@ -33,6 +33,9 @@
       <None Update="SampleItems\nobuyout.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="SampleItems\floatprice.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <ItemGroup>
       <None Update="Analyzers\json\jewel.json">

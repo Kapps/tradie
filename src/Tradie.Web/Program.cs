@@ -1,14 +1,10 @@
 
 using Amazon;
-using Amazon.Lambda.AspNetCoreServer.Hosting.Internal;
 using Amazon.Lambda.AspNetCoreServer.Internal;
 using Amazon.ServiceDiscovery;
 using Amazon.SimpleSystemsManagement;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.Options;
 using StackExchange.Redis;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
 using System.Net;
 using Tradie.Analyzer.Repos;
@@ -16,9 +12,7 @@ using Tradie.Common;
 using Tradie.Common.Services;
 using Tradie.Web;
 using Tradie.Web.Formatters;
-using Tradie.Web.Services;
 using BrotliCompressionProvider = Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider;
-using ICompressionProvider = Grpc.Net.Compression.ICompressionProvider;
 
 
 AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Console;
@@ -62,6 +56,7 @@ builder.Services.AddStackExchangeRedisCache(options => {
 builder.Services.AddScoped<IModifierRepository, ModifierDbRepository>()
 	.AddScoped<ILeagueRepository, LeagueRepository>()
 	.AddScoped<IItemTypeRepository, ItemTypeDbRepository>()
+	.AddScoped<IPriceHistoryRepository, PriceHistoryRepository>()
 	.AddSingleton<IAmazonServiceDiscovery, AmazonServiceDiscoveryClient>()
 	.AddSingleton<IServiceRegistry, CloudMapServiceRegistry>()
 	.AddSingleton<IGrpcServicePool, GrpcServicePool>();

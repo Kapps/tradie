@@ -27,11 +27,14 @@ export enum PropertyDisplay {
   Fractured,
   Gem,
   Pseudo,
+  Action,
+  PrimaryAction,
 }
 
 export type ModifierPart = {
   text: string;
   display: PropertyDisplay;
+  onClick?: () => void;
 };
 
 export interface ModifierLineProps {
@@ -114,6 +117,10 @@ const getClassForDisplay = (display: PropertyDisplay) => {
       return styles.relic;
     case PropertyDisplay.Pseudo:
       return styles.pseudo;
+    case PropertyDisplay.Action:
+      return styles.action;
+    case PropertyDisplay.PrimaryAction:
+      return styles.primaryAction;
     default:
       return styles.default;
   }
@@ -124,7 +131,9 @@ export function ModifierLine({ parts }: ModifierLineProps) {
     <div>
       <Text align="center">
         {parts.map((part, index) => (
-          <span key={index} className={getClassForDisplay(part.display)}>{part.text}</span>
+          <span key={index} className={getClassForDisplay(part.display)} onClick={part.onClick}>
+            {part.text}
+          </span>
         ))}
       </Text>
     </div>

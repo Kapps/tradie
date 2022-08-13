@@ -1,4 +1,4 @@
-using Grpc.Core;
+/*using Grpc.Core;
 using Tradie.Analyzer.Proto;
 using Tradie.Analyzer.Repos;
 using Tradie.Web.Proto;
@@ -23,4 +23,4 @@ public class ModifierService : Proto.ModifierService.ModifierServiceBase {
 	}
 
 	private readonly IModifierRepository _repository;
-}
+}*/

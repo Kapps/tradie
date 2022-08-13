@@ -79,7 +79,6 @@ export function SelectedCriteria({
   initiallyOpen: boolean;
 }) {
   const criteriaValue = useAppSelector(selectCriteriaValue(criteriaId))!;
-  console.log('SelectedCriteria', criteriaValue);
   const [min, max] = getMinMax(criteriaId) ?? [0, 0];
   const [val, setVal] = useState<[number, number]>([
     criteriaValue.minValue ?? min ?? -Infinity,

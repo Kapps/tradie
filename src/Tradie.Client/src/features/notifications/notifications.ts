@@ -13,3 +13,12 @@ export const notifyError = (title: string, error?: SerializedError) => {
     icon: ImBlocked({}),
   });
 };
+
+export const notify = (title: string, message?: string) => {
+  showNotification({
+    title,
+    message,
+    color: 'orange',
+    icon: ImXing({}),
+  });
+};

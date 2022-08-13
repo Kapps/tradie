@@ -73,6 +73,7 @@ public class Function {
 						.AddSingleton<IPseudoModCalculator, PseudoModCalculator>()
 						.AddSingleton<IItemTypeRepository, ItemTypeDbRepository>()
 						.AddSingleton<IAnalyzedStashTabDispatcher, AnalyzedStashTabKinesisDispatcher>()
+						.AddSingleton<IPriceHistoryRepository, PriceHistoryRepository>()
 						.AddSingleton<IStashTabSerializer, MessagePackedStashTabSerializer>();
 
 					services.AddStackExchangeRedisCache(opts => {

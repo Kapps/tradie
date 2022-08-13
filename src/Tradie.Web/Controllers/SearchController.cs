@@ -10,14 +10,20 @@ using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.Services;
 using Tradie.Web.Proto;
+using ItemPrice = Tradie.Analyzer.Models.ItemPrice;
 
 namespace Tradie.Web.Controllers;
 
 [ApiController]
 [Route("/search")]
 public class SearchController : IAsyncDisposable {
-	public SearchController(AnalysisContext context, IGrpcServicePool grpcServicePool) {
+	public SearchController(
+		AnalysisContext context,
+		IPriceHistoryRepository priceHistoryRepo,
+		IGrpcServicePool grpcServicePool
+	) {
 		this._context = context;
+		this._priceHistoryRepo = priceHistoryRepo;
 		this._grpcServicePool = grpcServicePool;
 	}
 	
@@ -25,20 +31,31 @@ public class SearchController : IAsyncDisposable {
 	public async Task<SearchResponse> Post(SearchRequest request) {
 		//Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions() { WriteIndented = true, NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals}));
 		var ids = await PerformSearch(request.Query);
-		var items = await this._context.LoggedItems.Where(c => ids.Contains(c.RawId)).ToArrayAsync();
-		var sorted = items.OrderBy(c => Array.IndexOf(ids, c.RawId));
+		var items = await this._context.LoggedItems
+			.Where(c => ids.Contains(c.RawId))
+			.Join(this._context.LoggedStashTabs, c=>c.StashTabId, c=>c.Id, (c, d) => new {
+				Item = c,
+				d.LastCharacterName,
+				TabName = d.Name
+			})
+			.ToArrayAsync();
+		
+		
+		var sorted = items.OrderBy(c => Array.IndexOf(ids, c.Item.RawId));
 		var resp = new SearchResponse();
-		resp.Items.AddRange(sorted.Select(this.FromAnalysis));
+		resp.Results.AddRange(sorted.Select(c => {
+			var item = LoggedItemToItem(c.Item);
+			return new SearchResultEntry {
+				Item = item,
+				LastCharacterName = c.LastCharacterName,
+				TabName = c.TabName
+			};
+		}));
 		
 		return resp;
 	}
 
-	[HttpGet]
-	public async Task GetWhisperMessage(string itemId) {
-		
-	}
-
-	private Item FromAnalysis(LoggedItem item) {
+	private Item LoggedItemToItem(LoggedItem item) {
 		var res = new Item() {
 			RawId = item.RawId,
 		};
@@ -126,5 +143,6 @@ public class SearchController : IAsyncDisposable {
 	}
 
 	private readonly AnalysisContext _context;
+	private readonly IPriceHistoryRepository _priceHistoryRepo;
 	private readonly IGrpcServicePool _grpcServicePool;
 }

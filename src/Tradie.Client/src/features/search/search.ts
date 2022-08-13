@@ -5,6 +5,9 @@ import {
   SortOrder as ProtoSortOrder,
 } from "../../protos/Models/Indexer/Proto/SearchQuery_pb";
 
+import { SearchResponse as ProtoSearchResponse } from '../../protos/Services/Web/Proto/SearchService_pb';
+
+
 import {
   ModKey as ProtoModKey,
 } from "../../protos/Models/Analyzer/Proto/ModifierTypes_pb";

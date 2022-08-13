@@ -1,4 +1,4 @@
-using Grpc.Core;
+/*using Grpc.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using SpanJson;
 using Tradie.Analyzer.Proto;
@@ -44,9 +44,6 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 			Name = c.Id,
 			Kind = CriteriaKind.League,
 			League = c.Id,
-			/*League = new League() {
-				Id = c.Id
-			}*/
 		}).Union(mods.Select(c => new Criteria() {
 			Id = $"mod-{c.Id}",
 			Name = c.ModifierText,
@@ -55,11 +52,6 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 				Kind = (int)c.Kind,
 				ModifierHash = (long)c.ModHash
 			}
-			/*Modifier = new Modifier() {
-				Hash = (long)c.ModHash,
-				Id = c.Id,
-				Text = c.ModifierText
-			}*/
 		})).Union(itemTypes.Select(c=>c.Category).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
 			Id = $"cat-{c}",
 			Name = c,
@@ -76,23 +68,6 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 			Name = c.Name,
 			Kind = CriteriaKind.ItemType,
 			ItemTypeId = c.Id
-			/*ItemType = new ItemType() {
-				Id = c.Id,
-				Category = c.Category,
-				Height = c.Height,
-				Width = c.Width,
-				Name = c.Name,
-				Requirements = c.Requirements == null ? null : new Requirements() {
-					Dex = c.Requirements.Dex,
-					Int = c.Requirements.Int,
-					Str = c.Requirements.Str,
-					Level = c.Requirements.Level
-				},
-				Subcategories = {
-					c.Subcategories
-				},
-				IconUrl = c.IconUrl
-			}*/
 		})).ToArray();
 
 		return criteria;
@@ -102,4 +77,4 @@ public class CriteriaService : Proto.CriteriaService.CriteriaServiceBase {
 	private readonly ILeagueRepository _leagueRepository;
 	private readonly IModifierRepository _modifierRepository;
 	private readonly IItemTypeRepository _itemTypeRepository;
-}
+}*/

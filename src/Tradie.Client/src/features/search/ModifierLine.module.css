@@ -80,7 +80,8 @@
 .note {
   color: #ff7;
   font-weight: 300;
-  font-size: small
+  font-size: small;
+  line-height: 1.2em;
 }
 
 .name {
@@ -95,7 +96,7 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap&text=01234567890.');
-.modifier, .fractured, .property, .enchant, .crafted, .value {
+.modifier, .fractured, .property, .enchant, .crafted, .value, .action, .primaryAction {
   font-size: 13px;
   line-height: 1.7em;
   font-weight: 500;
@@ -132,4 +133,16 @@
   display: inline;
   align-self: flex-start;
   justify-content: start;
+}
+
+.action {
+  color: #8787FE;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.primaryAction {
+  color: #8787FE;
+  font-weight: 800;
+  cursor: pointer;
 }

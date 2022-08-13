@@ -152,6 +152,29 @@ public class TradeAttributesAnalyzerTests : TestBase {
 			"~price 75 chaos"
 		));
 	}
+	
+	[TestMethod]
+	public async Task TestBasic_NoChange_FloatPrice() {
+		var item = new AnalyzedItem(await ItemUtils.ReadTestItem("floatprice"));
+
+		_priceHistoryRepo.Setup(c => c.LoadLatestPricesForItems(
+			new[] {item.Id}.DeepMatcher<IEnumerable<string>>(),
+			CancellationToken.None
+		)).ReturnsAsync(new ItemPriceHistory[] {
+			new(item.Id, new ItemPrice(Currency.Chaos, 0.14f, BuyoutKind.Fixed), DateTime.Today.AddHours(-1))
+		});
+		
+		await this._analyzer.AnalyzeItems(new[] { item });
+
+		var props = (TradeListingAnalysis)item.Analysis[TradePropertiesAnalyzer.Id]!;
+		Assert.IsNotNull(props);
+
+		props.ShouldDeepEqual(new TradeListingAnalysis(
+			8, 6,
+			new ItemPrice(Currency.Chaos, 0.14f, BuyoutKind.Fixed),
+			"~price 0.14 chaos"
+		));
+	}
 
 	private TradePropertiesAnalyzer _analyzer = null!;
 	private Mock<IPriceHistoryRepository> _priceHistoryRepo = null!;

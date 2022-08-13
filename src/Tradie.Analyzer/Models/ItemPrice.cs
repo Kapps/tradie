@@ -23,6 +23,15 @@ public readonly record struct ItemPrice(
 	/// </summary>
 	public static ItemPrice None => new(Currency.None, 0, BuyoutKind.None);
 
+	public bool Equals(ItemPrice other) {
+		return Currency == other.Currency && Math.Abs(this.Amount - other.Amount) < 0.01 && Kind == other.Kind;
+	}
+
+	public override int GetHashCode() {
+		return HashCode.Combine((int) this.Currency, this.Amount, (int) this.Kind);
+	}
+
+
 	/// <summary>
 	/// Attempts to parse an ItemPrice from a note, such as "~b/o 3.5 exalts".
 	/// </summary>
@@ -56,7 +65,7 @@ public readonly record struct ItemPrice(
 			return false;
 		}
 
-		itemPrice = new(currency, price, buyoutKind);
+		itemPrice = new(currency, (float)Math.Round(price, 2), buyoutKind);
 		return true;
 	}
 

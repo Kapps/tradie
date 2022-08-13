@@ -5,12 +5,13 @@ import { selectCriteria } from "../criteria/criteriaSlice";
 import { selectCriteriaGroups } from "../criteriagroups/criteriaGroupsSlice";
 import { selectCriteriaValues } from "../criterialist/criteriaValueSlice";
 import { Item } from "../item/item";
-import { notifyError } from "../notifications/notifications";
+import { AnalyzerId, ItemDetailProperties, ItemListingProperties } from "../item/itemProperties";
+import { notify, notifyError } from "../notifications/notifications";
 import { SearchRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from "./search";
-import { search } from "./searchApi";
+import { search, SearchResultEntry } from "./searchApi";
 
 export interface SearchState {
-  results: Item[];
+  results: SearchResultEntry[];
   isLoading: boolean;
 }
 
@@ -20,6 +21,20 @@ const initialState: SearchState = {
 };
 
 export const selectSearchResults = (state: RootState) => state.search.results;
+
+export const copyWhisperDetails = createAsyncThunk('search/copyWhisperDetails', async (entry: SearchResultEntry) => {
+  console.log('Copying details');
+  const item = entry.item;
+  const itemDetails = item.findProperty<ItemDetailProperties>(AnalyzerId.ItemDetails);
+  const tradeDetails = item.findProperty<ItemListingProperties>(AnalyzerId.TradeAttributes);
+  const price = entry.chaosEquivalentPrice;
+  const name = entry.lastCharacterName;
+  const tab = entry.tabName;
+  const whisper = `@${name} Hi, I would like to buy your ${itemDetails.name} listed for ${tradeDetails.price.amount} ${tradeDetails.price.currency}} in ${tab} (stash tab "${tab}"; position: left ${tradeDetails.x}, top ${tradeDetails.y})`;
+  await navigator.clipboard.writeText(whisper);
+  notify('Whisper copied to clipboard', whisper);
+  console.log('Copied details');
+});
 
 export const performSearch = createAsyncThunk('search/performSearch', async (_, thunkAPI) => {
   const state = thunkAPI.getState() as RootState;
@@ -61,7 +76,7 @@ export const performSearch = createAsyncThunk('search/performSearch', async (_, 
   const searchQuery = new SearchQuery(searchGroups, new SortOrder(SortKind.Price), league);
 
   const response = await search(searchQuery);
-  return response.results;
+  return response.entries;
 });
 
 export const searchSlice = createSlice({
@@ -82,6 +97,16 @@ export const searchSlice = createSlice({
     });
     builder.addCase(performSearch.rejected, (state, action) => {
       notifyError('Could not load search results', action.error);
+    });
+
+    builder.addCase(copyWhisperDetails.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(copyWhisperDetails.fulfilled, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(copyWhisperDetails.rejected, (state, action) => {
+      notifyError('Could not copy whisper', action.error);
     });
   }
 });
