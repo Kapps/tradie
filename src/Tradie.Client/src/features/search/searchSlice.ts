@@ -6,6 +6,7 @@ import { selectCriteriaGroups } from "../criteriagroups/criteriaGroupsSlice";
 import { selectCriteriaValues } from "../criterialist/criteriaValueSlice";
 import { Item } from "../item/item";
 import { AnalyzerId, ItemDetailProperties, ItemListingProperties } from "../item/itemProperties";
+import { getNameForCurrency } from "../item/price";
 import { notify, notifyError } from "../notifications/notifications";
 import { SearchRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from "./search";
 import { search, SearchResultEntry } from "./searchApi";
@@ -27,13 +28,13 @@ export const copyWhisperDetails = createAsyncThunk('search/copyWhisperDetails', 
   const item = entry.item;
   const itemDetails = item.findProperty<ItemDetailProperties>(AnalyzerId.ItemDetails);
   const tradeDetails = item.findProperty<ItemListingProperties>(AnalyzerId.TradeAttributes);
-  const price = entry.chaosEquivalentPrice;
+  const price = tradeDetails.price;
   const name = entry.lastCharacterName;
+  const currency = getNameForCurrency(price.currency);
   const tab = entry.tabName;
-  const whisper = `@${name} Hi, I would like to buy your ${itemDetails.name} listed for ${tradeDetails.price.amount} ${tradeDetails.price.currency}} in ${tab} (stash tab "${tab}"; position: left ${tradeDetails.x}, top ${tradeDetails.y})`;
+  const whisper = `@${name} Hi, I would like to buy your ${itemDetails.name} listed for ${price.amount} ${currency} in Unknown League (stash tab "${tab}"; position: left ${tradeDetails.x}, top ${tradeDetails.y})`;
   await navigator.clipboard.writeText(whisper);
   notify('Whisper copied to clipboard', whisper);
-  console.log('Copied details');
 });
 
 export const performSearch = createAsyncThunk('search/performSearch', async (_, thunkAPI) => {

@@ -1,22 +1,37 @@
 @import url('https://rsms.me/inter/inter.css');
 
+body.light-mode {
+  --sub-bg: #fff7ef;
+  --bg-color: #e7e3e3;
+  --bg-image: url("https://www.transparenttextures.com/patterns/polyester-lite.png");
+  --header-color: #f7f4ef;
+  --header-image: url('https://www.transparenttextures.com/patterns/p5.png');
+  --row-even: #fefefe;
+  --row-odd: #fafafa;
+  --title: var(--mantine-color-dark-7);
+  --title-color: #1a1a1a;
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+}
+
+body.dark-mode {
+  --sub-bg: #0a0a16;
+  --bg-color: #07090c;
+  --bg-image: url('https://www.transparenttextures.com/patterns/fake-brick.png');
+  --header-color: #000710;
+  --header-image: url('https://www.transparenttextures.com/patterns/brilliant.png');
+  --row-even: var(--mantine-color-dark-8);
+  --row-odd: var(--mantine-color-dark-7);
+  --title-color: #bbcada;
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+}
+
+
 html,
 body,
 #root,
 .mantine-AppShell-root,
 .mantine-AppShell-body {
   min-height: 100%;
-}
-
-.App-logo {
-  height: 20vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
 }
 
 .logoContainer {
@@ -34,28 +49,14 @@ body,
   align-content: center;
   padding-left: 20px;
   padding-right: 20px;
+  background-color: var(--header-color);
+  background-image: var(--header-image);
   /*background-color: black;*/
 }
 
-.dark-mode .header {
-  background-color: #000710;
-  /*background-image: url('https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png');*/
-  background-image: url('https://www.transparenttextures.com/patterns/brilliant.png');
-}
-
-body.dark-mode {
-  /*background-color: #07090c;
-  background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');*/
-  /*background-color: #040404;
-  background-image: url('https://www.transparenttextures.com/patterns/brilliant.png');*/
-  background-color: #07090c;
-  background-image: url('https://www.transparenttextures.com/patterns/fake-brick.png');
-}
-
 body {
-  background-color: #fafaf3;
-  /*background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');*/
-  background-image: url('https://www.transparenttextures.com/patterns/fake-brick.png');
+  background-color: var(--bg-color);
+  background-image: var(--bg-image);
 }
 
 .logoContainer {
@@ -70,20 +71,12 @@ body {
   border-bottom: 1px solid var(--mantine-color-dark-5);
 }
 
-:not(.dark-mode) .criteriaGroup.odd {
-  background-color: var(--mantine-color-gray-2);
+.criteriaGroup.odd {
+  background-color: var(--row-odd);
 }
 
-:not(.dark-mode) .criteriaGroup.even {
-  background-color: var(--mantine-color-gray-1);
-}
-
-.dark-mode .criteriaGroup.odd {
-  background-color: var(--mantine-color-dark-8);
-}
-
-.dark-mode .criteriaGroup.even {
-  background-color: var(--mantine-color-dark-7);
+.criteriaGroup.even {
+  background-color: var(--row-even);
 }
 
 .searchResultCard {
@@ -93,20 +86,12 @@ body {
   padding-bottom: 15px;
 }
 
-:not(.dark-mode) .searchResultCard.odd {
-  background-color: var(--mantine-color-gray-2);
+.searchResultCard.odd {
+  background-color: var(--row-odd);
 }
 
-:not(.dark-mode) .searchResultCard.even {
-  background-color: var(--mantine-color-gray-1);
-}
-
-.dark-mode .searchResultCard.odd {
-  background-color: var(--mantine-color-dark-8);
-}
-
-.dark-mode .searchResultCard.even {
-  background-color: var(--mantine-color-dark-7);
+.searchResultCard.even {
+  background-color: var(--row-even);
 }
 
 .headerRight {

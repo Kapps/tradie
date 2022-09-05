@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+import "Models/Analyzer/Proto/Modifier.proto";
+
+option csharp_namespace = "Tradie.Web.Proto";
+
+service PriceHistoryService {
+	rpc GetHistoryForItem(GetHistoryForItemRequest) returns(GetHistoryForItemResponse);
+}
+
+message GetHistoryForItemRequest {
+
+}
+
+message GetHistoryForItemResponse {
+	
+}

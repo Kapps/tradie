@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using Tradie.Common;
 
 namespace Tradie.Indexer.Storage;
 
@@ -60,12 +61,23 @@ public class ItemTree {
 	public ItemTree() {
 		this._root = new ItemTreeLeafNode(this, null);
 		this.Depth = 1;
+		this._lock = new();
 	}
 	
 	/// <summary>
 	/// Inserts the given item into the tree.
+	/// This method is thread-safe with reads, but not with other writes.
 	/// </summary>
-	public void Add(Item item) {
+	public async Task Add(Item item) {
+		await this._lock.AcquireWriteLock();
+		try {
+			this.AddInternal(item);
+		} finally {
+			this._lock.ReleaseReadLock();
+		}
+	}
+
+	private void AddInternal(Item item) {
 		var node = this._root.FindLeafForItem(item);
 		node.Add(item);
 		if(this._root.Parent != null) {
@@ -78,26 +90,39 @@ public class ItemTree {
 
 	/// <summary>
 	/// Inserts a bulk async enumerable collection of items into this tree in a more optimal way than adding them one at a time.
+	/// This method is thread-safe with reads, but not with other writes.
 	/// </summary>
 	public async Task AddBulk(IAsyncEnumerable<Item> items, CancellationToken cancellation) {
 		var sw = Stopwatch.StartNew();
 		Console.WriteLine("Performing bulk item tree update.");
 		int insertCount = 0;
-		this.PerformingBulkInsert = true;
+		Console.WriteLine("Entering write lock on thread {0}", Thread.CurrentThread.ManagedThreadId);
+		await this._lock.AcquireWriteLock();
+		
+		// Fast path for now to do the initial insert.
+		if(this.Count == 0) {
+			this.PerformingBulkInsert = true;
+		}
+
 		try {
 			await foreach(var item in items.WithCancellation(cancellation)) {
-				this.Add(item);
+				this.AddInternal(item);
 				insertCount++;
 			}
 		} catch(Exception ex) {
 			Console.WriteLine($"Failed to add bulk to tree: {ex}");
 			throw;
 		} finally {
-			this.PerformingBulkInsert = false;
+			if(this.PerformingBulkInsert) {
+				this.PerformingBulkInsert = false;
+				this._root.VisitLeafs(leaf => leaf.RecalculateAffixes());
+			}
+
+			Console.WriteLine($"Took {sw.Elapsed} to recalculate affix dimensions.");
+			Console.WriteLine("Exiting write lock on thread {0}", Thread.CurrentThread.ManagedThreadId);
+			this._lock.ReleaseWriteLock();
 			Console.WriteLine($"Finished inserting {insertCount} items in {sw.Elapsed}; updating affix dimensions.");
 			sw.Restart();
-			this._root.VisitLeafs(leaf => leaf.RecalculateAffixes());
-			Console.WriteLine($"Took {sw.Elapsed} to recalculate affix dimensions.");
 		}
 	}
 
@@ -125,4 +150,6 @@ public class ItemTree {
 	}
 
 	private ItemTreeNode _root;
+	//private ReaderWriterLockSlim _lock;
+	private AsyncReaderWriterLock _lock;
 }

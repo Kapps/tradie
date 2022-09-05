@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "Models/Analyzer/Proto/ItemPrice.proto";
+option csharp_namespace = "Tradie.Analyzer.Proto";
+
+message HistoricalPrice {
+  string itemId = 1;
+  google.protobuf.Timestamp date = 2;
+  ItemPrice price = 3;
+}

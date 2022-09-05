@@ -4,7 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "TRADIE_ENV":"dev",
-        "TRADIE_LEAGUE": "Standard",
+        "TRADIE_LEAGUE": "Kalandra",
         "AWS_PROFILE": "resolver",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "LISTEN_ADDR": "http://localhost:5000"

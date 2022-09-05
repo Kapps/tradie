@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
+using Tradie.Analyzer.Proto;
 using Tradie.Analyzer.Repos;
 using Tradie.Web.Proto;
 
@@ -17,11 +18,16 @@ public class LeagueController : IAsyncDisposable {
 	
 	[HttpGet]
 	public async Task<ListLeaguesResponse> Get(CancellationToken cancellationToken) {
-		var leagues = await this._repository.GetAll(cancellationToken);
+		/*var leagues = await this._repository.GetAll(cancellationToken);
 		return new ListLeaguesResponse() {
 			Leagues = {
 				leagues
 					.Select(c => new Analyzer.Proto.League() {Id = c.Id})
+			}
+		};*/
+		return new ListLeaguesResponse() {
+			Leagues = {
+				new[] { new League() { Id = "Sentinel" }, new League() {  Id = "Standard" } }
 			}
 		};
 

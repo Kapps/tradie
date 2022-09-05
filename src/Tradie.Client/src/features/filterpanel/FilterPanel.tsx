@@ -3,12 +3,8 @@ import { Button, Card, Grid, Group, Space, Tabs, Text } from '@mantine/core';
 import { ImFloppyDisk, ImPencil, ImPlus } from 'react-icons/im';
 import useDarkMode from 'use-dark-mode';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectCriteria } from '../criteria/criteriaSlice';
 import { CriteriaGroupCard } from '../criteriagroups/CriteriaGroupCard';
 import { clearCriteriaGroups, selectCriteriaGroups } from '../criteriagroups/criteriaGroupsSlice';
-import { selectCriteriaValues } from '../criterialist/criteriaValueSlice';
-import { SearchRange, ModKey, ModKind, SearchGroup, SearchQuery, SortKind, SortOrder } from '../search/search';
-import { search } from '../search/searchApi';
 import { performSearch } from '../search/searchSlice';
 
 export function FilterPanel() {

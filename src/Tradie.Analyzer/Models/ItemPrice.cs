@@ -102,7 +102,11 @@ public readonly record struct ItemPrice(
 			{"mirror", Currency.Mirror},
 			{"kalandra", Currency.Mirror},
 			{"mirrors", Currency.Mirror},
-			{"mir", Currency.Mirror}
+			{"mir", Currency.Mirror},
+			{"div", Currency.Divine},
+			{"divine", Currency.Divine},
+			{"divs", Currency.Divine},
+			{"divines", Currency.Divine}
 		};
 }
 
@@ -131,5 +135,6 @@ public enum Currency : byte {
 	Alchemy = 6,
 	Gemcutters = 7,
 	Chromatics = 8,
-	Mirror = 9
+	Mirror = 9,
+	Divine = 10
 }

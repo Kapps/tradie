@@ -55,5 +55,6 @@
   <ItemGroup>
     <None Remove="EFCore.BulkExtensions" />
     <None Remove="Newtonsoft.Json" />
+    <None Remove="Proto\ItemPrice.proto" />
   </ItemGroup>
 </Project>

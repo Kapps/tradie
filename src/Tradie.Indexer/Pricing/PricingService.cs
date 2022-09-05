@@ -58,8 +58,12 @@ public class NinjaPricingService : IPricingService {
 		
 		// API doesn't include Chaos; and we hardcode those to 1 to avoid shenanigans.
 		foreach(var currency in Enum.GetValues<Currency>().Where(c=>c != Currency.None && c != Currency.Chaos)) {
-			var mapped = priceMap[currency];
-			this._priceList[(int)currency] = mapped;
+			if(!priceMap.TryGetValue(currency, out var price)) {
+				this._logger.LogWarning("No price found for currency {Currency}; assuming 10000 chaos.", currency);
+				this._priceList[(int)currency] = 10000;
+			} else {
+				this._priceList[(int)currency] = price;
+			}
 		}
 
 		this._priceList[(int)Currency.Chaos] = 1;

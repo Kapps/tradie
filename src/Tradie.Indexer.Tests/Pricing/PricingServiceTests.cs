@@ -25,7 +25,8 @@ public class PricingServiceTests : TestBase {
 			new(Currency.Fuse, 0.5f),
 			new(Currency.Gemcutters, 0.1f),
 			new(Currency.Mirror, 60000),
-			new(Currency.Vaal, 0.5f)
+			new(Currency.Vaal, 0.5f),
+			new(Currency.Divine, 10)
 		};
 	}
 

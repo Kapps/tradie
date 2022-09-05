@@ -6,6 +6,8 @@ import { AnalyzerId, ItemDetailProperties, ItemFlags, ItemTypeProperties } from 
 import { SearchResultCard } from './SearchResultCard';
 import { selectSearchResults } from './searchSlice';
 
+import styles from './SearchResultList.module.css';
+
 export function SearchResultList() {
   const searchResults = useAppSelector(selectSearchResults);
   const stackRef = useRef<HTMLDivElement>(null);
@@ -17,7 +19,7 @@ export function SearchResultList() {
 
   return (
     <Stack align="stretch" justify="center" spacing={0} ref={stackRef}>
-      <Title style={{ paddingTop: '10px', paddingBottom: '10px', fontSize: '16px', color: '#888' }} align="center">
+      <Title className={styles.searchResultTitle} align="center">
         Displaying {searchResults.length} results
       </Title>
       {searchResults.map((entry, i) => (

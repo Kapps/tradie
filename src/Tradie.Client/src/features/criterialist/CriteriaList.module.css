@@ -9,7 +9,7 @@
 }
 
 .filterBarResults {
-    animation: growDown 100ms ease-in-out forwards;
+    animation: growDown 1000ms ease-in-out forwards;
     transform-origin: top center;
     margin-top: 0;
 }
@@ -38,16 +38,13 @@
   cursor: pointer;
   text-transform: unset;
   font-weight: 700;
-  background-color: #0a0a16;
+  background-color: var(--sub-bg);
 }
 
 .disabled {
   font-weight: 500;
   color: #777;
   border-color: #333;
-}
-
-.entryItemContainer {
 }
 
 .entryItemKind {

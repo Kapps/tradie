@@ -55,32 +55,20 @@ public class CriteriaController : IAsyncDisposable {
 
 	private async Task<Criteria[]> GenerateCriteria(CancellationToken token) {
 		Console.WriteLine("Regenerating criteria");
-		var leagues = await this._leagueRepository.GetAll(token);
+		//var leagues = await this._leagueRepository.GetAll(token);
+		var leagues = new[] {"Sentinel", "Standard"};
 		var mods = await this._modifierRepository.RetrieveAll(token);
 		var itemTypes = await this._itemTypeRepository.RetrieveAll(token);
 
 		var criteria = leagues.Select(c => new Criteria() {
-			Id = $"league-{c.Id}",
-			Name = c.Id,
+			Id = $"league-{c}",
+			Name = c,
 			Kind = CriteriaKind.League,
-			League = c.Id,
+			League = c,
 			/*League = new League() {
 				Id = c.Id
 			}*/
-		}).Union(mods.Select(c => new Criteria() {
-			Id = $"mod-{c.Id}",
-			Name = c.ModifierText,
-			Kind = CriteriaKind.Modifier,
-			Modifier = new() {
-				Kind = (int)c.Kind,
-				ModifierHash = (long)c.ModHash
-			}
-			/*Modifier = new Modifier() {
-				Hash = (long)c.ModHash,
-				Id = c.Id,
-				Text = c.ModifierText
-			}*/
-		})).Union(itemTypes.Select(c=>c.Category).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
+		}).Union(itemTypes.Select(c=>c.Category).Where(c=>!String.IsNullOrWhiteSpace(c)).Distinct().Select(c=> new Criteria() {
 			Id = $"cat-{c}",
 			Name = c,
 			Kind = CriteriaKind.Category,
@@ -111,6 +99,19 @@ public class CriteriaController : IAsyncDisposable {
 					c.Subcategories
 				},
 				IconUrl = c.IconUrl
+			}*/
+		})).Union(mods.Select(c => new Criteria() {
+			Id = $"mod-{c.Id}",
+			Name = c.ModifierText,
+			Kind = CriteriaKind.Modifier,
+			Modifier = new() {
+				Kind = (int)c.Kind,
+				ModifierHash = (long)c.ModHash
+			}
+			/*Modifier = new Modifier() {
+				Hash = (long)c.ModHash,
+				Id = c.Id,
+				Text = c.ModifierText
 			}*/
 		})).ToArray();
 
