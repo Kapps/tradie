@@ -1,10 +1,4 @@
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Cloudwatch;
-using HashiCorp.Cdktf.Providers.Aws.Eventbridge;
-using HashiCorp.Cdktf.Providers.Aws.Iam;
-using HashiCorp.Cdktf.Providers.Aws.Lambdafunction;
-using HashiCorp.Cdktf.Providers.Aws.S3;
-using HashiCorp.Cdktf.Providers.Aws.Sqs;
 using System.Collections.Generic;
 using System.Text.Json;
 

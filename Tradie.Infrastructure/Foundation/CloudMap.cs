@@ -1,6 +1,6 @@
 ﻿using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Servicediscovery;
-using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using HashiCorp.Cdktf.Providers.Aws.ServiceDiscoveryHttpNamespace;
+using HashiCorp.Cdktf.Providers.Aws.SsmParameter;
 
 namespace Tradie.Infrastructure.Foundation;
 

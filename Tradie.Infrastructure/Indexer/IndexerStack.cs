@@ -1,6 +1,6 @@
 using Constructs;
-using HashiCorp.Cdktf.Providers.Aws.Servicediscovery;
-using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using HashiCorp.Cdktf.Providers.Aws.ServiceDiscoveryService;
+using HashiCorp.Cdktf.Providers.Aws.SsmParameter;
 using Tradie.Infrastructure.Foundation;
 using Tradie.Infrastructure.Packaging;
 

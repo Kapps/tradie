@@ -1,20 +1,15 @@
-﻿using Constructs;
-using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
-using HashiCorp.Cdktf.Providers.Aws.Elb;
-using HashiCorp.Cdktf.Providers.Aws.Iam;
-using HashiCorp.Cdktf.Providers.Aws.Lambdafunction;
-using HashiCorp.Cdktf.Providers.Aws.S3;
-using HashiCorp.Cdktf.Providers.Aws.Sqs;
-using HashiCorp.Cdktf.Providers.Aws.Ssm;
+﻿using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Aws.AlbListenerRule;
+using HashiCorp.Cdktf.Providers.Aws.AlbTargetGroup;
+using HashiCorp.Cdktf.Providers.Aws.AlbTargetGroupAttachment;
+using HashiCorp.Cdktf.Providers.Aws.IamRole;
+using HashiCorp.Cdktf.Providers.Aws.LambdaFunction;
+using HashiCorp.Cdktf.Providers.Aws.LambdaPermission;
+using HashiCorp.Cdktf.Providers.Aws.SqsQueue;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 using Tradie.Infrastructure.Foundation;
 using Tradie.Infrastructure.Packaging;
 using Tradie.Infrastructure.Resources;
-using Tradie.Infrastructure.Scanner;
-using Alb = Tradie.Infrastructure.Foundation.Alb;
 
 namespace Tradie.Infrastructure.Web;
 

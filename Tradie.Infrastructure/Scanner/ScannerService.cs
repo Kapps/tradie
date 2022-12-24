@@ -1,10 +1,10 @@
 ﻿using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Cloudwatch;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
-using HashiCorp.Cdktf.Providers.Aws.Ecs;
-using HashiCorp.Cdktf.Providers.Aws.Iam;
-using HashiCorp.Cdktf.Providers.Aws.S3;
-using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using HashiCorp.Cdktf.Providers.Aws.CloudwatchLogGroup;
+using HashiCorp.Cdktf.Providers.Aws.EcsService;
+using HashiCorp.Cdktf.Providers.Aws.EcsTaskDefinition;
+using HashiCorp.Cdktf.Providers.Aws.IamRole;
+using HashiCorp.Cdktf.Providers.Aws.S3Bucket;
+using HashiCorp.Cdktf.Providers.Aws.SsmParameter;
 using System.Collections.Generic;
 using System.Text.Json;
 using Tradie.Infrastructure.Foundation;

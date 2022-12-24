@@ -1,6 +1,6 @@
 using Constructs;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws;
+using HashiCorp.Cdktf.Providers.Aws.Provider;
 using HashiCorp.Cdktf.Providers.Random;
 using System.Collections.Generic;
 using Tradie.Infrastructure.Aspects;
