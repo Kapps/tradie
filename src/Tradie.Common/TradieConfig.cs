@@ -237,11 +237,25 @@ namespace Tradie.Common {
 		[DefaultValue(Microsoft.Extensions.Logging.LogLevel.Information)]
 		public static LogLevel LogLevel { get; set; }
 
+		// Unused for now.
+		[IgnoreDataMember]
+		public static string ElasticServiceUrl { get; set; }
+		[IgnoreDataMember]
+		public static string ElasticUser { get; set; }
+		[IgnoreDataMember]
+		public static string ElasticPassword { get; set; }
+
 		/*/// <summary>
 		/// Gets the running AWS region.
 		/// </summary>
 		[IgnoreDataMember]
 		public static string Region { get; } = Amazon.Util.EC2InstanceMetadata.Region.SystemName;*/
+		
+		/// <summary>
+		/// Indicates whether we're running in a unittest scenario.
+		/// </summary>
+		[IgnoreDataMember]
+		public static bool IsTestEnvironment => Environment == "test";
 	}
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -58,6 +58,9 @@ public readonly struct AnalyzedPropertyCollection : IEnumerable<IAnalyzedPropert
 	/// </summary>
 	public T? Get<T>(ushort analyzerId) where T : IAnalyzedProperties {
 		var res = this._properties[this.IndexForAnalyzer(analyzerId)];
+		if(res == null) {
+			return default;
+		}
 		return (T?)res;
 	}
 	

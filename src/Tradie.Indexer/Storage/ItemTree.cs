@@ -7,7 +7,7 @@ namespace Tradie.Indexer.Storage;
 public delegate bool BlockMatcher(ItemTreeNode block);
 
 /// <summary>
-/// A tree that stores multi-dimensional block ranges that can be used to efficiently look up optimized combinations of affixes.
+/// An ItemTree is a tree that stores multi-dimensional block ranges in order to efficiently look up optimized combinations of affixes or dimensions.
 /// At its core an ItemTree is very similar to a B+-Tree that searches in a different manner, using ordering for price sorting only.
 /// </summary>
 /// <remarks>
@@ -31,6 +31,15 @@ public delegate bool BlockMatcher(ItemTreeNode block);
 /// As most searches are sorted via price, and price is a property on all items, keeping items sorted by price
 /// allows us to search left-to-right through children and automatically find results in a sorted fashion.
 /// The result is we only need to find the first count items, and we'll know that those are the optimal ones.
+/// </para>
+/// <para>
+/// Four types of "columns" exist for data.
+///	<list type="number">
+///	<item><term>Dimensions</term> Qualitative measurements (item type, league, etc).</item>
+///	<item><term>Measurements</term> Numerical measurements (affixes, price, etc).</item>
+///	<item><term>Partitions</term> Root dimensions to categorize entries by the mods they're likely to have, reducing search counts.</item>
+///	<item><term>Sort Key</term> A mesurement (i.e., the item price), used for sorting entries in the tree.</item>
+/// </list>
 /// </para>
 /// </remarks>
 public class ItemTree {

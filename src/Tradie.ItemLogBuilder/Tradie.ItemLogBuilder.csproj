@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -25,6 +25,7 @@
       <PackageReference Include="AWSSDK.S3" Version="3.7.9.4" />
       <PackageReference Include="DistributedLock.Postgres" Version="1.0.2" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+      <PackageReference Include="NEST" Version="7.17.4" />
       <PackageReference Include="System.Linq.Async" Version="6.0.1" />
       <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
     </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using Nest;
 using System.Runtime.Serialization;
 using Tradie.Analyzer.Entities;
 using Tradie.Analyzer.Models;
@@ -65,6 +66,6 @@ public class TradePropertiesAnalyzer : IItemAnalyzer {
 public readonly record struct TradeListingAnalysis (
 	[property:DataMember, Key(0)] ushort X,
 	[property:DataMember, Key(1)] ushort Y,
-	[property:DataMember, Key(2)] ItemPrice? Price,
+	[property:DataMember, Key(2), Nested] ItemPrice? Price,
 	[property:DataMember, Key(3)] string? Note
 ) : IAnalyzedProperties;

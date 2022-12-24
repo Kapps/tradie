@@ -41,6 +41,13 @@ public struct ItemAnalysis {
 
 		return res;
 	}
+	
+	/// <summary>
+	/// Optionally returned the properties for the given analyzer, typed as requested.
+	/// </summary>
+	public T? Get<T>(ushort analyzerId) where T : IAnalyzedProperties {
+		return this._properties.Get<T>(analyzerId);
+	}
 
 	public ItemAnalysis(string itemId) {
 		this.ItemId = itemId;

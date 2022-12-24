@@ -1,16 +1,15 @@
-﻿#if false
-using HashiCorp.Cdktf;
+﻿using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Rds;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
 using HashiCorp.Cdktf.Providers.Random;
 using System;
 using System.Linq;
+using Tradie.Infrastructure.Foundation;
 
 namespace Tradie.Infrastructure.Resources {
 	public class Rds {
 		public Rds(TerraformStack stack, Network network, ResourceConfig config) {
-
 			var subnetGroup = new DbSubnetGroup(stack, "rds-subnet-group", new DbSubnetGroupConfig() {
 				Name = "rds-subnet-group",
 				//SubnetIds = network.PrivateSubnets.Select(c=>c.Id).ToArray(),
@@ -70,16 +69,17 @@ namespace Tradie.Infrastructure.Resources {
 				Identifier = "core",
 				DbSubnetGroupName = subnetGroup.Name,
 				Engine = "postgres",
-				Name = "tradie",
+				DbName = "tradie",
 				Username = "tradie",
 				Password = passwordResource.Result,
 				MultiAz = false,
 				EngineVersion = "14.1",
 				InstanceClass = "db.t4g.small",
+				StorageType = "gp3",
 				//FinalSnapshotIdentifier = "core-final-snapshot",
 				VpcSecurityGroupIds = new[] { securityGroup.Id },
 				ApplyImmediately = true,
-				AllocatedStorage = 200,
+				AllocatedStorage = 100,
 				PubliclyAccessible = true,
 				ParameterGroupName = paramGroup.Name,
 				SkipFinalSnapshot = false // TODO: Remove this if ever getting to for realsies.
@@ -131,9 +131,8 @@ namespace Tradie.Infrastructure.Resources {
 				Name = "Config.DbName",
 				Type = "String",
 				// Value = cluster.DatabaseName!
-				Value = rds.Name
+				Value = rds.DbName
 			});
 		}
 	}
 }
-#endif

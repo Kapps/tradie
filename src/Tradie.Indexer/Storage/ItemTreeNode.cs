@@ -73,10 +73,10 @@ public abstract class ItemTreeNode {
 			}
 		}
 
-		this.RecalculateDimensions();
+		this.RecalculateValues();
 	}
 
-	protected internal void RecalculateDimensions() {
+	protected internal void RecalculateValues() {
 		this.RecalculatePrices();
 		this.RecalculateAffixes();
 	}

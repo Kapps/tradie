@@ -139,7 +139,7 @@ public class ScannerService {
 		var service = new EcsService(stack, "scanner-service", new EcsServiceConfig() {
 			Cluster = ecs.Cluster.Arn,
 			Name = "scanner-service",
-			DesiredCount = 1,
+			DesiredCount = 0,
 			LaunchType = "EC2",
 			TaskDefinition = taskDef.Arn,
 			EnableEcsManagedTags = true

@@ -32,9 +32,22 @@ public class ItemTreeBlockNode : ItemTreeNode {
 		this.Insert(index + 1, node);
 	}
 
+	public void Remove(ItemTreeNode node) {
+
+	}
+
 	protected internal override void VisitLeafs(Action<ItemTreeLeafNode> visitor) {
 		foreach(var child in this.Children.Blocks) {
 			child.VisitLeafs(visitor);
+		}
+	}
+
+	private void RemoveAt(int index) {
+		Debug.Assert(this.Children.Count > index);
+
+		this.Children.RemoveAt<ItemTreeNode>(index);
+		if(this.Children.Count < this.Children.Capacity / 2) {
+			
 		}
 	}
 
@@ -48,8 +61,8 @@ public class ItemTreeBlockNode : ItemTreeNode {
 			this.Split();
 		}
 		
-		this.RecalculateDimensions();
-		node.RecalculateDimensions();
+		this.RecalculateValues();
+		node.RecalculateValues();
 	}
 
 	private void Split() {
@@ -62,7 +75,7 @@ public class ItemTreeBlockNode : ItemTreeNode {
 			rootChildren.Insert(0, this);
 			rootChildren.Insert(1, rightNode);
 			var parent = new ItemTreeBlockNode(this.Tree, rootChildren);
-			parent.RecalculateDimensions();
+			parent.RecalculateValues();
 		} else { 
 			// Parent will deal with splitting if it's full.
 			this.Parent.InsertAfter(this, rightNode);

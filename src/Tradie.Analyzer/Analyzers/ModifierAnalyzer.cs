@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using Nest;
 using System.Runtime.Serialization;
 using Tradie.Analyzer.Analyzers.Conversions;
 using Tradie.Analyzer.Models;
@@ -58,9 +59,9 @@ public class ModifierAnalyzer : IItemAnalyzer {
 [DataContract]
 [MessagePackObject]
 public readonly record struct ItemAffixesAnalysis(
-	[property:DataMember,Key(0)] Affix[] Affixes,
-	[property:DataMember,Key(1)] byte PrefixCount,
-	[property:DataMember,Key(2)] byte SuffixCount
+	[property:DataMember, Key(0), Nested] Affix[] Affixes,
+	[property:DataMember, Key(1)] byte PrefixCount,
+	[property:DataMember, Key(2)] byte SuffixCount
 ) : IAnalyzedProperties;
 
 /// <summary>

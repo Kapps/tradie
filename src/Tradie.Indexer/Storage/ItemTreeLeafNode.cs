@@ -103,8 +103,8 @@ public sealed class ItemTreeLeafNode : ItemTreeNode {
 		}
 		
 		
-		this.RecalculateDimensions();
-		this._rightSibling.RecalculateDimensions();
+		this.RecalculateValues();
+		this._rightSibling.RecalculateValues();
 		this.AssertExpectations();
 		this._rightSibling.AssertExpectations();
 	}

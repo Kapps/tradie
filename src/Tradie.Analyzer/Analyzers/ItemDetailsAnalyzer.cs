@@ -1,5 +1,6 @@
 using MessagePack;
 using Microsoft.VisualBasic.CompilerServices;
+using Nest;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Tradie.Analyzer.Analyzers.Conversions;
@@ -94,7 +95,7 @@ public readonly record struct ItemDetailsAnalysis(
 	[property:DataMember, Key(2), JsonConverter(typeof(FlagsEnumJsonConverter<InfluenceKind>))] InfluenceKind Influences,
 	[property:DataMember, Key(3)] byte? ItemLevel,
 	[property:DataMember, Key(4), JsonConverter(typeof(FlagsEnumJsonConverter<ItemRarity>))] ItemRarity Rarity,
-	[property:DataMember, Key(5)] Requirements? Requirements,
+	[property:DataMember, Key(5), Nested] Requirements? Requirements,
 	[property:DataMember, Key(6)] string? IconPath
 ) : IAnalyzedProperties;
 	

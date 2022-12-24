@@ -1,3 +1,4 @@
+#if false
 using HashiCorp.Cdktf;
 using HashiCorp.Cdktf.Providers.Aws.Ssm;
 
@@ -30,3 +31,4 @@ public class DbParams {
 		});
 	}
 }
+#endif

@@ -9,7 +9,8 @@ namespace Tradie.Infrastructure.Foundation;
 public class FoundationStack : StackBase {
 	public Permissions Permissions { get; set; }
 	public Network Network { get; set; }
-	public DbParams Database { get; set; }
+	//public DbParams Database { get; set; }
+	public Rds Rds { get; set; }
 	public Cache Cache { get; set; }
 	public Ecs EcsCluster { get; set; }
 	public Routing Routing { get; set; }
@@ -23,7 +24,8 @@ public class FoundationStack : StackBase {
 
 		this.Permissions = new(this);
 		this.Network = new(this, resourceConfig);
-		this.Database = new(this);
+		//this.Database = new(this);
+		this.Rds = new(this, Network, resourceConfig);
 		this.Cache = new(this);
 		this.Storage = new(this);
 

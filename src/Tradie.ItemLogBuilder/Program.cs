@@ -7,12 +7,14 @@ using Medallion.Threading.Postgres;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nest;
 using Tradie.Analyzer.Dispatch;
 using Tradie.Analyzer.Repos;
 using Tradie.Common;
 using Tradie.Common.Metrics;
 using Tradie.ItemLog;
 using Tradie.ItemLogBuilder;
+using Tradie.ItemLogBuilder.Elastic;
 using Tradie.ItemLogBuilder.Postgres;
 
 
@@ -52,6 +54,8 @@ IHost host = Host.CreateDefaultBuilder()
 			.AddSingleton<IAmazonCloudWatch, AmazonCloudWatchClient>()
 			.AddSingleton<IAmazonSQS, AmazonSQSClient>()
 			.AddSingleton<IItemLogBuilder, PostgresLogBuilder>()
+			//.AddSingleton<IItemLogBuilder, ElasticLogBuilder>()
+			.AddSingleton<IElasticClient, TradieElasticClient>()
 			.AddSingleton<IMetricPublisher, CloudWatchMetricPublisher>()
 			.AddSingleton<ILoggedItemRepository, PostgresLoggedItemRepository>()
 			.AddSingleton<ILoggedTabRepository, PostgresLoggedTabRepository>()
@@ -79,7 +83,7 @@ var sourceLog = host.Services.GetRequiredService<IItemLog>();
 var streamer = host.Services.GetRequiredService<ILogStreamer>();
 
 
-using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(4.5));
+using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(400.5));
 
 Console.WriteLine("Starting copy.");
 try {

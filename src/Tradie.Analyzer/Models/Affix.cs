@@ -1,6 +1,6 @@
+using Nest;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Tradie.Analyzer.Entities;
 
 namespace Tradie.Analyzer.Models; 
 
@@ -12,18 +12,20 @@ public readonly record struct Affix : IComparable<Affix> {
 	[DataMember(Name = "hash", Order = 1, IsRequired = true)]
 	[JsonInclude]
 	[JsonPropertyName("hash")]
-	public readonly ulong Hash;
+	[Number(NumberType.UnsignedLong)]
+	public ulong Hash { get; init; }
 
 	[DataMember(Name = "scalar", Order = 2, IsRequired = true)]
 	[JsonInclude]
 	[JsonPropertyName("scalar")]
-	public readonly double Scalar;
+	[Number(NumberType.Double)]
+	public double Scalar { get; init; }
 
 	[DataMember(Name = "kind", Order = 3, IsRequired = true)]
 	[JsonInclude]
 	[JsonPropertyName("kind")]
 	[JsonConverter(typeof(FlagsEnumJsonConverter<ModKind>))]
-	public readonly ModKind Kind;
+	public ModKind Kind { get; init; }
 
 	[SpanJson.JsonConstructor]
 	[JsonConstructor]
