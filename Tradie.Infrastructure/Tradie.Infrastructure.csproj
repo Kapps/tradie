@@ -13,8 +13,8 @@
     <PackageReference Include="Docker.DotNet" Version="3.125.5" />
     <PackageReference Include="HashiCorp.Cdktf" Version="0.14.3" />
     <PackageReference Include="HashiCorp.Cdktf.Providers.Aws" Version="11.0.8" />
-    <PackageReference Include="HashiCorp.Cdktf.Providers.Local" Version="0.4.62" />
-    <PackageReference Include="HashiCorp.Cdktf.Providers.Random" Version="0.2.62" />
+    <PackageReference Include="HashiCorp.Cdktf.Providers.Local" Version="4.0.0" />
+    <PackageReference Include="HashiCorp.Cdktf.Providers.Random" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.31.0" />
   </ItemGroup>
 

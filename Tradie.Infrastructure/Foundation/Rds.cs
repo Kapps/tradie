@@ -4,7 +4,7 @@ using HashiCorp.Cdktf.Providers.Aws.DbParameterGroup;
 using HashiCorp.Cdktf.Providers.Aws.DbSubnetGroup;
 using HashiCorp.Cdktf.Providers.Aws.SecurityGroup;
 using HashiCorp.Cdktf.Providers.Aws.SsmParameter;
-using HashiCorp.Cdktf.Providers.Random;
+using HashiCorp.Cdktf.Providers.Random.Password;
 using System;
 using System.Linq;
 
