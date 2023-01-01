@@ -1,13 +1,12 @@
 ﻿using Amazon.JSII.Runtime.Deputy;
 using Constructs;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Rds;
-using HashiCorp.Cdktf.Providers.Aws.Route53;
-using HashiCorp.Cdktf.Providers.Aws.S3;
+using HashiCorp.Cdktf.Providers.Aws.DbInstance;
+using HashiCorp.Cdktf.Providers.Aws.DbParameterGroup;
+using HashiCorp.Cdktf.Providers.Aws.Route53Record;
+using HashiCorp.Cdktf.Providers.Aws.S3Bucket;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 
 namespace Tradie.Infrastructure.Aspects {
 	/// <summary>

@@ -1,8 +1,12 @@
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Acm;
+using HashiCorp.Cdktf.Providers.Aws.AcmCertificate;
+using HashiCorp.Cdktf.Providers.Aws.AcmCertificateValidation;
+using HashiCorp.Cdktf.Providers.Aws.Alb;
+using HashiCorp.Cdktf.Providers.Aws.AlbListener;
+using HashiCorp.Cdktf.Providers.Aws.AlbListenerCertificate;
 using HashiCorp.Cdktf.Providers.Aws.Elb;
-using HashiCorp.Cdktf.Providers.Aws.Route53;
-using HashiCorp.Cdktf.Providers.Aws.Vpc;
+using HashiCorp.Cdktf.Providers.Aws.Route53Record;
+using HashiCorp.Cdktf.Providers.Aws.SecurityGroup;
 using System;
 using System.Linq;
 
@@ -23,7 +27,7 @@ public class Alb {
 	/// <summary>
 	/// The load balancer for incoming HTTP(s) requests.
 	/// </summary>
-	public readonly HashiCorp.Cdktf.Providers.Aws.Elb.Alb HttpAlb;
+	public readonly HashiCorp.Cdktf.Providers.Aws.Alb.Alb HttpAlb;
 
 	public readonly AlbListener HttpsListener;
 	
@@ -67,7 +71,7 @@ public class Alb {
 
 		this.HttpTrafficSecurityGroup = new(stack, "http-sg", new SecurityGroupConfig() {
 			Name = "http-sg",
-			Egress = new[] { network.AllOutgoingTrafficEgress },
+			Egress = (object)new[] { network.AllOutgoingTrafficEgress },
 			Ingress = httpTrafficIngresses,
 			VpcId = network.Vpc.Id
 		});

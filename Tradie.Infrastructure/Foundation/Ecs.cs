@@ -1,11 +1,15 @@
 ﻿using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Autoscaling;
-using HashiCorp.Cdktf.Providers.Aws.Ec2;
-using HashiCorp.Cdktf.Providers.Aws.Ecs;
-using HashiCorp.Cdktf.Providers.Aws.Iam;
-using HashiCorp.Cdktf.Providers.Aws.Vpc;
+using HashiCorp.Cdktf.Providers.Aws.AutoscalingGroup;
+using HashiCorp.Cdktf.Providers.Aws.DataAwsEip;
+using HashiCorp.Cdktf.Providers.Aws.DataAwsIamPolicyDocument;
+using HashiCorp.Cdktf.Providers.Aws.EcsCluster;
+using HashiCorp.Cdktf.Providers.Aws.IamInstanceProfile;
+using HashiCorp.Cdktf.Providers.Aws.IamRole;
+using HashiCorp.Cdktf.Providers.Aws.IamRolePolicyAttachment;
+using HashiCorp.Cdktf.Providers.Aws.LaunchTemplate;
+using HashiCorp.Cdktf.Providers.Aws.SecurityGroup;
 using System.Text;
 
 namespace Tradie.Infrastructure.Foundation;
@@ -78,10 +82,10 @@ public class Ecs {
 		var instanceSg = new SecurityGroup(stack, "ecs-sg", new SecurityGroupConfig() {
 			VpcId = network.Vpc.Id,
 			Name = "ecs-sg",
-			Ingress = new[] {
+			Ingress = (object)new[] {
 				network.AllInternalTrafficIngress,
 			},
-			Egress = new[] {
+			Egress = (object)new[] {
 				network.AllOutgoingTrafficEgress,
 			},
 		});

@@ -1,8 +1,13 @@
 ﻿using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Ec2;
-using HashiCorp.Cdktf.Providers.Aws.Vpc;
+using HashiCorp.Cdktf.Providers.Aws.EgressOnlyInternetGateway;
+using HashiCorp.Cdktf.Providers.Aws.Eip;
+using HashiCorp.Cdktf.Providers.Aws.Instance;
+using HashiCorp.Cdktf.Providers.Aws.InternetGateway;
+using HashiCorp.Cdktf.Providers.Aws.RouteTable;
+using HashiCorp.Cdktf.Providers.Aws.RouteTableAssociation;
+using HashiCorp.Cdktf.Providers.Aws.SecurityGroup;
 
 namespace Tradie.Infrastructure.Foundation;
 

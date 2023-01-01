@@ -1,14 +1,15 @@
 using Constructs;
-using HashiCorp.Cdktf.Providers.Aws.Cloudfront;
-using HashiCorp.Cdktf.Providers.Aws.Datasync;
-using HashiCorp.Cdktf.Providers.Aws.Iam;
-using HashiCorp.Cdktf.Providers.Aws.Route53;
-using HashiCorp.Cdktf.Providers.Aws.S3;
+using HashiCorp.Cdktf.Providers.Aws.CloudfrontDistribution;
+using HashiCorp.Cdktf.Providers.Aws.DataAwsIamPolicyDocument;
+using HashiCorp.Cdktf.Providers.Aws.Route53Record;
+using HashiCorp.Cdktf.Providers.Aws.S3Bucket;
+using HashiCorp.Cdktf.Providers.Aws.S3BucketAcl;
+using HashiCorp.Cdktf.Providers.Aws.S3BucketPolicy;
+using HashiCorp.Cdktf.Providers.Aws.S3BucketWebsiteConfiguration;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using Tradie.Infrastructure.Foundation;
 
 namespace Tradie.Infrastructure.Client;

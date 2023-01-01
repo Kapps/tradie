@@ -1,10 +1,8 @@
-﻿using Constructs;
-using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Ecs;
-using HashiCorp.Cdktf.Providers.Aws.Elb;
+﻿using HashiCorp.Cdktf;
+using HashiCorp.Cdktf.Providers.Aws.SecurityGroup;
+using HashiCorp.Cdktf.Providers.Aws.Subnet;
 using HashiCorp.Cdktf.Providers.Aws.Vpc;
 using System;
-using System.Linq;
 
 namespace Tradie.Infrastructure.Foundation;
 

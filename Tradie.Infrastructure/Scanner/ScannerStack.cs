@@ -1,7 +1,5 @@
 using Constructs;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
 using Tradie.Infrastructure.Foundation;
-using Tradie.Infrastructure.ImageRepository;
 using Tradie.Infrastructure.Packaging;
 
 namespace Tradie.Infrastructure.Scanner;

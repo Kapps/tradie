@@ -1,7 +1,8 @@
 using Constructs;
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws;
+using HashiCorp.Cdktf.Providers.Aws.Provider;
 using HashiCorp.Cdktf.Providers.Random;
+using HashiCorp.Cdktf.Providers.Random.Provider;
 using System.Collections.Generic;
 using Tradie.Infrastructure.Aspects;
 // ReSharper disable VirtualMemberCallInConstructor

@@ -1,6 +1,6 @@
 ﻿using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.S3;
-using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using HashiCorp.Cdktf.Providers.Aws.S3Bucket;
+using HashiCorp.Cdktf.Providers.Aws.SsmParameter;
 
 namespace Tradie.Infrastructure.Foundation;
 

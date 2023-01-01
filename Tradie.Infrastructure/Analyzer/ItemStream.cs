@@ -1,7 +1,7 @@
 using HashiCorp.Cdktf;
-using HashiCorp.Cdktf.Providers.Aws.Kinesis;
-using HashiCorp.Cdktf.Providers.Aws.Sqs;
-using HashiCorp.Cdktf.Providers.Aws.Ssm;
+using HashiCorp.Cdktf.Providers.Aws.KinesisStream;
+using HashiCorp.Cdktf.Providers.Aws.SqsQueue;
+using HashiCorp.Cdktf.Providers.Aws.SsmParameter;
 
 namespace Tradie.Infrastructure.Analyzer;
 

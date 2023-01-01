@@ -1,8 +1,6 @@
 using Constructs;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
 using Tradie.Infrastructure.Foundation;
 using Tradie.Infrastructure.Packaging;
-using Tradie.Infrastructure.Resources;
 using Tradie.Infrastructure.Scanner;
 
 namespace Tradie.Infrastructure.Analyzer;

@@ -1,6 +1,5 @@
 using Constructs;
-using HashiCorp.Cdktf.Providers.Aws.Ecr;
-using Tradie.Infrastructure.Resources;
+using HashiCorp.Cdktf.Providers.Aws.EcrRepository;
 
 namespace Tradie.Infrastructure.ImageRepository;
 
