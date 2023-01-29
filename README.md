@@ -14,7 +14,7 @@ The flow looks something like this:
 - Tradie.ItemLogBuilder is a service on a cron job that pulls from the Kinesis data streams, writing the item data to a Postgres database (in a compressed MessgePack binary format).
 - Tradie.Indexer pulls data from the Postgres database into memory, in a tree designed to filter out large chunks of items for arbitrary queries.
 - Tradie.Web is the web API entrypoint, which directs searches to a Tradie.Indexer instance, which it finds via AWS CloudMap.
-- Tradie.Client is the frontend for the actual user-facing application, and communicated with the Web service via grpc-web.
+- Tradie.Client is the frontend for the actual user-facing application, and communicates with the Web service via grpc-web.
 
 ## Infrastructure
 
