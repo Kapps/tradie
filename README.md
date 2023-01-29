@@ -4,7 +4,7 @@ Tradie is a partially-functional Path of Exile indexer / trade site. The design 
 block storage data structure for efficient searches designed around filtering out blocks that cannot match the query.
 In current tests, most weighted sum searches take ~100ms against a data store of 150,000,000 items (though some particularly unpleasantly crafted queries may take multiple seconds).
 
-**As access to the direct whisper API is blocked, and the only ways of getting character information for performing trades has now been deprecated, this project is no longer in active development.**
+**As access to the direct whisper API is blocked, and the only ways of getting character information for performing trades has now been deprecated, this project is no longer in active development, though I may occasionally go back to it.**
 
 ## Flow
 
